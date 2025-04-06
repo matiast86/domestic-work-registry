@@ -19,7 +19,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "employer")
+@Table(name = "employers")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -35,9 +35,6 @@ public class Employer {
 
     @Column(name = "surname")
     private String surname;
-
-    @Column(name = "email", unique = true)
-    private String email;
 
     @Column(name = "age")
     private int age;
