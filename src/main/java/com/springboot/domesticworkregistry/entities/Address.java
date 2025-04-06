@@ -1,67 +1,42 @@
 package com.springboot.domesticworkregistry.entities;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Table(name = "address")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Address {
-    private int id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id")
+    private String id;
+
+    @Column(name = "street")
+    private String street;
+
+    @Column(name = "number")
     private String number;
+
+    @Column(name = "city")
     private String city;
+
+    @Column(name = "postal_code")
     private String postalCode;
+
+    @Column(name = "country")
     private String country;
 
-    public Address() {
-    }
 
-    public Address(String number, String city, String postalCode, String country) {
-        this.number = number;
-        this.city = city;
-        this.postalCode = postalCode;
-        this.country = country;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getNumber() {
-        return number;
-    }
-
-    public void setNumber(String number) {
-        this.number = number;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getPostalCode() {
-        return postalCode;
-    }
-
-    public void setPostalCode(String postalCode) {
-        this.postalCode = postalCode;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    @Override
-    public String toString() {
-        return "Address {id=" + id + ", number=" + number + ", city=" + city + ", postalCode=" + postalCode
-                + ", country=" + country + "}";
-    }
-
-    
+ 
 }

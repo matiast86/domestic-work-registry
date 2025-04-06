@@ -2,8 +2,6 @@ package com.springboot.domesticworkregistry.entities;
 
 import java.util.List;
 
-import com.springboot.domesticworkregistry.enums.JobType;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -20,32 +19,39 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "employee")
+@Table(name = "employer")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Employee {
+public class Employer {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
     private String id;
 
-    @Column(name="email")
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "surname")
+    private String surname;
+
+    @Column(name = "email", unique = true)
     private String email;
 
-    @Column(name = "cuil", unique = true)
-    private String cuil;
-
-    @Column(name = "job_type")
-    private JobType jobType;
+    @Column(name = "age")
+    private int age;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    @JoinColumn(name = "home_address_id")
-    private Address homeAddress;
+    @JoinColumn(name = "address_id")
+    private Address address;
 
-    @ManyToMany(mappedBy="employees",cascade =
-    {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
-        CascadeType.REFRESH}, fetch = FetchType.LAZY)
-    private List<Employer> employers;
+    @ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
+            CascadeType.REFRESH }, fetch = FetchType.LAZY)
+    @JoinTable(name = "employer_employee", joinColumns = @JoinColumn(name = "employer_id"), inverseJoinColumns = @JoinColumn(name = "employee_id"))
+    private List<Employee> employees;
+
+    @Column(name = "identification-number")
+    private String identificationNumber;
 
 }
