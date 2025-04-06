@@ -2,8 +2,6 @@ package com.springboot.domesticworkregistry.entities;
 
 import java.util.Date;
 
-import org.springframework.security.core.userdetails.UserDetails;
-
 import com.springboot.domesticworkregistry.enums.Role;
 
 import jakarta.persistence.Column;
@@ -15,6 +13,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.PrePersist;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,14 +27,20 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public abstract class User implements UserDetails {
+public abstract class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Column(name = "last_name")
+    private String lastName;
+
     @Column(name = "email", unique = true, nullable = false)
     private String email;
-    
+
     @Column(name = "password", nullable = false)
     private String password;
 
@@ -48,5 +57,24 @@ public abstract class User implements UserDetails {
     @Column(name = "created_at")
     private Date createdAt;
 
+    
+
+
+    public User(String firstName, String lastName, String email, String password, Role role, String phone) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.phone = phone;
+    }
+
+
+
+
+    @PrePersist
+    protected void onCreate() {
+    this.createdAt = new Date();
+}
 
 }
