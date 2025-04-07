@@ -1,6 +1,9 @@
 package com.springboot.domesticworkregistry.entities;
 
+import java.util.Collection;
 import java.util.List;
+
+import org.springframework.security.core.GrantedAuthority;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -44,6 +47,6 @@ public class Employer extends User {
         CascadeType.REFRESH }, fetch = FetchType.LAZY)
     private List<Job> jobs;
 
-    
+       
 
 }
