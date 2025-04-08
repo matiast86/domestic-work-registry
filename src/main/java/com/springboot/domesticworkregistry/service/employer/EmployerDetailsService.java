@@ -1,4 +1,4 @@
-package com.springboot.domesticworkregistry.service;
+package com.springboot.domesticworkregistry.service.employer;
 
 import java.util.ArrayList;
 

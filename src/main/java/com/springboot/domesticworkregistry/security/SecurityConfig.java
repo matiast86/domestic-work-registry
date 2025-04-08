@@ -13,7 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.springframework.security.web.SecurityFilterChain;
 
-import com.springboot.domesticworkregistry.service.EmployerDetailsService;
+import com.springboot.domesticworkregistry.service.employer.EmployerDetailsService;
 
 @Configuration
 public class SecurityConfig {
