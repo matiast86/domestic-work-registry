@@ -32,7 +32,7 @@ public class SecurityConfig {
 
                 http
                                 .authorizeHttpRequests(config -> config
-                                                .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
+                                                .requestMatchers("/css/**", "/js/**", "/images/**", "/").permitAll()
                                                 .anyRequest().authenticated())
                                 .userDetailsService(employerDetailsService)
 
