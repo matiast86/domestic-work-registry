@@ -1,15 +1,19 @@
 package com.springboot.domesticworkregistry.service.employer;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
 
 import com.springboot.domesticworkregistry.entities.Employer;
-import com.springboot.domesticworkregistry.repository.EmployerRepository;
 
-public class EmployerService {
+public interface EmployerService {
 
-    @Autowired
-    EmployerRepository employerRepository;
+    List<Employer> findAll();
 
+    Employer findById(String id);
 
+    Employer findByEmail(String email);
+
+    Employer save(Employer theEmployer);
+
+    void delete(String theId);
 
 }

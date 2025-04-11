@@ -8,9 +8,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 
+import com.springboot.domesticworkregistry.dao.EmployerRepository;
 import com.springboot.domesticworkregistry.entities.Employer;
 import com.springboot.domesticworkregistry.enums.Role;
-import com.springboot.domesticworkregistry.repository.EmployerRepository;
 
 import org.springframework.security.core.userdetails.User;
 

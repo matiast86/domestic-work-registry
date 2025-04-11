@@ -8,8 +8,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.springboot.domesticworkregistry.dao.EmployerRepository;
 import com.springboot.domesticworkregistry.entities.Employer;
-import com.springboot.domesticworkregistry.repository.EmployerRepository;
 
 @Service
 public class EmployerDetailsService implements UserDetailsService{
