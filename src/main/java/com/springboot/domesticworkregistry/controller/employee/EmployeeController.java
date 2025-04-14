@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.springboot.domesticworkregistry.entities.Employee;
 import com.springboot.domesticworkregistry.service.employee.EmployeeService;
@@ -45,6 +46,14 @@ public class EmployeeController {
         return "redirect:/employee";
     }
 
+    @GetMapping("/updateEmployee")
+    public String updateEmployee(@RequestParam("employeeId") String id, Model theModel) {
 
+        Employee employee = employeeService.findById(id);
+
+        theModel.addAttribute("employee", employee);
+
+        return "employee/employee-form";
+    }
 
 }
