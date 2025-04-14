@@ -23,53 +23,53 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Job {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+        @Id
+        @GeneratedValue(strategy = GenerationType.UUID)
+        private String id;
 
-    @Column(name = "date")
-    private LocalDate date;
+        @Column(name = "date")
+        private LocalDate date;
 
-    @Column(name = "start_time")
-    private LocalTime startTime;
+        @Column(name = "start_time")
+        private LocalTime startTime;
 
-    @Column(name = "end_time")
-    private LocalTime endTime;
+        @Column(name = "end_time")
+        private LocalTime endTime;
 
-    @Column(name = "worked_hours")
-    private Double workedHours;
+        @Column(name = "worked_hours")
+        private Double workedHours;
 
-    @Column(name = "hourly_rate")
-    private Double hourlyRate;
+        @Column(name = "hourly_rate")
+        private Double hourlyRate;
 
-    @Column(name = "partial_fee")
-    private Double partialFee;
+        @Column(name = "partial_fee")
+        private Double partialFee;
 
-    @Column(name = "transportation_fee")
-    private Double transportationFee;
+        @Column(name = "transportation_fee")
+        private Double transportationFee = 0.0;
 
-    @Column(name = "total_fee")
-    private Double totalFee;
+        @Column(name = "total_fee")
+        private Double totalFee;
 
-    @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
-            CascadeType.REFRESH })
-    @JoinColumn(name = "employer_id")
-    private Employer employer;
+        @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
+                        CascadeType.REFRESH })
+        @JoinColumn(name = "employer_id")
+        private Employer employer;
 
-    @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
-            CascadeType.REFRESH })
-    @JoinColumn(name = "employee_id")
-    private Employee employee;
+        @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
+                        CascadeType.REFRESH })
+        @JoinColumn(name = "employee_id")
+        private Employee employee;
 
-    public Job(LocalDate date, LocalTime startTime, LocalTime endTime, Double workedHours, Double hourlyRate,
-            Double partialFee, Double transportationFee, Double totalFee) {
-        this.date = date;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.workedHours = workedHours;
-        this.hourlyRate = hourlyRate;
-        this.partialFee = partialFee;
-        this.transportationFee = transportationFee;
-        this.totalFee = totalFee;
-    }
+        public Job(LocalDate date, LocalTime startTime, LocalTime endTime, Double workedHours, Double hourlyRate,
+                        Double partialFee, Double transportationFee, Double totalFee) {
+                this.date = date;
+                this.startTime = startTime;
+                this.endTime = endTime;
+                this.workedHours = workedHours;
+                this.hourlyRate = hourlyRate;
+                this.partialFee = partialFee;
+                this.transportationFee = transportationFee;
+                this.totalFee = totalFee;
+        }
 }
