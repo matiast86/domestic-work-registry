@@ -1,40 +1,32 @@
 package com.springboot.domesticworkregistry.entities;
 
+import java.util.Collection;
 import java.util.List;
+
+import org.springframework.security.core.GrantedAuthority;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "employers")
 @Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class Employer {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id")
-    private String id;
-
-    @Column(name = "name")
-    private String name;
-
-    @Column(name = "surname")
-    private String surname;
+public class Employer extends User {
 
     @Column(name = "age")
     private int age;
@@ -50,5 +42,11 @@ public class Employer {
 
     @Column(name = "identification-number")
     private String identificationNumber;
+
+    @OneToMany(mappedBy= "employer", cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
+        CascadeType.REFRESH }, fetch = FetchType.LAZY)
+    private List<Job> jobs;
+
+       
 
 }

@@ -2,6 +2,7 @@ package com.springboot.domesticworkregistry.entities;
 
 import java.util.List;
 
+import com.springboot.domesticworkregistry.enums.EmploymentType;
 import com.springboot.domesticworkregistry.enums.JobType;
 
 import jakarta.persistence.CascadeType;
@@ -27,10 +28,22 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Employee {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id")
     private String id;
+
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Column(name = "last_name")
+    private String lastName;
+
+    @Column(name = "email", unique = true, nullable = false)
+    private String email;
+
+    @Column(name = "phone")
+    private String phone;
 
     @Column(name = "cuil", unique = true)
     private String cuil;
@@ -38,6 +51,10 @@ public class Employee {
     @Column(name = "job_type")
     @Enumerated(EnumType.STRING)
     private JobType jobType;
+
+    @Column(name = "employment_type")
+    @Enumerated(EnumType.STRING)
+    private EmploymentType employmentType;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "home_address_id")
@@ -47,4 +64,16 @@ public class Employee {
             CascadeType.REFRESH }, fetch = FetchType.LAZY)
     private List<Employer> employers;
 
+    public Employee(String firstName, String lastName, String email, String phone, String cuil, JobType jobType,
+            EmploymentType employmentType) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phone = phone;
+        this.cuil = cuil;
+        this.jobType = jobType;
+        this.employmentType = employmentType;
+    }
+    
+        
 }
