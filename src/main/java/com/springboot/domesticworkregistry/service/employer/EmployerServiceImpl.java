@@ -2,21 +2,28 @@ package com.springboot.domesticworkregistry.service.employer;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.springboot.domesticworkregistry.dao.EmployerRepository;
+import com.springboot.domesticworkregistry.entities.Employee;
 import com.springboot.domesticworkregistry.entities.Employer;
+import com.springboot.domesticworkregistry.entities.Job;
+import com.springboot.domesticworkregistry.service.employee.EmployeeService;
 
 @Service
 public class EmployerServiceImpl implements EmployerService {
 
     private final EmployerRepository employerRepository;
+    private final EmployeeService employeeService;
 
     @Autowired
-    public EmployerServiceImpl(EmployerRepository employerRepository) {
+    public EmployerServiceImpl(EmployerRepository employerRepository, EmployeeService employeeService) {
         this.employerRepository = employerRepository;
+        this.employeeService = employeeService;
     }
 
     @Override
@@ -63,6 +70,17 @@ public class EmployerServiceImpl implements EmployerService {
     @Override
     public void delete(String theId) {
         employerRepository.deleteById(theId);
+    }
+
+    @Override
+    public List<Job> getJobsByEmployee(String employerId, String employeeId) {
+        Employee employee = employeeService.findById(employeeId);
+        Employer employer = this.findById(employerId);
+        List<Job> jobs = employer.getJobs();
+        return jobs.stream()
+                    .filter(job ->  job.getEmployee().equals(employee))
+                    .collect(Collectors.toList());
+        
     }
 
 }
