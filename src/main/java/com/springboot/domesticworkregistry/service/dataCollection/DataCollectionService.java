@@ -12,20 +12,23 @@ public class DataCollectionService {
 
     private final EmployerService employerService;
 
-
     public DataCollectionService(EmployerService employerService) {
-       
+
         this.employerService = employerService;
+    }
+
+    // Helper getEmployeeJobs
+    private List<Job> getEmployeeJobs(String employerId, String employeeId) {
+        List<Job> jobs = employerService.getJobsByEmployee(employerId, employeeId);
+        if (jobs.isEmpty()) {
+            throw new RuntimeException("No jobs found for the employee.");
+        }
+        return jobs;
     }
 
     // calculate total hours worked by the same employee
     public Double calculateTotalHours(String employerId, String employeeId) {
-        List<Job> employeeJobs = employerService.getJobsByEmployee(employerId, employeeId);
-        if (employeeJobs.isEmpty()) {
-            throw new RuntimeException("No jobs found for the employee.");
-        }
-
-        return employeeJobs.stream()
+        return getEmployeeJobs(employerId, employeeId).stream()
                 .mapToDouble(Job::getWorkedHours)
                 .sum();
 
@@ -33,12 +36,8 @@ public class DataCollectionService {
 
     // Calculate how many hours a certain employee worked in a specific month
     public Double calculateHoursByMonth(String employerId, String employeeId, int year, int month) {
-        List<Job> employeeJobs = employerService.getJobsByEmployee(employerId, employeeId);
-        if (employeeJobs.isEmpty()) {
-            throw new RuntimeException("No jobs found for the employee.");
-        }
 
-        return employeeJobs.stream()
+        return getEmployeeJobs(employerId, employeeId).stream()
                 .filter(job -> job.getDate().getYear() == year && job.getDate().getMonthValue() == month)
                 .mapToDouble(Job::getWorkedHours)
                 .sum();
