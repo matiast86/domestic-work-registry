@@ -38,10 +38,5 @@ public class RegisterEmployerDto {
     @Size(min = 1)
     private String phone;
     private int age;
-    private String street;
-    private String number;
-    private String city;
-    private String postalCode;
-    private String country;
 
 }
