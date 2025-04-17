@@ -1,6 +1,5 @@
 package com.springboot.domesticworkregistry.service.employer;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -11,11 +10,10 @@ import org.springframework.stereotype.Service;
 
 import com.springboot.domesticworkregistry.dao.EmployerRepository;
 import com.springboot.domesticworkregistry.dto.employer.RegisterEmployerDto;
-import com.springboot.domesticworkregistry.entities.Address;
 import com.springboot.domesticworkregistry.entities.Employee;
 import com.springboot.domesticworkregistry.entities.Employer;
 import com.springboot.domesticworkregistry.entities.Job;
-import com.springboot.domesticworkregistry.enums.Role;
+import com.springboot.domesticworkregistry.mapper.EmployerMapper;
 import com.springboot.domesticworkregistry.service.employee.EmployeeService;
 
 @Service
@@ -24,13 +22,15 @@ public class EmployerServiceImpl implements EmployerService {
     private final EmployerRepository employerRepository;
     private final EmployeeService employeeService;
     private final PasswordEncoder passwordEncoder;
+    private final EmployerMapper employerMapper;
 
     @Autowired
     public EmployerServiceImpl(EmployerRepository employerRepository, EmployeeService employeeService,
-            PasswordEncoder passwordEncoder) {
+            PasswordEncoder passwordEncoder, EmployerMapper employerMapper) {
         this.employerRepository = employerRepository;
         this.employeeService = employeeService;
         this.passwordEncoder = passwordEncoder;
+        this.employerMapper = employerMapper;
     }
 
     @Override
@@ -91,32 +91,17 @@ public class EmployerServiceImpl implements EmployerService {
     }
 
     @Override
-    public Employer save(RegisterEmployerDto registerEmployerDto) {
+    public Employer save(RegisterEmployerDto dto) {
 
         //check if employer exists 
-        if(employerRepository.findByEmail(registerEmployerDto.getEmail()).isPresent()) {
+        if(employerRepository.findByEmail(dto.getEmail()).isPresent()) {
             throw new RuntimeException("Email already registered.");
         }
 
-        Employer employer = new Employer();
-        Address address = new Address();
-        employer.setFirstName(registerEmployerDto.getFirstName());
-        employer.setLastName(registerEmployerDto.getLastName());
-        employer.setAge(registerEmployerDto.getAge());
-        employer.setEmail(registerEmployerDto.getEmail().toLowerCase());
-        employer.setIdentificationNumber(registerEmployerDto.getIdentificationNumber());
-        employer.setPhone(registerEmployerDto.getPhone());
-        String hashedPassword = passwordEncoder.encode(registerEmployerDto.getPassword());
-        employer.setPassword(hashedPassword);
-        address.setStreet(registerEmployerDto.getStreet());
-        address.setNumber(registerEmployerDto.getNumber());
-        address.setCity(registerEmployerDto.getCity());
-        address.setPostalCode(registerEmployerDto.getPostalCode());
-        address.setCountry(registerEmployerDto.getCountry());
-        employer.setAddress(address);
-        employer.setRole(Role.EMPLOYER);
-        employer.setCreatedAt(new Date());
-        employer.setActive(true);
+        Employer employer = employerMapper.toEmployer(dto);
+        employer.setPassword(passwordEncoder.encode(dto.getPassword()));
+        employer.setEmail(dto.getEmail().toLowerCase());
+        
 
         return employerRepository.save(employer);
 
