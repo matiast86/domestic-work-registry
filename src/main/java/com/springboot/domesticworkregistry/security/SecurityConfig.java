@@ -1,10 +1,10 @@
 package com.springboot.domesticworkregistry.security;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
@@ -21,10 +21,22 @@ public class SecurityConfig {
         @Autowired
         private EmployerDetailsService employerDetailsService;
 
-
         @Bean
         public AuthenticationManager authManager(AuthenticationConfiguration config) throws Exception {
                 return config.getAuthenticationManager();
+        }
+
+        @Bean
+        PasswordEncoder passwordEncoder() {
+                return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        }
+
+        @Bean
+        public DaoAuthenticationProvider authenticationProvider(EmployerDetailsService employerDetailsService) {
+                DaoAuthenticationProvider auth = new DaoAuthenticationProvider();
+                auth.setUserDetailsService(employerDetailsService);
+                auth.setPasswordEncoder(passwordEncoder());
+                return auth;
         }
 
         @Bean
@@ -32,7 +44,12 @@ public class SecurityConfig {
 
                 http
                                 .authorizeHttpRequests(config -> config
-                                                .requestMatchers("/css/**", "/js/**", "/images/**", "/").permitAll()
+                                                .requestMatchers(
+                                                                "/css/**", "/js/**", "/images/**", "/",
+                                                                "/register/**" // explicitly specify the
+                                                                                             // form path
+                                                )
+                                                .permitAll()
                                                 .anyRequest().authenticated())
                                 .userDetailsService(employerDetailsService)
 
@@ -49,8 +66,4 @@ public class SecurityConfig {
 
         }
 
-        @Bean
-        PasswordEncoder passwordEncoder() {
-                return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        }
 }
