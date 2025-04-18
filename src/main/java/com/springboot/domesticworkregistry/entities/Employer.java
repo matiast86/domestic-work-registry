@@ -1,5 +1,6 @@
 package com.springboot.domesticworkregistry.entities;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -43,10 +44,17 @@ public class Employer extends User {
     @Column(name = "identification-number")
     private String identificationNumber;
 
-    @OneToMany(mappedBy= "employer", cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
-        CascadeType.REFRESH }, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "employer", cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
+            CascadeType.REFRESH }, fetch = FetchType.LAZY)
     private List<Job> jobs;
 
-       
+    public void addEmployee(Employee employee) {
+        if (employees == null) {
+            employees = new ArrayList<>();
+        }
+
+        employees.add(employee);
+        employee.addEmployer(this);
+    }
 
 }

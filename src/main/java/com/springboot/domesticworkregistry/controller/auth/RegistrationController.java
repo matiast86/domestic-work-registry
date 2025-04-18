@@ -67,7 +67,7 @@ public class RegistrationController {
             throw e;
         }
 
-        return "redirect:/register/registrationConfirmation";
+        return "redirect:/login?registered";
 
     }
 

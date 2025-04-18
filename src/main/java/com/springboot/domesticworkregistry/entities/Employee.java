@@ -1,5 +1,6 @@
 package com.springboot.domesticworkregistry.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.springboot.domesticworkregistry.enums.EmploymentType;
@@ -74,6 +75,14 @@ public class Employee {
         this.jobType = jobType;
         this.employmentType = employmentType;
     }
-    
-        
+
+    public void addEmployer(Employer employer) {
+        if(employers == null) {
+            employers = new ArrayList<>();
+        }
+
+        employers.add(employer);
+    }
+
+
 }
