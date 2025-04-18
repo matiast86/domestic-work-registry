@@ -4,13 +4,16 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.springboot.domesticworkregistry.dao.JobRepository;
+import com.springboot.domesticworkregistry.entities.Employee;
 import com.springboot.domesticworkregistry.entities.Employer;
 import com.springboot.domesticworkregistry.entities.Job;
+import com.springboot.domesticworkregistry.service.employee.EmployeeService;
 import com.springboot.domesticworkregistry.service.employer.EmployerService;
 
 @Service
@@ -18,6 +21,7 @@ public class JobServiceImpl implements JobService {
 
     private final JobRepository jobRepository;
     private final EmployerService employerService;
+    private final EmployeeService employeeService;
 
     private Double calculateHoursWorked(LocalTime startTime, LocalTime endTime) {
         if (startTime.isAfter(endTime)) {
@@ -45,9 +49,10 @@ public class JobServiceImpl implements JobService {
 
     @Autowired
     public JobServiceImpl(JobRepository jobRepository,
-            EmployerService employerService) {
+            EmployerService employerService, EmployeeService employeeService) {
         this.jobRepository = jobRepository;
         this.employerService = employerService;
+        this.employeeService = employeeService;
     }
 
     @Override
@@ -94,6 +99,16 @@ public class JobServiceImpl implements JobService {
     @Override
     public void delete(String id) {
         jobRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Job> getJobsByEmployee(String employerId, String employeeId) {
+        Employee employee = employeeService.findById(employeeId);
+        Employer employer = employerService.findById(employerId);
+        List<Job> jobs = employer.getJobs();
+        return jobs.stream()
+                .filter(job -> job.getEmployee().equals(employee))
+                .collect(Collectors.toList());
     }
 
 }

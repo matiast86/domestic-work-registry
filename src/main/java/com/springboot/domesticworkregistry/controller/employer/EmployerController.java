@@ -1,5 +1,6 @@
 package com.springboot.domesticworkregistry.controller.employer;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -47,7 +48,6 @@ public class EmployerController {
         return "redirect:/login";
     }
 
-
     @GetMapping("/updateEmployer")
     public String updateEmployer(@RequestParam("employerId") String id, Model theModel) {
         Employer theEmployer = employerService.findById(id);
@@ -55,6 +55,13 @@ public class EmployerController {
         theModel.addAttribute("employer", theEmployer);
 
         return "employer/employer-form";
+    }
+
+    @GetMapping("/dashboard")
+    public String showDashboard(Principal principal, Model model) {
+        Employer employer = employerService.findByEmail(principal.getName());
+        model.addAttribute("employer", employer);
+        return "employers/employer-dashboard";
     }
 
 }

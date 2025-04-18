@@ -8,6 +8,8 @@ public interface JobService {
 
     List<Job> findAll();
 
+    List<Job> getJobsByEmployee(String employerId, String employeeId);
+
     Job findById(String id);
 
     Job save(Job job, String employerId);

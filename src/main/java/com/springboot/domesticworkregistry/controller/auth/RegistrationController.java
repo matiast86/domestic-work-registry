@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.springboot.domesticworkregistry.dto.employer.RegisterEmployerDto;
 import com.springboot.domesticworkregistry.exceptions.EmailAlreadyExistsException;
@@ -48,6 +49,7 @@ public class RegistrationController {
             @Valid @ModelAttribute("registerEmployerDto") RegisterEmployerDto registerEmployerDto,
             BindingResult bindingResult,
             HttpSession session,
+            RedirectAttributes redirectAttributes,
             Model theModel) {
 
         if (bindingResult.hasErrors()) {
@@ -61,13 +63,15 @@ public class RegistrationController {
 
         try {
             employerService.save(registerEmployerDto);
+            System.out.println("Employer registration successful");
         } catch (EmailAlreadyExistsException e) {
             // Save the DTO in session so the exception handler can access it
             session.setAttribute("registerEmployerDto", registerEmployerDto);
             throw e;
         }
 
-        return "redirect:/login?registered";
+        redirectAttributes.addFlashAttribute("registered", true);
+        return "redirect:/loginPage";
 
     }
 

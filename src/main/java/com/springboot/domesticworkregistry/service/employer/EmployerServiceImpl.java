@@ -2,7 +2,6 @@ package com.springboot.domesticworkregistry.service.employer;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,25 +9,20 @@ import org.springframework.stereotype.Service;
 
 import com.springboot.domesticworkregistry.dao.EmployerRepository;
 import com.springboot.domesticworkregistry.dto.employer.RegisterEmployerDto;
-import com.springboot.domesticworkregistry.entities.Employee;
 import com.springboot.domesticworkregistry.entities.Employer;
-import com.springboot.domesticworkregistry.entities.Job;
 import com.springboot.domesticworkregistry.mapper.EmployerMapper;
-import com.springboot.domesticworkregistry.service.employee.EmployeeService;
 
 @Service
 public class EmployerServiceImpl implements EmployerService {
 
     private final EmployerRepository employerRepository;
-    private final EmployeeService employeeService;
     private final PasswordEncoder passwordEncoder;
     private final EmployerMapper employerMapper;
 
     @Autowired
-    public EmployerServiceImpl(EmployerRepository employerRepository, EmployeeService employeeService,
+    public EmployerServiceImpl(EmployerRepository employerRepository,
             PasswordEncoder passwordEncoder, EmployerMapper employerMapper) {
         this.employerRepository = employerRepository;
-        this.employeeService = employeeService;
         this.passwordEncoder = passwordEncoder;
         this.employerMapper = employerMapper;
     }
@@ -80,28 +74,16 @@ public class EmployerServiceImpl implements EmployerService {
     }
 
     @Override
-    public List<Job> getJobsByEmployee(String employerId, String employeeId) {
-        Employee employee = employeeService.findById(employeeId);
-        Employer employer = this.findById(employerId);
-        List<Job> jobs = employer.getJobs();
-        return jobs.stream()
-                .filter(job -> job.getEmployee().equals(employee))
-                .collect(Collectors.toList());
-
-    }
-
-    @Override
     public Employer save(RegisterEmployerDto dto) {
 
-        //check if employer exists 
-        if(employerRepository.findByEmail(dto.getEmail()).isPresent()) {
+        // check if employer exists
+        if (employerRepository.findByEmail(dto.getEmail()).isPresent()) {
             throw new RuntimeException("Email already registered.");
         }
 
         Employer employer = employerMapper.toEmployer(dto);
         employer.setPassword(passwordEncoder.encode(dto.getPassword()));
         employer.setEmail(dto.getEmail().toLowerCase());
-        
 
         return employerRepository.save(employer);
 

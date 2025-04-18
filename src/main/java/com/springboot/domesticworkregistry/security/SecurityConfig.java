@@ -12,6 +12,7 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import com.springboot.domesticworkregistry.service.employer.EmployerDetailsService;
 
@@ -40,14 +41,15 @@ public class SecurityConfig {
         }
 
         @Bean
-        public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        public SecurityFilterChain filterChain(HttpSecurity http,
+                        AuthenticationSuccessHandler customAuthenticationSuccessHandler) throws Exception {
 
                 http
                                 .authorizeHttpRequests(config -> config
                                                 .requestMatchers(
                                                                 "/css/**", "/js/**", "/images/**", "/",
                                                                 "/register/**" // explicitly specify the
-                                                                                             // form path
+                                                                               // form path
                                                 )
                                                 .permitAll()
                                                 .anyRequest().authenticated())
@@ -56,7 +58,7 @@ public class SecurityConfig {
                                 .formLogin(form -> form
                                                 .loginPage("/loginPage")
                                                 .loginProcessingUrl("/authenticateTheUser")
-                                                .defaultSuccessUrl("/", true)
+                                                .successHandler(customAuthenticationSuccessHandler)
                                                 .permitAll())
                                 .logout(logout -> logout.permitAll())
                                 .exceptionHandling(config -> config

@@ -8,22 +8,22 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.springboot.domesticworkregistry.entities.Job;
 import com.springboot.domesticworkregistry.exceptions.NoJobsFoundException;
-import com.springboot.domesticworkregistry.service.employer.EmployerService;
+import com.springboot.domesticworkregistry.service.job.JobService;
 
 @Service
 @Transactional(readOnly = true)
 public class DataCollectionService {
 
-    private final EmployerService employerService;
+    private final JobService jobService;
 
-    public DataCollectionService(EmployerService employerService) {
+    public DataCollectionService(JobService jobService) {
 
-        this.employerService = employerService;
+        this.jobService = jobService;
     }
 
     // Helper getEmployeeJobs
     private List<Job> getEmployeeJobs(String employerId, String employeeId) {
-        List<Job> jobs = employerService.getJobsByEmployee(employerId, employeeId);
+        List<Job> jobs = jobService.getJobsByEmployee(employerId, employeeId);
         if (jobs.isEmpty()) {
             throw new NoJobsFoundException("No jobs found for the employee.");
         }
