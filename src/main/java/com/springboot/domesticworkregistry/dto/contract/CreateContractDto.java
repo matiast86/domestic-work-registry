@@ -2,7 +2,6 @@ package com.springboot.domesticworkregistry.dto.contract;
 
 import java.util.Date;
 
-import com.springboot.domesticworkregistry.entities.Employee;
 import com.springboot.domesticworkregistry.enums.EmploymentType;
 import com.springboot.domesticworkregistry.enums.JobType;
 
@@ -15,6 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateContractDto {
+
 
     @NotNull(message = "is required")
     public Date startDate;

@@ -7,29 +7,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.springboot.domesticworkregistry.dao.EmployeeRepository;
-import com.springboot.domesticworkregistry.dto.address.CreateAddressDto;
-import com.springboot.domesticworkregistry.dto.employee.CreateEmployeeDto;
 import com.springboot.domesticworkregistry.dto.employee.CreateEmployeeWithAddressDto;
 import com.springboot.domesticworkregistry.entities.Address;
 import com.springboot.domesticworkregistry.entities.Employee;
-import com.springboot.domesticworkregistry.entities.Employer;
 import com.springboot.domesticworkregistry.mapper.AddressMapper;
 import com.springboot.domesticworkregistry.mapper.EmployeeMapper;
-import com.springboot.domesticworkregistry.service.employer.EmployerService;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
-    private final EmployerService employerService;
     private final EmployeeMapper employeeMapper;
     private final AddressMapper addressMapper;
 
     @Autowired
-    public EmployeeServiceImpl(EmployeeRepository employeeRepository, EmployerService employerService,
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository,
             EmployeeMapper employeeMapper, AddressMapper addressMapper) {
         this.employeeRepository = employeeRepository;
-        this.employerService = employerService;
         this.employeeMapper = employeeMapper;
         this.addressMapper = addressMapper;
     }
@@ -95,18 +89,15 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Employee save(String employerId, CreateEmployeeWithAddressDto form) {
-        Employer employer = employerService.findById(employerId);
+    public Employee save(CreateEmployeeWithAddressDto form) {
         Address homAddress = addressMapper.toAddress(form.getAddress());
-        
+
         Employee employee = employeeRepository.findByCuil(form.getEmployee().getCuil()).orElseGet(() -> {
             Employee newEmployee = employeeMapper.toEmployee(form.getEmployee());
             return newEmployee;
         });
 
         employee.setHomeAddress(homAddress);
-
-        
 
         return employeeRepository.save(employee);
     }
