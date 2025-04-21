@@ -1,18 +1,13 @@
 package com.springboot.domesticworkregistry.entities;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-
-import org.springframework.security.core.GrantedAuthority;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -36,11 +31,6 @@ public class Employer extends User {
     @JoinColumn(name = "address_id")
     private Address address;
 
-    @ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
-            CascadeType.REFRESH }, fetch = FetchType.LAZY)
-    @JoinTable(name = "employer_employee", joinColumns = @JoinColumn(name = "employer_id"), inverseJoinColumns = @JoinColumn(name = "employee_id"))
-    private List<Employee> employees;
-
     @Column(name = "identification-number")
     private String identificationNumber;
 
@@ -48,13 +38,17 @@ public class Employer extends User {
             CascadeType.REFRESH }, fetch = FetchType.LAZY)
     private List<Job> jobs;
 
-    public void addEmployee(Employee employee) {
-        if (employees == null) {
-            employees = new ArrayList<>();
-        }
+    @OneToMany(mappedBy = "employer", cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
+            CascadeType.REFRESH }, fetch = FetchType.LAZY)
+    private List<Contract> contracts;
 
-        employees.add(employee);
-        employee.addEmployer(this);
+    public void addContract(Contract contract) {
+        if (contracts == null) {
+            contracts = new ArrayList<>();
+        }
+        contracts.add(contract);
+        contract.setEmployer(this);
     }
+
 
 }
