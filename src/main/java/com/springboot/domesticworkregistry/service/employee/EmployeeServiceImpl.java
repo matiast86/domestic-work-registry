@@ -105,7 +105,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         });
 
         employee.setHomeAddress(homAddress);
-        employer.addEmployee(employee);
 
         
 
