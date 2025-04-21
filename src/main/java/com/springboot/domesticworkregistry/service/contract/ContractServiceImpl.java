@@ -47,6 +47,7 @@ public class ContractServiceImpl implements ContractService {
         CreateEmployeeWithAddressDto dto = form.getEmployeeDto();
         Employee employee = employeeService.save(dto);
         Contract newContract = contractMapper.toContract(form.getContract());
+        newContract.setActive(true);
         employer.addContract(newContract);
         employee.addContract(newContract);
         return contractRepository.save(newContract);
