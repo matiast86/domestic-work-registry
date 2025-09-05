@@ -53,13 +53,9 @@ public class Job {
 
         @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
                         CascadeType.REFRESH })
-        @JoinColumn(name = "employer_id")
-        private Employer employer;
+        @JoinColumn(name = "contract_id")
+        private Contract contract;
 
-        @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
-                        CascadeType.REFRESH })
-        @JoinColumn(name = "employee_id")
-        private Employee employee;
 
         public Job(LocalDate date, LocalTime startTime, LocalTime endTime, Double workedHours, Double hourlyRate,
                         Double partialFee, Double transportationFee, Double totalFee) {

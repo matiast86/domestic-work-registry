@@ -36,10 +36,6 @@ public class Employer extends User {
 
     @OneToMany(mappedBy = "employer", cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
             CascadeType.REFRESH }, fetch = FetchType.LAZY)
-    private List<Job> jobs;
-
-    @OneToMany(mappedBy = "employer", cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
-            CascadeType.REFRESH }, fetch = FetchType.LAZY)
     private List<Contract> contracts;
 
     public void addContract(Contract contract) {

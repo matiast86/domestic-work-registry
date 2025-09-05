@@ -1,6 +1,7 @@
 package com.springboot.domesticworkregistry.service.contract;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -56,8 +57,16 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public Contract findById(String id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findById'");
+        Optional<Contract> result = contractRepository.findById(id);
+        Contract theContract = null;
+
+        if (result.isPresent()) {
+            theContract = result.get();
+        } else {
+            throw new RuntimeException("Contract not found");
+        }
+
+        return theContract;
     }
 
 }
