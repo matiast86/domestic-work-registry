@@ -8,7 +8,7 @@
 <body>
 <div class="container mt-5">
     <h2>Add Employee</h2>
-    <form th:action="@{/employee/save(employerId=${employerId})}" th:object="${employeeForm}" method="post" class="needs-validation">
+    <form th:action="@{/employee/save(employerId=${employerId=${employer.id}})}" th:object="${employeeForm}" method="post" class="needs-validation">
 
         <!-- EMPLOYEE DATA -->
         <h4>Employee Info</h4>
