@@ -4,19 +4,27 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.springboot.domesticworkregistry.dao.EmployerRepository;
+import com.springboot.domesticworkregistry.dto.employer.RegisterEmployerDto;
 import com.springboot.domesticworkregistry.entities.Employer;
+import com.springboot.domesticworkregistry.mapper.EmployerMapper;
 
 @Service
 public class EmployerServiceImpl implements EmployerService {
 
     private final EmployerRepository employerRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final EmployerMapper employerMapper;
 
     @Autowired
-    public EmployerServiceImpl(EmployerRepository employerRepository) {
+    public EmployerServiceImpl(EmployerRepository employerRepository,
+            PasswordEncoder passwordEncoder, EmployerMapper employerMapper) {
         this.employerRepository = employerRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.employerMapper = employerMapper;
     }
 
     @Override
@@ -63,6 +71,22 @@ public class EmployerServiceImpl implements EmployerService {
     @Override
     public void delete(String theId) {
         employerRepository.deleteById(theId);
+    }
+
+    @Override
+    public Employer save(RegisterEmployerDto dto) {
+
+        // check if employer exists
+        if (employerRepository.findByEmail(dto.getEmail()).isPresent()) {
+            throw new RuntimeException("Email already registered.");
+        }
+
+        Employer employer = employerMapper.toEmployer(dto);
+        employer.setPassword(passwordEncoder.encode(dto.getPassword()));
+        employer.setEmail(dto.getEmail().toLowerCase());
+
+        return employerRepository.save(employer);
+
     }
 
 }

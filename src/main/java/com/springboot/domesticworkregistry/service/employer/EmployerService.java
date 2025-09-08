@@ -2,6 +2,7 @@ package com.springboot.domesticworkregistry.service.employer;
 
 import java.util.List;
 
+import com.springboot.domesticworkregistry.dto.employer.RegisterEmployerDto;
 import com.springboot.domesticworkregistry.entities.Employer;
 
 public interface EmployerService {
@@ -15,5 +16,7 @@ public interface EmployerService {
     Employer save(Employer theEmployer);
 
     void delete(String theId);
+
+    Employer save(RegisterEmployerDto registerEmployerDto);
 
 }

@@ -4,20 +4,21 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.springboot.domesticworkregistry.dao.JobRepository;
-import com.springboot.domesticworkregistry.entities.Employer;
+import com.springboot.domesticworkregistry.entities.Contract;
 import com.springboot.domesticworkregistry.entities.Job;
-import com.springboot.domesticworkregistry.service.employer.EmployerService;
+import com.springboot.domesticworkregistry.service.contract.ContractService;
 
 @Service
 public class JobServiceImpl implements JobService {
 
     private final JobRepository jobRepository;
-    private final EmployerService employerService;
+    private final ContractService contractService;
 
     private Double calculateHoursWorked(LocalTime startTime, LocalTime endTime) {
         if (startTime.isAfter(endTime)) {
@@ -45,9 +46,9 @@ public class JobServiceImpl implements JobService {
 
     @Autowired
     public JobServiceImpl(JobRepository jobRepository,
-            EmployerService employerService) {
+            ContractService contractService) {
         this.jobRepository = jobRepository;
-        this.employerService = employerService;
+        this.contractService = contractService;
     }
 
     @Override
@@ -58,7 +59,7 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public Job findById(String id) {
+    public Job findById(int id) {
         Optional<Job> result = jobRepository.findById(id);
 
         Job job = null;
@@ -74,9 +75,9 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public Job save(Job job, String employerId) {
-        Employer employer = employerService.findById(employerId);
-        job.setEmployer(employer);
+    public Job save(Job job, int contractId) {
+        Contract contract = contractService.findById(contractId);
+        job.setContract(contract);
         LocalTime startTime = job.getStartTime();
         LocalTime endTime = job.getEndTime();
         Double workedHours = this.calculateHoursWorked(startTime, endTime);
@@ -92,8 +93,17 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public void delete(String id) {
+    public void delete(int id) {
         jobRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Job> getJobsByContract(int contractId) {
+        Contract contract = contractService.findById(contractId);
+        List<Job> jobs = contract.getJobs();
+        return jobs.stream()
+                .filter(job -> job.getContract().equals(contract))
+                .collect(Collectors.toList());
     }
 
 }

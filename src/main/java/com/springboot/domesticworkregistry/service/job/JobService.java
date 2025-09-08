@@ -8,10 +8,12 @@ public interface JobService {
 
     List<Job> findAll();
 
-    Job findById(String id);
+    List<Job> getJobsByContract(int contractId);
 
-    Job save(Job job, String employerId);
+    Job findById(int id);
 
-    void delete(String id);
+    Job save(Job job, int contractId);
+
+    void delete(int id);
 
 }

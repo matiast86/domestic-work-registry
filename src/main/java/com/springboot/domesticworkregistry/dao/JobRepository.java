@@ -6,8 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.springboot.domesticworkregistry.entities.Job;
 
-public interface JobRepository extends JpaRepository<Job, String> {
+public interface JobRepository extends JpaRepository<Job, Integer> {
 
-    Optional<Job> findById(String id);
+    Optional<Job> findById(int id);
 
 }

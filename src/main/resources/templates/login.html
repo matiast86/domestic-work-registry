@@ -37,6 +37,12 @@
                 <div class="form-group">
                   <div class="col-xs-15">
                     <div>
+                      <!-- Show registration success -->
+                      <div th:if="${registered}">
+                        <div class="alert alert-success">
+                          Registration successful! Please log in.
+                        </div>
+                      </div>
                       <!-- Check for login error -->
 
                       <div th:if="${param.error}">
@@ -84,6 +90,15 @@
                   </div>
                 </div>
               </form>
+              <div>
+                <a
+                  th:href="@{/register/registrationForm}"
+                  class="btn btn-primary mt-3"
+                  role="button"
+                  aria-pressed="true"
+                  >Register New User</a
+                >
+              </div>
             </div>
           </div>
         </div>
