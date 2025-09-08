@@ -10,6 +10,6 @@ public interface ContractService {
 
     public Contract save(String employerEmail, CreateContractWithEmployeeDto form);
 
-    public Contract findById(String id);
+    public Contract findById(int id);
 
 }

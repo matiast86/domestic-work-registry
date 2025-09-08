@@ -22,8 +22,8 @@ public class DataCollectionService {
     }
 
     // Helper getEmployeeJobs
-    private List<Job> getEmployeeJobs(String employerId, String employeeId) {
-        List<Job> jobs = jobService.getJobsByEmployee(employerId, employeeId);
+    private List<Job> getEmployeeJobs(int contractId) {
+        List<Job> jobs = jobService.getJobsByContract(contractId);
         if (jobs.isEmpty()) {
             throw new NoJobsFoundException("No jobs found for the employee.");
         }
@@ -38,16 +38,16 @@ public class DataCollectionService {
     }
 
     // calculate total hours worked by the same employee
-    public Double calculateTotalHours(String employerId, String employeeId) {
-        return getEmployeeJobs(employerId, employeeId).stream()
+    public Double calculateTotalHours(int contractId) {
+        return getEmployeeJobs(contractId).stream()
                 .mapToDouble(Job::getWorkedHours)
                 .sum();
 
     }
 
     // Calculate how many hours a certain employee worked in a specific month
-    public Double calculateHoursByMonth(String employerId, String employeeId, int year, int month) {
-        List<Job> monthlyJobs = filterJobsByMonth(getEmployeeJobs(employerId, employeeId), year, month);
+    public Double calculateHoursByMonth(int contractId, int year, int month) {
+        List<Job> monthlyJobs = filterJobsByMonth(getEmployeeJobs(contractId), year, month);
 
         return monthlyJobs
                 .stream()
@@ -56,15 +56,15 @@ public class DataCollectionService {
     }
 
     // Calculates the total fee paid to a specific employee
-    public Double calculateTotalFee(String employerId, String employeeId) {
-        return getEmployeeJobs(employerId, employeeId).stream()
+    public Double calculateTotalFee(int contractId) {
+        return getEmployeeJobs(contractId).stream()
                 .mapToDouble(Job::getTotalFee)
                 .sum();
     }
 
     // Calculate total fee in a specific month
-    public Double calculateTotalFeeByMonth(String employerId, String employeeId, int year, int month) {
-        List<Job> monthlyJobs = filterJobsByMonth(getEmployeeJobs(employerId, employeeId), year, month);
+    public Double calculateTotalFeeByMonth(int contractId, int year, int month) {
+        List<Job> monthlyJobs = filterJobsByMonth(getEmployeeJobs(contractId), year, month);
 
         return monthlyJobs.stream()
                 .mapToDouble(Job::getTotalFee)
@@ -72,15 +72,15 @@ public class DataCollectionService {
     }
 
     // Calculate fee before adding transportation
-    public Double calculatePartialFee(String employerId, String employeeId) {
-        return getEmployeeJobs(employerId, employeeId).stream()
+    public Double calculatePartialFee(int contractId) {
+        return getEmployeeJobs(contractId).stream()
                 .mapToDouble(Job::getPartialFee)
                 .sum();
     }
 
     // Calculate fee before adding transportation in a specific month
-    public Double calculatePartialFeeByMonth(String employerId, String employeeId, int year, int month) {
-        List<Job> monthlyJobs = filterJobsByMonth(getEmployeeJobs(employerId, employeeId), year, month);
+    public Double calculatePartialFeeByMonth(int contractId, int year, int month) {
+        List<Job> monthlyJobs = filterJobsByMonth(getEmployeeJobs(contractId), year, month);
 
         return monthlyJobs
                 .stream()
@@ -89,21 +89,21 @@ public class DataCollectionService {
     }
 
     // Calculate the sum of hourly fees needed to calculate the average
-    public Double calculateTotalHourlyFee(String employerId, String employeeId) {
-        return getEmployeeJobs(employerId, employeeId).stream()
+    public Double calculateTotalHourlyFee(int contractId) {
+        return getEmployeeJobs(contractId).stream()
                 .mapToDouble(Job::getHourlyRate)
                 .sum();
     }
 
     // Calculate the average of the hourly fees
-    public Double calculateAverageHourlyFee(String employerId, String employeeId) {
-        Double hourlyFee = calculateTotalHourlyFee(employerId, employeeId);
-        return hourlyFee / getEmployeeJobs(employerId, employeeId).size();
+    public Double calculateAverageHourlyFee(int contractId) {
+        Double hourlyFee = calculateTotalHourlyFee(contractId);
+        return hourlyFee / getEmployeeJobs(contractId).size();
     }
 
     // Calculate the average of hourly fee in a year
-    public Double calculateAverageHourlyFeeByYear(String employerId, String employeeId, int year) {
-        List<Job> jobsInYear = getEmployeeJobs(employerId, employeeId).stream()
+    public Double calculateAverageHourlyFeeByYear(int contractId, int year) {
+        List<Job> jobsInYear = getEmployeeJobs(contractId).stream()
                 .filter(job -> job.getDate().getYear() == year)
                 .collect(Collectors.toList());
 
@@ -121,16 +121,16 @@ public class DataCollectionService {
     }
 
     // Calculate transportation fee
-    public Double calculateTransportationFee(String employerId, String employeeId) {
-        return getEmployeeJobs(employerId, employeeId)
+    public Double calculateTransportationFee(int contractId) {
+        return getEmployeeJobs(contractId)
                 .stream()
                 .mapToDouble(Job::getTransportationFee)
                 .sum();
     }
 
     // Calculate transportation fee in a month
-    public Double calculateTransportationFeeByMonth(String employerId, String employeeId, int year, int month) {
-        List<Job> monthlyJobs = filterJobsByMonth(getEmployeeJobs(employerId, employeeId), year, month);
+    public Double calculateTransportationFeeByMonth(int contractId, int year, int month) {
+        List<Job> monthlyJobs = filterJobsByMonth(getEmployeeJobs(contractId), year, month);
 
         return monthlyJobs
                 .stream()

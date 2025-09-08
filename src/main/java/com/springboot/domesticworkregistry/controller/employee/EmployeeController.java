@@ -67,7 +67,7 @@ public class EmployeeController {
 
         try {
 
-            employeeService.save(id, form);
+            employeeService.save(form);
         } catch (Exception e) {
             model.addAttribute("employeeForm", form);
             throw e;

@@ -24,8 +24,8 @@ import lombok.NoArgsConstructor;
 public class Job {
 
         @Id
-        @GeneratedValue(strategy = GenerationType.UUID)
-        private String id;
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private int id;
 
         @Column(name = "date")
         private LocalDate date;

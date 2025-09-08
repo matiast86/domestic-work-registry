@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.springboot.domesticworkregistry.entities.Contract;
 
-public interface ContractRepository extends JpaRepository<Contract, String> {
+public interface ContractRepository extends JpaRepository<Contract, Integer> {
 
 }

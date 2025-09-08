@@ -13,8 +13,6 @@ import com.springboot.domesticworkregistry.dao.JobRepository;
 import com.springboot.domesticworkregistry.entities.Contract;
 import com.springboot.domesticworkregistry.entities.Job;
 import com.springboot.domesticworkregistry.service.contract.ContractService;
-import com.springboot.domesticworkregistry.service.employee.EmployeeService;
-import com.springboot.domesticworkregistry.service.employer.EmployerService;
 
 @Service
 public class JobServiceImpl implements JobService {
@@ -61,7 +59,7 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public Job findById(String id) {
+    public Job findById(int id) {
         Optional<Job> result = jobRepository.findById(id);
 
         Job job = null;
@@ -77,7 +75,7 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public Job save(Job job, String contractId) {
+    public Job save(Job job, int contractId) {
         Contract contract = contractService.findById(contractId);
         job.setContract(contract);
         LocalTime startTime = job.getStartTime();
@@ -95,12 +93,12 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public void delete(String id) {
+    public void delete(int id) {
         jobRepository.deleteById(id);
     }
 
     @Override
-    public List<Job> getJobsByContract(String contractId) {
+    public List<Job> getJobsByContract(int contractId) {
         Contract contract = contractService.findById(contractId);
         List<Job> jobs = contract.getJobs();
         return jobs.stream()

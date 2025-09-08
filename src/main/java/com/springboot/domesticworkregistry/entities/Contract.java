@@ -30,42 +30,42 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Contract {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private int id;
 
-    @Column(name = "start_date")
-    private Date startDate;
+        @Column(name = "start_date")
+        private Date startDate;
 
-    @Column(name = "end_date")
-    private Date endDate;
+        @Column(name = "end_date")
+        private Date endDate;
 
-    @Column(name = "job_type")
-    @Enumerated(EnumType.STRING)
-    private JobType jobType;
+        @Column(name = "job_type")
+        @Enumerated(EnumType.STRING)
+        private JobType jobType;
 
-    @Column(name = "employment_type")
-    @Enumerated(EnumType.STRING)
-    private EmploymentType employmentType;
+        @Column(name = "employment_type")
+        @Enumerated(EnumType.STRING)
+        private EmploymentType employmentType;
 
-    @Column(name = "salary")
-    private Double salary;
+        @Column(name = "salary")
+        private Double salary;
 
-    @Column(name = "active")
-    private boolean active;
+        @Column(name = "active")
+        private boolean active;
 
-    @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
-            CascadeType.REFRESH })
-    @JoinColumn(name = "employer_id")
-    private Employer employer;
+        @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
+                        CascadeType.REFRESH })
+        @JoinColumn(name = "employer_id")
+        private Employer employer;
 
-    @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
-            CascadeType.REFRESH })
-    @JoinColumn(name = "employee_id")
-    private Employee employee;
+        @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
+                        CascadeType.REFRESH })
+        @JoinColumn(name = "employee_id")
+        private Employee employee;
 
-    @OneToMany(mappedBy = "employer", cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
-            CascadeType.REFRESH }, fetch = FetchType.LAZY)
+        @OneToMany(mappedBy = "contract", cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
+                        CascadeType.REFRESH }, fetch = FetchType.LAZY)
         private List<Job> jobs;
 
 }

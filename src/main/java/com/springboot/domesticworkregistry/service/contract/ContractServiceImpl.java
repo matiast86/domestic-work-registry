@@ -24,16 +24,16 @@ public class ContractServiceImpl implements ContractService {
     private final ContractMapper contractMapper;
     private final EmployerService employerService;
     private final EmployeeService employeeService;
-    private final JobService jobService;
+   
 
     public ContractServiceImpl(ContractRepository contractRepository, ContractMapper contractMapper,
             EmployerService employerService,
-            EmployeeService employeeService, JobService jobService) {
+            EmployeeService employeeService) {
         this.contractRepository = contractRepository;
         this.contractMapper = contractMapper;
         this.employerService = employerService;
         this.employeeService = employeeService;
-        this.jobService = jobService;
+      
     }
 
     @Override
@@ -56,7 +56,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public Contract findById(String id) {
+    public Contract findById(int id) {
         Optional<Contract> result = contractRepository.findById(id);
         Contract theContract = null;
 
