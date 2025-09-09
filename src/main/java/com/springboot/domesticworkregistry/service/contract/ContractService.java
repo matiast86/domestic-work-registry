@@ -8,6 +8,8 @@ import com.springboot.domesticworkregistry.entities.Contract;
 public interface ContractService {
     public List<Contract> findAll();
 
+    public List<Contract> findAllByEmployer(String employerId);
+
     public Contract save(String employerEmail, CreateContractWithEmployeeDto form);
 
     public Contract findById(int id);

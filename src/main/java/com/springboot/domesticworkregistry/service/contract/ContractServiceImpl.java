@@ -43,6 +43,12 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
+    public List<Contract> findAllByEmployer(String employerId) {
+        Employer employer = this.employerService.findById(employerId);
+        return employer.getContracts();
+    }
+
+    @Override
     public Contract save(String employerEmail, CreateContractWithEmployeeDto form) {
         Employer employer = employerService.findByEmail(employerEmail);
         CreateEmployeeWithAddressDto dto = form.getEmployeeDto();
