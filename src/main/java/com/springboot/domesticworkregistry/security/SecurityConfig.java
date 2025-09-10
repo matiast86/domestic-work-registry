@@ -22,10 +22,11 @@ public class SecurityConfig {
         @Autowired
         private EmployerDetailsService employerDetailsService;
 
-        @Bean
-        public AuthenticationManager authManager(AuthenticationConfiguration config) throws Exception {
-                return config.getAuthenticationManager();
-        }
+        // @Bean
+        // public AuthenticationManager authManager(AuthenticationConfiguration config)
+        // throws Exception {
+        // return config.getAuthenticationManager();
+        // }
 
         @Bean
         PasswordEncoder passwordEncoder() {
@@ -62,7 +63,8 @@ public class SecurityConfig {
                                                 .permitAll())
                                 .logout(logout -> logout.permitAll())
                                 .exceptionHandling(config -> config
-                                                .accessDeniedPage("/access-denied"));
+                                                .accessDeniedPage("/access-denied"))
+                                .authenticationProvider(authenticationProvider(employerDetailsService));
 
                 return http.build();
 

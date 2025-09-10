@@ -24,7 +24,6 @@ public class ContractServiceImpl implements ContractService {
     private final ContractMapper contractMapper;
     private final EmployerService employerService;
     private final EmployeeService employeeService;
-   
 
     public ContractServiceImpl(ContractRepository contractRepository, ContractMapper contractMapper,
             EmployerService employerService,
@@ -33,7 +32,7 @@ public class ContractServiceImpl implements ContractService {
         this.contractMapper = contractMapper;
         this.employerService = employerService;
         this.employeeService = employeeService;
-      
+
     }
 
     @Override
