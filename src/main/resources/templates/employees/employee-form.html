@@ -21,68 +21,52 @@
         <h4>Employee Info</h4>
         <div class="mb-3">
           <label for="firstName" class="form-label">First Name</label>
-          <input
-            type="text"
-            th:field="*{employee.firstName}"
-            class="form-control"
-          />
+          <input type="text" th:field="*{firstName}" class="form-control" />
           <div
             class="text-danger"
-            th:if="${#fields.hasErrors('employee.firstName')}"
-            th:errors="*{employee.firstName}"
+            th:if="${#fields.hasErrors('firstName')}"
+            th:errors="*{firstName}"
           ></div>
         </div>
 
         <div class="mb-3">
           <label for="lastName" class="form-label">Last Name</label>
-          <input
-            type="text"
-            th:field="*{employee.lastName}"
-            class="form-control"
-          />
+          <input type="text" th:field="*{lastName}" class="form-control" />
           <div
             class="text-danger"
-            th:if="${#fields.hasErrors('employee.lastName')}"
-            th:errors="*{employee.lastName}"
+            th:if="${#fields.hasErrors('lastName')}"
+            th:errors="*{lastName}"
           ></div>
         </div>
 
         <div class="mb-3">
           <label for="email" class="form-label">Email</label>
-          <input
-            type="email"
-            th:field="*{employee.email}"
-            class="form-control"
-          />
+          <input type="email" th:field="*{email}" class="form-control" />
           <div
             class="text-danger"
-            th:if="${#fields.hasErrors('employee.email')}"
-            th:errors="*{employee.email}"
+            th:if="${#fields.hasErrors('email')}"
+            th:errors="*{email}"
           ></div>
         </div>
 
         <div class="mb-3">
           <label for="cuil" class="form-label">CUIL</label>
-          <input type="text" th:field="*{employee.cuil}" class="form-control" />
+          <input type="text" th:field="*{cuil}" class="form-control" />
           <div
             class="text-danger"
-            th:if="${#fields.hasErrors('employee.cuil')}"
-            th:errors="*{employee.cuil}"
+            th:if="${#fields.hasErrors('cuil')}"
+            th:errors="*{cuil}"
           ></div>
         </div>
 
         <div class="mb-3">
           <label for="phone" class="form-label">Phone</label>
-          <input
-            type="text"
-            th:field="*{employee.phone}"
-            class="form-control"
-          />
+          <input type="text" th:field="*{phone}" class="form-control" />
         </div>
 
         <div class="mb-3">
           <label for="jobType" class="form-label">Job Type</label>
-          <select th:field="*{employee.jobType}" class="form-select">
+          <select th:field="*{jobType}" class="form-select">
             <option
               th:each="type : ${T(com.springboot.domesticworkregistry.enums.JobType).values()}"
               th:value="${type}"
@@ -93,14 +77,14 @@
           </select>
           <div
             class="text-danger"
-            th:if="${#fields.hasErrors('employee.jobType')}"
-            th:errors="*{employee.jobType}"
+            th:if="${#fields.hasErrors('jobType')}"
+            th:errors="*{jobType}"
           ></div>
         </div>
 
         <div class="mb-3">
           <label for="employmentType" class="form-label">Employment Type</label>
-          <select th:field="*{employee.employmentType}" class="form-select">
+          <select th:field="*{employmentType}" class="form-select">
             <option
               th:each="type : ${T(com.springboot.domesticworkregistry.enums.EmploymentType).values()}"
               th:value="${type}"
@@ -111,76 +95,70 @@
           </select>
           <div
             class="text-danger"
-            th:if="${#fields.hasErrors('employee.employmentType')}"
-            th:errors="*{employee.employmentType}"
+            th:if="${#fields.hasErrors('employmentType')}"
+            th:errors="*{employmentType}"
           ></div>
+        </div>
+
+        <div class="mb-3">
+          <label for="salary" class="form-label">Salary</label>
+          <input
+            type="number"
+            step="0.01"
+            th:field="*{salary}"
+            class="form-control"
+          />
         </div>
 
         <!-- ADDRESS DATA -->
         <h4>Address</h4>
         <div class="mb-3">
           <label for="street" class="form-label">Street</label>
-          <input
-            type="text"
-            th:field="*{address.street}"
-            class="form-control"
-          />
+          <input type="text" th:field="*{street}" class="form-control" />
           <div
             class="text-danger"
-            th:if="${#fields.hasErrors('address.street')}"
-            th:errors="*{address.street}"
+            th:if="${#fields.hasErrors('street')}"
+            th:errors="*{street}"
           ></div>
         </div>
 
         <div class="mb-3">
           <label for="number" class="form-label">Number</label>
-          <input
-            type="text"
-            th:field="*{address.number}"
-            class="form-control"
-          />
+          <input type="text" th:field="*{number}" class="form-control" />
           <div
             class="text-danger"
-            th:if="${#fields.hasErrors('address.number')}"
-            th:errors="*{address.number}"
+            th:if="${#fields.hasErrors('number')}"
+            th:errors="*{number}"
           ></div>
         </div>
 
         <div class="mb-3">
           <label for="city" class="form-label">City</label>
-          <input type="text" th:field="*{address.city}" class="form-control" />
+          <input type="text" th:field="*{city}" class="form-control" />
           <div
             class="text-danger"
-            th:if="${#fields.hasErrors('address.city')}"
-            th:errors="*{address.city}"
+            th:if="${#fields.hasErrors('city')}"
+            th:errors="*{city}"
           ></div>
         </div>
 
         <div class="mb-3">
           <label for="postalCode" class="form-label">Postal Code</label>
-          <input
-            type="text"
-            th:field="*{address.postalCode}"
-            class="form-control"
-          />
+          <input type="text" th:field="*{postalCode}" class="form-control" />
           <div
             class="text-danger"
-            th:if="${#fields.hasErrors('address.postalCode')}"
-            th:errors="*{address.postalCode}"
+            th:if="${#fields.hasErrors('postalCode')}"
+            th:errors="*{postalCode}"
           ></div>
         </div>
 
         <div class="mb-3">
           <label for="country" class="form-label">Country</label>
-          <input
-            type="text"
-            th:field="*{address.country}"
-            class="form-control"
-          />
+          <input type="text" th:field="*{country}" class="form-control" />
           <div
             class="text-danger"
-            th:if="${#fields.hasErrors('address.country')}"
-            th:errors="*{address.country}"
+            th:if="${#fields.hasErrors('country')}"
+            th:errors="*{country}"
           ></div>
         </div>
 

@@ -1,13 +1,17 @@
 package com.springboot.domesticworkregistry.service.contract;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import com.springboot.domesticworkregistry.dao.ContractRepository;
+import com.springboot.domesticworkregistry.dto.address.CreateAddressDto;
 import com.springboot.domesticworkregistry.dto.contract.CreateContractDto;
 import com.springboot.domesticworkregistry.dto.contract.CreateContractWithEmployeeDto;
+import com.springboot.domesticworkregistry.dto.contract.CreateEmployeeFormDto;
+import com.springboot.domesticworkregistry.dto.employee.CreateEmployeeDto;
 import com.springboot.domesticworkregistry.dto.employee.CreateEmployeeWithAddressDto;
 import com.springboot.domesticworkregistry.entities.Contract;
 import com.springboot.domesticworkregistry.entities.Employee;
@@ -48,11 +52,35 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public Contract save(String employerEmail, CreateContractWithEmployeeDto form) {
+    public Contract save(String employerEmail, CreateEmployeeFormDto form) {
         Employer employer = employerService.findByEmail(employerEmail);
-        CreateEmployeeWithAddressDto dto = form.getEmployeeDto();
-        Employee employee = employeeService.save(dto);
-        Contract newContract = contractMapper.toContract(form.getContract());
+
+        CreateEmployeeDto employeeDto = new CreateEmployeeDto(
+                form.getFirstName(),
+                form.getLastName(),
+                form.getEmail(),
+                form.getCuil(),
+                form.getPhone()
+
+        );
+
+        CreateAddressDto addressDto = new CreateAddressDto(
+                form.getStreet(),
+                form.getNumber(),
+                form.getCity(),
+                form.getPostalCode(),
+                form.getCountry());
+
+        CreateEmployeeWithAddressDto employeeWithAddressDto = new CreateEmployeeWithAddressDto(employeeDto, addressDto);
+
+        CreateContractDto contractDto = new CreateContractDto(
+                form.getJobType(),
+                form.getEmploymentType(),
+                form.getSalary());
+
+        Employee employee = employeeService.save(employeeWithAddressDto);
+        Contract newContract = contractMapper.toContract(contractDto);
+        newContract.setStartDate(new Date());
         newContract.setActive(true);
         employer.addContract(newContract);
         employee.addContract(newContract);

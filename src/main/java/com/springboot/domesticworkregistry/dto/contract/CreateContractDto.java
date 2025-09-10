@@ -16,10 +16,6 @@ import lombok.NoArgsConstructor;
 public class CreateContractDto {
 
 
-    @NotNull(message = "is required")
-    public Date startDate;
-
-    public Date endDate;
 
     @NotNull(message = "is required")
     private JobType jobType;
