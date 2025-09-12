@@ -3,6 +3,7 @@ package com.springboot.domesticworkregistry.controller.employer;
 import java.security.Principal;
 import java.util.List;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.springboot.domesticworkregistry.entities.Contract;
+import com.springboot.domesticworkregistry.entities.Employee;
 import com.springboot.domesticworkregistry.entities.Employer;
 import com.springboot.domesticworkregistry.service.employer.EmployerService;
 
@@ -62,6 +65,13 @@ public class EmployerController {
         Employer employer = employerService.findByEmail(principal.getName());
         model.addAttribute("employer", employer);
         return "employers/employer-dashboard";
+    }
+
+    @GetMapping("/employees")
+    public String employeesList(@AuthenticationPrincipal Employer employer, Model theModel) {
+        List<Employee> employees = this.employerService.findEmployeesByEmployer(employer.getId());
+        theModel.addAttribute("employee", employees);
+        return "employees/list-employees";
     }
 
 }

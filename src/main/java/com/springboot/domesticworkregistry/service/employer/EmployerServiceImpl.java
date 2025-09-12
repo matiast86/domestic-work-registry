@@ -1,5 +1,6 @@
 package com.springboot.domesticworkregistry.service.employer;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import com.springboot.domesticworkregistry.dao.EmployerRepository;
 import com.springboot.domesticworkregistry.dto.employer.RegisterEmployerDto;
+import com.springboot.domesticworkregistry.entities.Contract;
+import com.springboot.domesticworkregistry.entities.Employee;
 import com.springboot.domesticworkregistry.entities.Employer;
 import com.springboot.domesticworkregistry.mapper.EmployerMapper;
 
@@ -87,6 +90,28 @@ public class EmployerServiceImpl implements EmployerService {
 
         return employerRepository.save(employer);
 
+    }
+
+    @Override
+    public List<Employee> findEmployeesByEmployer(String id) {
+       Optional<Employer> result = employerRepository.findById(id);
+
+        Employer theEmployer = null;
+
+        if (result.isPresent()) {
+            theEmployer = result.get();
+        } else {
+            throw new RuntimeException("Employer not found");
+        }
+
+        List<Contract> contracts =  theEmployer.getContracts();
+        List<Employee> employees = new ArrayList<>();
+        for (Contract contract : contracts) {
+            Employee employee = contract.getEmployee();
+            employees.add(employee);
+        }
+
+        return employees;
     }
 
 }

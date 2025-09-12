@@ -59,14 +59,11 @@ public class ContractController {
 
         String employerEmail = employer.getEmail();
 
-
         if (bindingResult.hasErrors()) {
             model.addAttribute("employeeForm", form);
             return "employees/employee-form";
         }
         model.addAttribute("employeeForm", form);
-
-
 
         try {
 
@@ -76,7 +73,7 @@ public class ContractController {
             throw e;
         }
 
-        return "redirect:/contract/list";
+        return "redirect:/employers/employees";
 
     }
 
