@@ -93,7 +93,7 @@ public class EmployerServiceImpl implements EmployerService {
     }
 
     @Override
-    public List<Employee> findEmployeesByEmployer(String id) {
+    public List<Contract> findContractsByEmployer(String id) {
        Optional<Employer> result = employerRepository.findById(id);
 
         Employer theEmployer = null;
@@ -105,13 +105,9 @@ public class EmployerServiceImpl implements EmployerService {
         }
 
         List<Contract> contracts =  theEmployer.getContracts();
-        List<Employee> employees = new ArrayList<>();
-        for (Contract contract : contracts) {
-            Employee employee = contract.getEmployee();
-            employees.add(employee);
-        }
+        
 
-        return employees;
+        return contracts;
     }
 
 }

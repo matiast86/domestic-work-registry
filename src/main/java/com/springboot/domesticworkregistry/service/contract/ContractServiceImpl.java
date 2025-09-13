@@ -80,6 +80,7 @@ public class ContractServiceImpl implements ContractService {
 
         Employee employee = employeeService.save(employeeWithAddressDto);
         Contract newContract = contractMapper.toContract(contractDto);
+        newContract.setName(employer.getLastName().toUpperCase() + "-" + employee.getLastName().toUpperCase());
         newContract.setStartDate(new Date());
         newContract.setActive(true);
         employer.addContract(newContract);
@@ -101,5 +102,20 @@ public class ContractServiceImpl implements ContractService {
 
         return theContract;
     }
+
+    @Override
+    public Contract findByIdWithEmployee(int id) {
+        Optional<Contract> result = contractRepository.findByIdWtihEmployee(id);
+        Contract theContract = null;
+
+        if (result.isPresent()) {
+            theContract = result.get();
+        } else {
+            throw new RuntimeException("Contract not found");
+        }
+
+        return theContract;
+    }
+    
 
 }

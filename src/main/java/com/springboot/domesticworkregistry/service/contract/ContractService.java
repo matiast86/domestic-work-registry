@@ -14,4 +14,6 @@ public interface ContractService {
 
     public Contract findById(int id);
 
+    public Contract findByIdWithEmployee(int id);
+
 }
