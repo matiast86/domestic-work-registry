@@ -12,32 +12,7 @@
   </head>
   <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <div class="container">
-        <a class="navbar-brand" th:href="@{/}">Trabajo Doméstico</a>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div
-          class="collapse navbar-collapse justify-content-end"
-          id="navbarNav"
-        >
-          <ul class="navbar-nav">
-            <li class="nav-item">
-              <a class="nav-link" th:href="@{/loginForm}">Iniciar Sesión</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
+    <th:block th:replace="~{fragments/nav :: navbar}"></th:block>
 
     <!-- Hero Section -->
     <section class="hero-section">
@@ -108,14 +83,7 @@
     </section>
 
     <!-- Footer -->
-    <footer class="bg-dark text-white py-4">
-      <div class="container text-center">
-        <p class="mb-1">&copy; 2025 Registro de Trabajo Doméstico</p>
-        <small class="text-muted"
-          >Hecho con 💼 para apoyar el empleo doméstico justo.</small
-        >
-      </div>
-    </footer>
+    <th:block th:replace="~{fragments/footer :: footer}"></th:block>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.js"></script>

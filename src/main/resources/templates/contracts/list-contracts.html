@@ -12,46 +12,7 @@
   </head>
   <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="#">DomesticWork</a>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav ms-auto">
-            <li class="nav-item">
-              <a
-                class="nav-link"
-                th:href="@{/employers/contracts}"
-                >Contratos</a
-              >
-            </li>
-            <li class="nav-item">
-              <form
-                th:action="@{/logout}"
-                method="post"
-                style="display: inline"
-              >
-                <button
-                  type="submit"
-                  class="btn btn-link nav-link"
-                  style="padding: 0"
-                >
-                  Logout
-                </button>
-              </form>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
+    <th:block th:replace="~{fragments/nav :: navbar}"></th:block>
 
     <div class="container">
         <h3>Employee Directory</h3>
@@ -75,6 +36,9 @@
           </tbody>
         </table>
       </div>
+
+      <!-- Footer -->
+    <th:block th:replace="~{fragments/footer :: footer}"></th:block>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.js"></script>
