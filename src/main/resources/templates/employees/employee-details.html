@@ -13,7 +13,7 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="container-fluid">
-        <a class="navbar-brand" href="@{/}">DomesticWork</a>
+        <a class="navbar-brand" th:href="@{/}">DomesticWork</a>
         <button
           class="navbar-toggler"
           type="button"
@@ -26,20 +26,14 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
-              <a class="nav-link" th:href="@{/employers/employees}"
-                >Employees</a
-              >
+              <a class="nav-link" th:href="@{/employers/employees}">Employees</a>
             </li>
             <li class="nav-item">
-              <form
-                th:action="@{/logout}"
-                method="post"
-                style="display: inline"
-              >
+              <form th:action="@{/logout}" method="post" style="display:inline">
                 <button
                   type="submit"
                   class="btn btn-link nav-link"
-                  style="padding: 0"
+                  style="padding:0"
                 >
                   Logout
                 </button>
@@ -49,30 +43,63 @@
         </div>
       </div>
     </nav>
+
+    <!-- Content -->
     <div class="container mt-4">
-      <h2>
-        Information on <span th:text="${employee.firstName}">FirstName</span>!
+      <h2 class="mb-4">
+        Información de 
+        <span th:text="${employee.firstName} + ' ' + ${employee.lastName}">
+          Nombre Apellido
+        </span>
       </h2>
 
+      <div class="row">
+        <!-- Personal Info -->
+        <div class="col-md-6">
+          <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+              Datos Personales
+            </div>
+            <div class="card-body">
+              <p><strong>Email:</strong> <span th:text="${employee.email}">email@example.com</span></p>
+              <p><strong>CUIL:</strong> <span th:text="${employee.cuil}">00-00000000-0</span></p>
+              <p><strong>Teléfono:</strong> <span th:text="${employee.phone}">123456789</span></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contract Info -->
+        <div class="col-md-6">
+          <div class="card mb-4">
+            <div class="card-header bg-success text-white">
+              Información del Contrato
+            </div>
+            <div class="card-body">
+              <p><strong>Puesto:</strong> <span th:text="${employee.jobTypeLabel}">Job Type</span></p>
+              <p><strong>Tipo de Empleo:</strong> <span th:text="${employee.employmentTypeLabel}">Employment Type</span></p>
+              <p><strong>Salario:</strong> $<span th:text="${employee.salary}">0.00</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Address -->
       <div class="card">
+        <div class="card-header bg-info text-white">
+          Dirección
+        </div>
         <div class="card-body">
-          <h5
-            class="card-title"
-            th:text="${employee.firstName} + ' ' + ${employee.lastName}"
-          >
-            Full Name
-          </h5>
-          <p class="card-text">
-            <strong>Email:</strong>
-            <span th:text="${employee.email}">email@example.com</span><br />
-            <strong>CUIL:</strong>
-            <span th:text="${employee.cuil}">00-00000000-0</span>
+          <p>
+            <span th:text="${employee.street}">Calle</span> 
+            <span th:text="${employee.number}">123</span><br/>
+            <span th:text="${employee.city}">Ciudad</span>, 
+            <span th:text="${employee.postalCode}">0000</span><br/>
+            <span th:text="${employee.country}">País</span>
           </p>
         </div>
       </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.js"></script>
   </body>
 </html>

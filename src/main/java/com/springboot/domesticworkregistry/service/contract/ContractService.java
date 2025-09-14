@@ -2,6 +2,7 @@ package com.springboot.domesticworkregistry.service.contract;
 
 import java.util.List;
 
+import com.springboot.domesticworkregistry.dto.contract.ContractDetailsWithemployeeDto;
 import com.springboot.domesticworkregistry.dto.contract.CreateEmployeeFormDto;
 import com.springboot.domesticworkregistry.entities.Contract;
 
@@ -14,6 +15,6 @@ public interface ContractService {
 
     public Contract findById(int id);
 
-    public Contract findByIdWithEmployee(int id);
+    public ContractDetailsWithemployeeDto findByIdWithEmployee(int id);
 
 }

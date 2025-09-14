@@ -65,9 +65,9 @@
             </tr>
           </thead>
           <tbody>
-              <tr th:each="tempContract : ${contract}">
+              <tr th:each="tempContract : ${contracts}">
                 <td th:text="${tempContract.name}"></td>
-                <td th:text="${tempContract.startDate}"></td>
+                <td th:text="${#dates.format(tempContract.startDate, 'dd/MM/yyyy')}"></td>
                 <td>
                   <a th:href="@{/contract/employee(contractId=${tempContract.id})}" class="btn btn-info btn-sm">Mostras datos</a>
                 </td>

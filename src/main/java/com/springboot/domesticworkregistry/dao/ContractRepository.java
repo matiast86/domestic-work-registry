@@ -1,5 +1,6 @@
 package com.springboot.domesticworkregistry.dao;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -8,7 +9,10 @@ import com.springboot.domesticworkregistry.entities.Contract;
 
 public interface ContractRepository extends JpaRepository<Contract, Integer> {
 
-    @EntityGraph(attributePaths = "employee")
-    Optional<Contract> findByIdWtihEmployee(int contractId);
+    @EntityGraph(attributePaths = { "employee", "employee.homeAddress" })
+    Optional<Contract> findById(Integer id);
+
+    @EntityGraph(attributePaths = {"employee", "employee.homeAddress"})
+    List<Contract> findAllByEmployerId(String employerId);
 
 }
