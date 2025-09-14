@@ -1,108 +1,84 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
   <head>
-    <title>Login Page</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Bootstrap demo</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Iniciar Sesión</title>
     <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
       rel="stylesheet"
-      integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
-      crossorigin="anonymous"
     />
     <link rel="stylesheet" th:href="@{/css/styles.css}" />
   </head>
-
   <body>
-    <div class="container">
-      <div
-        id="loginbox"
-        style="margin-top: 50px"
-        class="col-md-3 col-md-offset-2 col-sm-6 col-sm-offset-2"
-      >
-        <div class="card border-info">
-          <div class="card-header bg-info">Sign In</div>
+    <!-- Navbar -->
+    <section th:replace="~{fragments/nav :: navbar}"></section>
 
-          <div class="card-body">
-            <div class="card-text">
-              <!-- Login Form -->
-              <form
-                action="#"
-                th:action="@{/authenticateTheUser}"
-                method="post"
-                class="form-horizontal"
-              >
-                <!-- Place for messages: error, alert etc ... -->
-                <div class="form-group">
-                  <div class="col-xs-15">
-                    <div>
-                      <!-- Show registration success -->
-                      <div th:if="${registered}">
-                        <div class="alert alert-success">
-                          Registration successful! Please log in.
-                        </div>
-                      </div>
-                      <!-- Check for login error -->
-
-                      <div th:if="${param.error}">
-                        <div
-                          class="alert alert-danger col-xs-offset-1 col-xs-10"
-                        >
-                          Invalid username and password.
-                        </div>
-                      </div>
-                      <div th:if="${param.logout}">
-                        <div
-                          class="alert alert-success col-xs-offset-1 col-xs-10"
-                        >
-                          You have been logged out.
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- User name -->
-                <div style="margin-bottom: 25px" class="input-group">
-                  <input
-                    type="text"
-                    name="username"
-                    placeholder="username"
-                    class="form-control"
-                  />
-                </div>
-
-                <!-- Password -->
-                <div style="margin-bottom: 25px" class="input-group">
-                  <input
-                    type="password"
-                    name="password"
-                    placeholder="password"
-                    class="form-control"
-                  />
-                </div>
-
-                <!-- Login/Submit Button -->
-                <div style="margin-top: 10px" class="form-group">
-                  <div class="col-sm-6 controls">
-                    <button type="submit" class="btn btn-success">Login</button>
-                  </div>
-                </div>
-              </form>
-              <div>
-                <a
-                  th:href="@{/register/registrationForm}"
-                  class="btn btn-primary mt-3"
-                  role="button"
-                  aria-pressed="true"
-                  >Register New User</a
-                >
-              </div>
-            </div>
+    <!-- Login -->
+    <section class="py-5">
+      <div class="container">
+        <h2 class="text-center mb-4">Iniciar Sesión</h2>
+        <form
+          th:action="@{/authenticateTheUser}"
+          method="post"
+          class="mx-auto"
+          style="max-width: 400px"
+        >
+          <!-- Mensajes -->
+          <div th:if="${registered}" class="alert alert-success">
+            ¡Registro exitoso! Por favor inicia sesión.
           </div>
-        </div>
+
+          <div th:if="${param.error}" class="alert alert-danger">
+            Usuario o contraseña inválidos.
+          </div>
+
+          <div th:if="${param.logout}" class="alert alert-success">
+            Has cerrado sesión correctamente.
+          </div>
+
+          <!-- Username -->
+          <div class="mb-3">
+            <label for="username" class="form-label">Usuario</label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              class="form-control"
+              required
+            />
+          </div>
+
+          <!-- Password -->
+          <div class="mb-3">
+            <label for="password" class="form-label">Contraseña</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              class="form-control"
+              required
+            />
+          </div>
+
+          <!-- Botón -->
+          <div class="d-grid">
+            <button type="submit" class="btn btn-success">Ingresar</button>
+          </div>
+
+          <!-- Link de registro -->
+          <div class="text-center mt-3">
+            <a th:href="@{/register/registrationForm}" class="btn btn-primary">
+              Registrarse
+            </a>
+          </div>
+        </form>
       </div>
-    </div>
+    </section>
+
+    <!-- Footer -->
+    <section th:replace="~{fragments/footer :: footer}"></section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
