@@ -21,6 +21,6 @@ public interface EmployerService {
 
     Employer save(RegisterEmployerDto registerEmployerDto);
 
-    List<Employee> findEmployeesByEmployer(String id);
+    List<Contract> findContractsByEmployer(String id);
 
 }

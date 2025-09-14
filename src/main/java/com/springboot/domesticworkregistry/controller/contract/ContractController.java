@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.springboot.domesticworkregistry.dto.contract.ContractDetailsWithemployeeDto;
 import com.springboot.domesticworkregistry.dto.contract.CreateEmployeeFormDto;
 import com.springboot.domesticworkregistry.entities.Contract;
 import com.springboot.domesticworkregistry.entities.Employer;
@@ -48,7 +49,7 @@ public class ContractController {
     public String listContractByEmployer(@AuthenticationPrincipal Employer employer, Model theModel) {
         List<Contract> contracts = this.contractService.findAllByEmployer(employer.getId());
         theModel.addAttribute("contracts", contracts);
-        return "employees/list-employees";
+        return "contracts/list-contracts";
     }
 
     @PostMapping("/save")
@@ -73,7 +74,17 @@ public class ContractController {
             throw e;
         }
 
-        return "redirect:/employers/employees";
+        return "redirect:/contracts/list-contracts";
+
+    }
+
+    @GetMapping("/employee")
+    public String employeeInfo(@RequestParam("contractId") String contractIdStr, Model model) {
+        int contractId = Integer.parseInt(contractIdStr);
+        ContractDetailsWithemployeeDto contract = contractService.findByIdWithEmployee(contractId);
+        model.addAttribute("employee", contract);
+
+        return "employees/employee-details";
 
     }
 

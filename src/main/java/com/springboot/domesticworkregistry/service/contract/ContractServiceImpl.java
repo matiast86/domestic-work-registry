@@ -8,18 +8,24 @@ import org.springframework.stereotype.Service;
 
 import com.springboot.domesticworkregistry.dao.ContractRepository;
 import com.springboot.domesticworkregistry.dto.address.CreateAddressDto;
+import com.springboot.domesticworkregistry.dto.contract.ContractDetailsWithemployeeDto;
 import com.springboot.domesticworkregistry.dto.contract.CreateContractDto;
 import com.springboot.domesticworkregistry.dto.contract.CreateContractWithEmployeeDto;
 import com.springboot.domesticworkregistry.dto.contract.CreateEmployeeFormDto;
 import com.springboot.domesticworkregistry.dto.employee.CreateEmployeeDto;
 import com.springboot.domesticworkregistry.dto.employee.CreateEmployeeWithAddressDto;
+import com.springboot.domesticworkregistry.entities.Address;
 import com.springboot.domesticworkregistry.entities.Contract;
 import com.springboot.domesticworkregistry.entities.Employee;
 import com.springboot.domesticworkregistry.entities.Employer;
+import com.springboot.domesticworkregistry.exceptions.EntityNotFoundException;
+import com.springboot.domesticworkregistry.mapper.ContractDetailsMapper;
 import com.springboot.domesticworkregistry.mapper.ContractMapper;
 import com.springboot.domesticworkregistry.service.employee.EmployeeService;
 import com.springboot.domesticworkregistry.service.employer.EmployerService;
 import com.springboot.domesticworkregistry.service.job.JobService;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class ContractServiceImpl implements ContractService {
@@ -28,14 +34,16 @@ public class ContractServiceImpl implements ContractService {
     private final ContractMapper contractMapper;
     private final EmployerService employerService;
     private final EmployeeService employeeService;
+    private final ContractDetailsMapper contractDetailsMapper;
 
     public ContractServiceImpl(ContractRepository contractRepository, ContractMapper contractMapper,
             EmployerService employerService,
-            EmployeeService employeeService) {
+            EmployeeService employeeService, ContractDetailsMapper contractDetailsMapper) {
         this.contractRepository = contractRepository;
         this.contractMapper = contractMapper;
         this.employerService = employerService;
         this.employeeService = employeeService;
+        this.contractDetailsMapper = contractDetailsMapper;
 
     }
 
@@ -47,8 +55,7 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public List<Contract> findAllByEmployer(String employerId) {
-        Employer employer = this.employerService.findById(employerId);
-        return employer.getContracts();
+        return contractRepository.findAllByEmployerId(employerId);
     }
 
     @Override
@@ -80,6 +87,7 @@ public class ContractServiceImpl implements ContractService {
 
         Employee employee = employeeService.save(employeeWithAddressDto);
         Contract newContract = contractMapper.toContract(contractDto);
+        newContract.setName(employer.getLastName().toUpperCase() + "-" + employee.getLastName().toUpperCase());
         newContract.setStartDate(new Date());
         newContract.setActive(true);
         employer.addContract(newContract);
@@ -100,6 +108,15 @@ public class ContractServiceImpl implements ContractService {
         }
 
         return theContract;
+    }
+
+    @Transactional
+    @Override
+    public ContractDetailsWithemployeeDto findByIdWithEmployee(int id) {
+        Contract contract = contractRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Contract with id " + id + " not found"));
+
+        return contractDetailsMapper.toDto(contract);
     }
 
 }

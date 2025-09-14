@@ -67,11 +67,11 @@ public class EmployerController {
         return "employers/employer-dashboard";
     }
 
-    @GetMapping("/employees")
+    @GetMapping("/contracts")
     public String employeesList(@AuthenticationPrincipal Employer employer, Model theModel) {
-        List<Employee> employees = this.employerService.findEmployeesByEmployer(employer.getId());
-        theModel.addAttribute("employee", employees);
-        return "employees/list-employees";
+        List<Contract> contracts = this.employerService.findContractsByEmployer(employer.getId());
+        theModel.addAttribute("contracts", contracts);
+        return "contracts/list-contracts";
     }
 
 }
