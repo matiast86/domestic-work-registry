@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.springboot.domesticworkregistry.dto.employer.RegisterEmployerDto;
 import com.springboot.domesticworkregistry.entities.Contract;
-import com.springboot.domesticworkregistry.entities.Employee;
 import com.springboot.domesticworkregistry.entities.Employer;
 
 public interface EmployerService {

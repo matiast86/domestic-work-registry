@@ -1,7 +1,5 @@
 package com.springboot.domesticworkregistry.dto.contract;
 
-import java.util.Date;
-
 import com.springboot.domesticworkregistry.enums.EmploymentType;
 import com.springboot.domesticworkregistry.enums.JobType;
 
@@ -15,8 +13,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CreateContractDto {
 
-
-
     @NotNull(message = "is required")
     private JobType jobType;
 
@@ -24,6 +20,5 @@ public class CreateContractDto {
     private EmploymentType employmentType;
 
     private Double salary;
-
 
 }

@@ -20,6 +20,7 @@ import com.springboot.domesticworkregistry.dto.contract.CreateEmployeeFormDto;
 import com.springboot.domesticworkregistry.entities.Contract;
 import com.springboot.domesticworkregistry.entities.Employer;
 import com.springboot.domesticworkregistry.service.contract.ContractService;
+
 import jakarta.validation.Valid;
 
 @Controller
@@ -74,7 +75,7 @@ public class ContractController {
             throw e;
         }
 
-        return "redirect:/contracts/list-contracts";
+        return "redirect:/contract/list";
 
     }
 

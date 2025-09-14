@@ -10,11 +10,9 @@ import com.springboot.domesticworkregistry.dao.ContractRepository;
 import com.springboot.domesticworkregistry.dto.address.CreateAddressDto;
 import com.springboot.domesticworkregistry.dto.contract.ContractDetailsWithemployeeDto;
 import com.springboot.domesticworkregistry.dto.contract.CreateContractDto;
-import com.springboot.domesticworkregistry.dto.contract.CreateContractWithEmployeeDto;
 import com.springboot.domesticworkregistry.dto.contract.CreateEmployeeFormDto;
 import com.springboot.domesticworkregistry.dto.employee.CreateEmployeeDto;
 import com.springboot.domesticworkregistry.dto.employee.CreateEmployeeWithAddressDto;
-import com.springboot.domesticworkregistry.entities.Address;
 import com.springboot.domesticworkregistry.entities.Contract;
 import com.springboot.domesticworkregistry.entities.Employee;
 import com.springboot.domesticworkregistry.entities.Employer;
@@ -23,7 +21,6 @@ import com.springboot.domesticworkregistry.mapper.ContractDetailsMapper;
 import com.springboot.domesticworkregistry.mapper.ContractMapper;
 import com.springboot.domesticworkregistry.service.employee.EmployeeService;
 import com.springboot.domesticworkregistry.service.employer.EmployerService;
-import com.springboot.domesticworkregistry.service.job.JobService;
 
 import jakarta.transaction.Transactional;
 
