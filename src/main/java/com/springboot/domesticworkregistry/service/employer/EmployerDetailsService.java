@@ -27,8 +27,7 @@ public class EmployerDetailsService implements UserDetailsService{
         Employer employer = employerRepository.findByEmail(email)
             .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
-        return new org.springframework.security.core.userdetails.User(
-            employer.getEmail(), employer.getPassword(), employer.getAuthorities());
+        return employer;
     }
 
 }

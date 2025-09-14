@@ -1,4 +1,6 @@
-package com.springboot.domesticworkregistry.dto.employee;
+package com.springboot.domesticworkregistry.dto.contract;
+
+import java.util.Date;
 
 import com.springboot.domesticworkregistry.enums.EmploymentType;
 import com.springboot.domesticworkregistry.enums.JobType;
@@ -13,8 +15,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateEmployeeDto {
-    @NotNull(message = "is requied")
+public class CreateEmployeeFormDto {
+     @NotNull(message = "is requied")
     @Size(min = 1, message = "is required")
     private String firstName;
 
@@ -31,4 +33,28 @@ public class CreateEmployeeDto {
 
     @Size(min = 1)
     private String phone;
+
+    @NotNull(message = "is required")
+    private JobType jobType;
+
+    @NotNull(message = "is required")
+    private EmploymentType employmentType;
+
+    private Double salary;
+
+    @NotNull(message = "is required")
+    private String street;
+
+    @NotNull(message = "is required")
+    private String number;
+
+    @NotNull(message = "is required")
+    private String city;
+
+    @NotNull(message = "is required")
+    private String postalCode;
+
+    @NotNull(message = "is required")
+    private String country;
+
 }

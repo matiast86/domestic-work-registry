@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.springboot.domesticworkregistry.dto.address.CreateAddressDto;
+import com.springboot.domesticworkregistry.dto.contract.CreateEmployeeFormDto;
 import com.springboot.domesticworkregistry.dto.employee.CreateEmployeeDto;
 import com.springboot.domesticworkregistry.dto.employee.CreateEmployeeWithAddressDto;
 import com.springboot.domesticworkregistry.entities.Employee;
@@ -50,31 +51,10 @@ public class EmployeeController {
     @GetMapping("/addEmployee")
     public String addEmployee(Model theModel) {
 
-        theModel.addAttribute("employeeForm", new CreateEmployeeWithAddressDto());
+        theModel.addAttribute("employeeForm", new CreateEmployeeFormDto());
         return "employees/employee-form";
     }
 
-    @PostMapping("/save")
-    public String saveEmployee(@RequestParam("employerId") String id,
-            @Valid @ModelAttribute("employeeForm") CreateEmployeeWithAddressDto form,
-            BindingResult bindingResult, Model model) {
-
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("employeeForm", form);
-            return "employees/employee-form";
-        }
-        model.addAttribute("employeeForm", form);
-
-        try {
-
-            employeeService.save(form);
-        } catch (Exception e) {
-            model.addAttribute("employeeForm", form);
-            throw e;
-        }
-
-        return "redirect:/employee/";
-    }
 
     @GetMapping("/updateEmployee")
     public String updateEmployee(@RequestParam("employeeId") String id, Model theModel) {
@@ -83,7 +63,9 @@ public class EmployeeController {
 
         theModel.addAttribute("employee", employee);
 
-        return "employee/employee-form";
+        return "employees/employee-form";
     }
+
+    
 
 }

@@ -27,14 +27,22 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
-              <a
-                class="nav-link"
-                th:href="@{/employee/list(employerId = ${employer.id})}"
-                >Employees</a
-              >
+              <a class="nav-link" th:href="@{/contract/list}">Contratos</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" th:href="@{/logout}">Logout</a>
+              <form
+                th:action="@{/logout}"
+                method="post"
+                style="display: inline"
+              >
+                <button
+                  type="submit"
+                  class="btn btn-link nav-link"
+                  style="padding: 0"
+                >
+                  Logout
+                </button>
+              </form>
             </li>
           </ul>
         </div>
