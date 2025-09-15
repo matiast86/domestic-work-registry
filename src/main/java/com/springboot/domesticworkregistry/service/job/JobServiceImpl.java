@@ -3,7 +3,6 @@ package com.springboot.domesticworkregistry.service.job;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.springboot.domesticworkregistry.dao.JobRepository;
 import com.springboot.domesticworkregistry.entities.Contract;
 import com.springboot.domesticworkregistry.entities.Job;
+import com.springboot.domesticworkregistry.exceptions.EntityNotFoundException;
 import com.springboot.domesticworkregistry.service.contract.ContractService;
 
 @Service
@@ -60,15 +60,8 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public Job findById(int id) {
-        Optional<Job> result = jobRepository.findById(id);
-
-        Job job = null;
-
-        if (result.isPresent()) {
-            job = result.get();
-        } else {
-            throw new RuntimeException("Job not found.");
-        }
+        Job job = jobRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Job with id: " + id + " not found"));
 
         return job;
 

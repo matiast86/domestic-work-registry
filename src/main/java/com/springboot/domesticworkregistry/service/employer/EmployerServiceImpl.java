@@ -1,7 +1,6 @@
 package com.springboot.domesticworkregistry.service.employer;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,6 +10,7 @@ import com.springboot.domesticworkregistry.dao.EmployerRepository;
 import com.springboot.domesticworkregistry.dto.employer.RegisterEmployerDto;
 import com.springboot.domesticworkregistry.entities.Contract;
 import com.springboot.domesticworkregistry.entities.Employer;
+import com.springboot.domesticworkregistry.exceptions.EntityNotFoundException;
 import com.springboot.domesticworkregistry.mapper.EmployerMapper;
 
 @Service
@@ -35,33 +35,19 @@ public class EmployerServiceImpl implements EmployerService {
 
     @Override
     public Employer findById(String id) {
-        Optional<Employer> result = employerRepository.findById(id);
+        Employer employer = employerRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Employer with id " + id + " not found"));
 
-        Employer theEmployer = null;
-
-        if (result.isPresent()) {
-            theEmployer = result.get();
-        } else {
-            throw new RuntimeException("Employer not found");
-        }
-
-        return theEmployer;
+        return employer;
 
     }
 
     @Override
     public Employer findByEmail(String email) {
-        Optional<Employer> result = employerRepository.findByEmail(email);
+        Employer employer = employerRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("Employer with email " + email + " not found"));
 
-        Employer theEmployer = null;
-
-        if (result.isPresent()) {
-            theEmployer = result.get();
-        } else {
-            throw new RuntimeException("Employer not found");
-        }
-
-        return theEmployer;
+        return employer;
     }
 
     @Override
@@ -92,17 +78,10 @@ public class EmployerServiceImpl implements EmployerService {
 
     @Override
     public List<Contract> findContractsByEmployer(String id) {
-        Optional<Employer> result = employerRepository.findById(id);
+        Employer employer = employerRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Employer with id " + id + " not found"));
 
-        Employer theEmployer = null;
-
-        if (result.isPresent()) {
-            theEmployer = result.get();
-        } else {
-            throw new RuntimeException("Employer not found");
-        }
-
-        List<Contract> contracts = theEmployer.getContracts();
+        List<Contract> contracts = employer.getContracts();
 
         return contracts;
     }

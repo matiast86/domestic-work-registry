@@ -2,7 +2,6 @@ package com.springboot.domesticworkregistry.service.contract;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -96,16 +95,10 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public Contract findById(int id) {
-        Optional<Contract> result = contractRepository.findById(id);
-        Contract theContract = null;
+        Contract contract = contractRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Contract with id " + id + " not found"));
 
-        if (result.isPresent()) {
-            theContract = result.get();
-        } else {
-            throw new RuntimeException("Contract not found");
-        }
-
-        return theContract;
+        return contract;
     }
 
     @Transactional

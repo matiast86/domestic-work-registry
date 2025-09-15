@@ -1,7 +1,6 @@
 package com.springboot.domesticworkregistry.service.employee;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,6 +9,7 @@ import com.springboot.domesticworkregistry.dao.EmployeeRepository;
 import com.springboot.domesticworkregistry.dto.employee.CreateEmployeeWithAddressDto;
 import com.springboot.domesticworkregistry.entities.Address;
 import com.springboot.domesticworkregistry.entities.Employee;
+import com.springboot.domesticworkregistry.exceptions.EntityNotFoundException;
 import com.springboot.domesticworkregistry.mapper.AddressMapper;
 import com.springboot.domesticworkregistry.mapper.EmployeeMapper;
 
@@ -37,43 +37,24 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee findById(String id) {
-        Optional<Employee> result = employeeRepository.findById(id);
-        Employee theEmployee = null;
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Employee with id " + id + " not found"));
 
-        if (result.isPresent()) {
-            theEmployee = result.get();
-        } else {
-            throw new RuntimeException("Employee not found");
-        }
-
-        return theEmployee;
+        return employee;
     }
 
     @Override
     public Employee findByEmail(String email) {
-        Optional<Employee> result = employeeRepository.findByEmail(email);
+        Employee employee = employeeRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("Employee with id " + email + " not found"));
 
-        Employee theEmployee = null;
-
-        if (result.isPresent()) {
-            theEmployee = result.get();
-        } else {
-            throw new RuntimeException("Employee not found");
-        }
-
-        return theEmployee;
+        return employee;
     }
 
     @Override
     public Employee findByCuil(String cuil) {
-        Optional<Employee> result = employeeRepository.findByCuil(cuil);
-        Employee employee = null;
-
-        if (result.isPresent()) {
-            employee = result.get();
-        } else {
-            throw new RuntimeException("Employee not found");
-        }
+        Employee employee = employeeRepository.findByCuil(cuil)
+                .orElseThrow(() -> new EntityNotFoundException("Employee with cuil " + cuil + " not found"));
 
         return employee;
     }
@@ -101,7 +82,5 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         return employeeRepository.save(employee);
     }
-
- 
 
 }
