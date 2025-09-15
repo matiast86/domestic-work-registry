@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateEmployeeFormDto {
+
     @NotNull(message = "is requied")
     @Size(min = 1, message = "is required")
     private String firstName;
@@ -54,5 +55,7 @@ public class CreateEmployeeFormDto {
 
     @NotNull(message = "is required")
     private String country;
+
+    private int contractId;
 
 }

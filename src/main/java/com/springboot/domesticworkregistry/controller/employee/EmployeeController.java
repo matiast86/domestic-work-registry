@@ -9,9 +9,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import com.springboot.domesticworkregistry.dto.contract.CreateEmployeeFormDto;
 import com.springboot.domesticworkregistry.entities.Employee;
 import com.springboot.domesticworkregistry.service.employee.EmployeeService;
 
@@ -38,25 +36,5 @@ public class EmployeeController {
         theModel.addAttribute("employees", employees);
         return "employees/list-employees";
     }
-
-    @GetMapping("/addEmployee")
-    public String addEmployee(Model theModel) {
-
-        theModel.addAttribute("employeeForm", new CreateEmployeeFormDto());
-        return "employees/employee-form";
-    }
-
-
-    @GetMapping("/updateEmployee")
-    public String updateEmployee(@RequestParam("employeeId") String id, Model theModel) {
-
-        Employee employee = employeeService.findById(id);
-
-        theModel.addAttribute("employee", employee);
-
-        return "employees/employee-form";
-    }
-
-    
 
 }

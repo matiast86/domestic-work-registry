@@ -13,6 +13,7 @@ import com.springboot.domesticworkregistry.dto.contract.CreateContractDto;
 import com.springboot.domesticworkregistry.dto.contract.CreateEmployeeFormDto;
 import com.springboot.domesticworkregistry.dto.employee.CreateEmployeeDto;
 import com.springboot.domesticworkregistry.dto.employee.CreateEmployeeWithAddressDto;
+import com.springboot.domesticworkregistry.entities.Address;
 import com.springboot.domesticworkregistry.entities.Contract;
 import com.springboot.domesticworkregistry.entities.Employee;
 import com.springboot.domesticworkregistry.entities.Employer;
@@ -114,6 +115,38 @@ public class ContractServiceImpl implements ContractService {
                 .orElseThrow(() -> new EntityNotFoundException("Contract with id " + id + " not found"));
 
         return contractDetailsMapper.toDto(contract);
+    }
+
+    @Override
+    public Contract update(int id, ContractDetailsWithemployeeDto form) {
+        Contract contract = contractRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Contract with id " + id + " not found"));
+
+        Employee employee = contract.getEmployee(); // direct, no iterator
+        Employer employer = contract.getEmployer();
+
+        // update employee fields
+        employee.setFirstName(form.getFirstName());
+        employee.setLastName(form.getLastName());
+        employee.setEmail(form.getEmail());
+        employee.setCuil(form.getCuil());
+        employee.setPhone(form.getPhone());
+
+        // update address
+        Address address = employee.getHomeAddress();
+        address.setStreet(form.getStreet());
+        address.setNumber(form.getNumber());
+        address.setCity(form.getCity());
+        address.setPostalCode(form.getPostalCode());
+        address.setCountry(form.getCountry());
+
+        // update contract details
+        contract.setJobType(form.getJobType());
+        contract.setEmploymentType(form.getEmploymentType());
+        contract.setSalary(form.getSalary());
+        contract.setName(employer.getLastName().toUpperCase() + "-" + employee.getLastName().toUpperCase());
+
+        return contractRepository.save(contract);
     }
 
 }

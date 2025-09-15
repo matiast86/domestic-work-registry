@@ -79,6 +79,13 @@ public class ContractController {
 
     }
 
+    @GetMapping("/contractForm")
+    public String contractForm(Model model) {
+        model.addAttribute("contractForm", new CreateEmployeeFormDto());
+
+        return "employees/employee-form";
+    }
+
     @GetMapping("/employee")
     public String employeeInfo(@RequestParam("contractId") String contractIdStr, Model model) {
         int contractId = Integer.parseInt(contractIdStr);
@@ -86,6 +93,32 @@ public class ContractController {
         model.addAttribute("employee", contract);
 
         return "employees/employee-details";
+
+    }
+
+    @GetMapping("/updateForm")
+    public String updateForm(@RequestParam("contractId") int contractId, Model model) {
+
+        ContractDetailsWithemployeeDto contract = contractService.findByIdWithEmployee(contractId);
+        model.addAttribute("contractForm", contract);
+
+        return "contracts/contract-update-form";
+    }
+
+    @PostMapping("/update")
+    public String update(@Valid @ModelAttribute("contractForm") ContractDetailsWithemployeeDto form,
+            BindingResult bindingResult,
+            Model model) {
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("contractForm", form);
+            return "contracts/contract-update-form";
+        }
+        model.addAttribute("contractForm", form);
+
+        contractService.update(form.getContractId(), form);
+
+        return "redirect:/contract/list";
 
     }
 

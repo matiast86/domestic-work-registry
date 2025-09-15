@@ -9,10 +9,10 @@ import com.springboot.domesticworkregistry.entities.Contract;
 
 public interface ContractRepository extends JpaRepository<Contract, Integer> {
 
-    @EntityGraph(attributePaths = { "employee", "employee.homeAddress" })
+    @EntityGraph(attributePaths = { "employee", "employee.homeAddress", "jobs" })
     Optional<Contract> findById(Integer id);
 
-    @EntityGraph(attributePaths = {"employee", "employee.homeAddress"})
+    @EntityGraph(attributePaths = { "employee", "employee.homeAddress", "jobs" })
     List<Contract> findAllByEmployerId(String employerId);
 
 }
