@@ -1,5 +1,6 @@
 package com.springboot.domesticworkregistry.service.job;
 
+import java.math.BigDecimal;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -9,9 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.springboot.domesticworkregistry.dao.JobRepository;
+import com.springboot.domesticworkregistry.dto.job.CreateJobDto;
 import com.springboot.domesticworkregistry.entities.Contract;
 import com.springboot.domesticworkregistry.entities.Job;
 import com.springboot.domesticworkregistry.exceptions.EntityNotFoundException;
+import com.springboot.domesticworkregistry.mapper.JobMapper;
 import com.springboot.domesticworkregistry.service.contract.ContractService;
 
 @Service
@@ -19,6 +22,7 @@ public class JobServiceImpl implements JobService {
 
     private final JobRepository jobRepository;
     private final ContractService contractService;
+    private final JobMapper jobMapper;
 
     private Double calculateHoursWorked(LocalTime startTime, LocalTime endTime) {
         if (startTime.isAfter(endTime)) {
@@ -31,24 +35,31 @@ public class JobServiceImpl implements JobService {
         return Math.ceil(fractionalHours * 2) / 2;
     }
 
-    private Double calculatePartialFee(Double workedHours, Double hourlyRate) {
-        return workedHours * hourlyRate;
+    private BigDecimal calculatePartialFee(Double workedHours, BigDecimal hourlyRate) {
+        return hourlyRate.multiply(BigDecimal.valueOf(workedHours));
     }
 
-    private Double calculateTotalFee(Double partialFee, Double transportationFee) {
+    private BigDecimal calculateTotalFee(BigDecimal partialFee, BigDecimal transportationFee) {
 
-        if (partialFee < 0 || transportationFee < 0) {
-            throw new IllegalArgumentException("Partial fee or transportation fee should be 0 or higher");
+        if (partialFee == null || transportationFee == null) {
+            throw new IllegalArgumentException("Fees cannot be null");
+        }
+        if (partialFee.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Partial fee must be 0 or higher");
+        }
+        if (transportationFee.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Transportation fee must be 0 or higher");
         }
 
-        return partialFee + transportationFee;
+        return partialFee.add(transportationFee);
     }
 
     @Autowired
     public JobServiceImpl(JobRepository jobRepository,
-            ContractService contractService) {
+            ContractService contractService, JobMapper jobMapper) {
         this.jobRepository = jobRepository;
         this.contractService = contractService;
+        this.jobMapper = jobMapper;
     }
 
     @Override
@@ -68,16 +79,18 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public Job save(Job job, int contractId) {
+    public Job save(CreateJobDto form, int contractId) {
         Contract contract = contractService.findById(contractId);
+        Job job = jobMapper.toJob(form);
+
         job.setContract(contract);
         LocalTime startTime = job.getStartTime();
         LocalTime endTime = job.getEndTime();
         Double workedHours = this.calculateHoursWorked(startTime, endTime);
-        Double transportationFee = job.getTransportationFee();
-        Double hourlyFee = job.getHourlyRate();
-        Double partialFee = this.calculatePartialFee(workedHours, hourlyFee);
-        Double totalFee = this.calculateTotalFee(partialFee, transportationFee);
+        BigDecimal transportationFee = job.getTransportationFee();
+        BigDecimal hourlyFee = job.getHourlyRate();
+        BigDecimal partialFee = this.calculatePartialFee(workedHours, hourlyFee);
+        BigDecimal totalFee = this.calculateTotalFee(partialFee, transportationFee);
         job.setTotalFee(totalFee);
         job.setWorkedHours(workedHours);
         job.setPartialFee(partialFee);

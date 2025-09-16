@@ -1,5 +1,6 @@
 package com.springboot.domesticworkregistry.entities;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -40,25 +41,24 @@ public class Job {
         private Double workedHours;
 
         @Column(name = "hourly_rate")
-        private Double hourlyRate;
+        private BigDecimal hourlyRate;
 
         @Column(name = "partial_fee")
-        private Double partialFee;
+        private BigDecimal partialFee;
 
         @Column(name = "transportation_fee")
-        private Double transportationFee = 0.0;
+        private BigDecimal transportationFee = BigDecimal.ZERO;
 
         @Column(name = "total_fee")
-        private Double totalFee;
+        private BigDecimal totalFee;
 
         @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
                         CascadeType.REFRESH })
         @JoinColumn(name = "contract_id")
         private Contract contract;
 
-
-        public Job(LocalDate date, LocalTime startTime, LocalTime endTime, Double workedHours, Double hourlyRate,
-                        Double partialFee, Double transportationFee, Double totalFee) {
+        public Job(LocalDate date, LocalTime startTime, LocalTime endTime, Double workedHours, BigDecimal hourlyRate,
+                        BigDecimal partialFee, BigDecimal transportationFee, BigDecimal totalFee) {
                 this.date = date;
                 this.startTime = startTime;
                 this.endTime = endTime;

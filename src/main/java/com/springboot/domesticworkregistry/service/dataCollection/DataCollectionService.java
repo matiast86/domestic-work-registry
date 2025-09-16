@@ -1,5 +1,6 @@
 package com.springboot.domesticworkregistry.service.dataCollection;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,53 +57,53 @@ public class DataCollectionService {
     }
 
     // Calculates the total fee paid to a specific employee
-    public Double calculateTotalFee(int contractId) {
+    public BigDecimal calculateTotalFee(int contractId) {
         return getEmployeeJobs(contractId).stream()
-                .mapToDouble(Job::getTotalFee)
-                .sum();
+                .map(Job::getTotalFee)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     // Calculate total fee in a specific month
-    public Double calculateTotalFeeByMonth(int contractId, int year, int month) {
+    public BigDecimal calculateTotalFeeByMonth(int contractId, int year, int month) {
         List<Job> monthlyJobs = filterJobsByMonth(getEmployeeJobs(contractId), year, month);
 
         return monthlyJobs.stream()
-                .mapToDouble(Job::getTotalFee)
-                .sum();
+                .map(Job::getTotalFee)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     // Calculate fee before adding transportation
-    public Double calculatePartialFee(int contractId) {
+    public BigDecimal calculatePartialFee(int contractId) {
         return getEmployeeJobs(contractId).stream()
-                .mapToDouble(Job::getPartialFee)
-                .sum();
+                .map(Job::getPartialFee)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     // Calculate fee before adding transportation in a specific month
-    public Double calculatePartialFeeByMonth(int contractId, int year, int month) {
+    public BigDecimal calculatePartialFeeByMonth(int contractId, int year, int month) {
         List<Job> monthlyJobs = filterJobsByMonth(getEmployeeJobs(contractId), year, month);
 
         return monthlyJobs
                 .stream()
-                .mapToDouble(Job::getPartialFee)
-                .sum();
+                .map(Job::getPartialFee)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     // Calculate the sum of hourly fees needed to calculate the average
-    public Double calculateTotalHourlyFee(int contractId) {
+    public BigDecimal calculateTotalHourlyFee(int contractId) {
         return getEmployeeJobs(contractId).stream()
-                .mapToDouble(Job::getHourlyRate)
-                .sum();
+                .map(Job::getHourlyRate)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     // Calculate the average of the hourly fees
-    public Double calculateAverageHourlyFee(int contractId) {
-        Double hourlyFee = calculateTotalHourlyFee(contractId);
-        return hourlyFee / getEmployeeJobs(contractId).size();
+    public BigDecimal calculateAverageHourlyFee(int contractId) {
+        BigDecimal hourlyFee = calculateTotalHourlyFee(contractId);
+        return hourlyFee.divide(BigDecimal.valueOf(getEmployeeJobs(contractId).size()));
     }
 
     // Calculate the average of hourly fee in a year
-    public Double calculateAverageHourlyFeeByYear(int contractId, int year) {
+    public BigDecimal calculateAverageHourlyFeeByYear(int contractId, int year) {
         List<Job> jobsInYear = getEmployeeJobs(contractId).stream()
                 .filter(job -> job.getDate().getYear() == year)
                 .collect(Collectors.toList());
@@ -111,31 +112,31 @@ public class DataCollectionService {
             throw new NoJobsFoundException("No jobs found for the employee in the specified year.");
         }
 
-        double totalHourlyFee = jobsInYear
+        BigDecimal totalHourlyFee = jobsInYear
                 .stream()
-                .mapToDouble(Job::getHourlyRate)
-                .sum();
+                .map(Job::getHourlyRate)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        return totalHourlyFee / jobsInYear.size();
+        return totalHourlyFee.divide(BigDecimal.valueOf(jobsInYear.size()));
 
     }
 
     // Calculate transportation fee
-    public Double calculateTransportationFee(int contractId) {
+    public BigDecimal calculateTransportationFee(int contractId) {
         return getEmployeeJobs(contractId)
                 .stream()
-                .mapToDouble(Job::getTransportationFee)
-                .sum();
+                .map(Job::getTransportationFee)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     // Calculate transportation fee in a month
-    public Double calculateTransportationFeeByMonth(int contractId, int year, int month) {
+    public BigDecimal calculateTransportationFeeByMonth(int contractId, int year, int month) {
         List<Job> monthlyJobs = filterJobsByMonth(getEmployeeJobs(contractId), year, month);
 
         return monthlyJobs
                 .stream()
-                .mapToDouble(Job::getTransportationFee)
-                .sum();
+                .map(Job::getTransportationFee)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
 }

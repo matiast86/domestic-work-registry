@@ -2,6 +2,7 @@ package com.springboot.domesticworkregistry.service.job;
 
 import java.util.List;
 
+import com.springboot.domesticworkregistry.dto.job.CreateJobDto;
 import com.springboot.domesticworkregistry.entities.Job;
 
 public interface JobService {
@@ -12,7 +13,7 @@ public interface JobService {
 
     Job findById(int id);
 
-    Job save(Job job, int contractId);
+    Job save(CreateJobDto form, int contractId);
 
     void delete(int id);
 
