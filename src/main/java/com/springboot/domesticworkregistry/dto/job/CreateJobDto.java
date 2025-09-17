@@ -1,5 +1,6 @@
 package com.springboot.domesticworkregistry.dto.job;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -28,8 +29,8 @@ public class CreateJobDto {
     private LocalTime endTime;
 
     @NotNull(message = "is requied")
-    private Double hourlyRate;
+    private BigDecimal hourlyRate;
 
     @NotNull(message = "is requied")
-    private Double transportationFee;
+    private BigDecimal transportationFee;
 }

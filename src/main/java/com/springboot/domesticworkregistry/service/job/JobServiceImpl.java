@@ -1,21 +1,30 @@
 package com.springboot.domesticworkregistry.service.job;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.springboot.domesticworkregistry.dao.JobRepository;
 import com.springboot.domesticworkregistry.dto.job.CreateJobDto;
+import com.springboot.domesticworkregistry.dto.job.JobsReportDto;
+import com.springboot.domesticworkregistry.dto.job.JobsTableDto;
+import com.springboot.domesticworkregistry.dto.job.JobsTotalsDto;
 import com.springboot.domesticworkregistry.entities.Contract;
 import com.springboot.domesticworkregistry.entities.Job;
 import com.springboot.domesticworkregistry.exceptions.EntityNotFoundException;
 import com.springboot.domesticworkregistry.mapper.JobMapper;
 import com.springboot.domesticworkregistry.service.contract.ContractService;
+import com.springboot.domesticworkregistry.service.dataCollection.DataCollectionService;
 
 @Service
 public class JobServiceImpl implements JobService {
@@ -23,6 +32,7 @@ public class JobServiceImpl implements JobService {
     private final JobRepository jobRepository;
     private final ContractService contractService;
     private final JobMapper jobMapper;
+    private final DataCollectionService dataCollectionService;
 
     private Double calculateHoursWorked(LocalTime startTime, LocalTime endTime) {
         if (startTime.isAfter(endTime)) {
@@ -54,12 +64,20 @@ public class JobServiceImpl implements JobService {
         return partialFee.add(transportationFee);
     }
 
+    private String getMonthNameInSpanish(LocalDate date) {
+        Locale spanishArgentina = new Locale("es", "AR");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM", spanishArgentina);
+        return date.format(formatter);
+
+    }
+
     @Autowired
     public JobServiceImpl(JobRepository jobRepository,
-            ContractService contractService, JobMapper jobMapper) {
+            ContractService contractService, JobMapper jobMapper, DataCollectionService dataCollectionService) {
         this.jobRepository = jobRepository;
         this.contractService = contractService;
         this.jobMapper = jobMapper;
+        this.dataCollectionService = dataCollectionService;
     }
 
     @Override
@@ -112,4 +130,42 @@ public class JobServiceImpl implements JobService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public JobsReportDto getJobsByContracDto(int contractId) {
+        Contract contract = contractService.findById(contractId);
+        List<Job> jobs = contract.getJobs();
+        List<JobsTableDto> dtoList = new ArrayList<>();
+        JobsTotalsDto totals = new JobsTotalsDto();
+        JobsReportDto reportDto = new JobsReportDto(dtoList, totals);
+
+        for (Job job : jobs) {
+            int yearValue = job.getDate().getYear();
+            int monthValue = job.getDate().getMonthValue();
+            BigDecimal hourlyFee = this.dataCollectionService.calculateAverageByMonth(jobs, yearValue, monthValue,
+                    Job::getHourlyRate);
+            Double workedHours = this.dataCollectionService.calculateHoursByMonth(jobs, yearValue, monthValue);
+            BigDecimal subtotal = this.dataCollectionService.calculateSumByMonth(jobs, yearValue, monthValue,
+                    Job::getPartialFee);
+            BigDecimal transportationFee = this.dataCollectionService.calculateSumByMonth(jobs, yearValue, monthValue,
+                    Job::getTransportationFee);
+            BigDecimal total = this.dataCollectionService.calculateSumByMonth(jobs, yearValue, monthValue,
+                    Job::getTotalFee);
+            totals.setHourlyFeeTotal(this.dataCollectionService.calculateAverageByYear(jobs, yearValue,
+                    Job::getHourlyRate));
+            totals.setWorkedHoursTotal(this.dataCollectionService.calculateHoursByYear(jobs, yearValue));
+            totals.setSubtotalTotal(this.dataCollectionService.calculateSumByYear(jobs, yearValue,
+                    Job::getPartialFee));
+            totals.setTransportationFeeTotal(this.dataCollectionService.calculateSumByYear(jobs, yearValue,
+                    Job::getTransportationFee));
+            totals.setTotalTotal(this.dataCollectionService.calculateSumByYear(jobs, yearValue, Job::getTotalFee));
+            String jobMonth = StringUtils.capitalize(this.getMonthNameInSpanish(job.getDate()));
+
+            JobsTableDto dto = new JobsTableDto(contractId, yearValue, jobMonth, workedHours, hourlyFee, subtotal,
+                    transportationFee, total);
+            dtoList.add(dto);
+        }
+
+        return reportDto;
+
+    }
 }

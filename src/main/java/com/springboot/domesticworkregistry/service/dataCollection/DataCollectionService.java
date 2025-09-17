@@ -13,26 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.springboot.domesticworkregistry.entities.Job;
 import com.springboot.domesticworkregistry.exceptions.NoJobsFoundException;
-import com.springboot.domesticworkregistry.service.job.JobService;
 
 @Service
 @Transactional(readOnly = true)
 public class DataCollectionService {
-
-    private final JobService jobService;
-
-    public DataCollectionService(JobService jobService) {
-        this.jobService = jobService;
-    }
-
-    // --- Core Helpers ---
-    private List<Job> getEmployeeJobs(int contractId) {
-        List<Job> jobs = jobService.getJobsByContract(contractId);
-        if (jobs.isEmpty()) {
-            throw new NoJobsFoundException("No jobs found for the employee.");
-        }
-        return jobs;
-    }
 
     private List<Job> filterJobs(List<Job> jobs, Predicate<Job> predicate) {
         return jobs.stream()
@@ -70,39 +54,50 @@ public class DataCollectionService {
     }
 
     // --- Hours ---
-    public Double calculateTotalHours(int contractId) {
-        return sumHours(getEmployeeJobs(contractId));
+    public Double calculateTotalHours(List<Job> jobs) {
+        return sumHours(jobs);
     }
 
-    public Double calculateHoursByMonth(int contractId, int year, int month) {
-        return sumHours(filterJobs(getEmployeeJobs(contractId), byMonth(year, month)));
+    public Double calculateHoursByMonth(List<Job> jobs, int year, int month) {
+        return sumHours(filterJobs(jobs, byMonth(year, month)));
+    }
+
+    public Double calculateHoursByYear(List<Job> jobs, int year) {
+        List<Job> filteredJobs = filterJobs(jobs, byYear(year));
+        if (filteredJobs.isEmpty())
+            throw new NoJobsFoundException("No jobs found in the specified year.");
+        return sumHours(filteredJobs);
     }
 
     // --- Fees (Generic) ---
-    public BigDecimal calculateSum(int contractId, Function<Job, BigDecimal> mapper) {
-        return sumJobs(getEmployeeJobs(contractId), mapper);
-    }
-
-    public BigDecimal calculateSumByMonth(int contractId, int year, int month, Function<Job, BigDecimal> mapper) {
-        return sumJobs(filterJobs(getEmployeeJobs(contractId), byMonth(year, month)), mapper);
-    }
-
-    public BigDecimal calculateSumByYear(int contractId, int year, Function<Job, BigDecimal> mapper) {
-        List<Job> jobs = filterJobs(getEmployeeJobs(contractId), byYear(year));
-        if (jobs.isEmpty())
-            throw new NoJobsFoundException("No jobs found in the specified year.");
+    public BigDecimal calculateSum(List<Job> jobs, Function<Job, BigDecimal> mapper) {
         return sumJobs(jobs, mapper);
     }
 
-    public BigDecimal calculateAverage(int contractId, Function<Job, BigDecimal> mapper) {
-        return averageJobs(getEmployeeJobs(contractId), mapper);
+    public BigDecimal calculateSumByMonth(List<Job> jobs, int year, int month, Function<Job, BigDecimal> mapper) {
+        return sumJobs(filterJobs(jobs, byMonth(year, month)), mapper);
     }
 
-    public BigDecimal calculateAverageByYear(int contractId, int year, Function<Job, BigDecimal> mapper) {
-        List<Job> jobs = filterJobs(getEmployeeJobs(contractId), byYear(year));
-        if (jobs.isEmpty())
+    public BigDecimal calculateSumByYear(List<Job> jobs, int year, Function<Job, BigDecimal> mapper) {
+        List<Job> filteredJobs = filterJobs(jobs, byYear(year));
+        if (filteredJobs.isEmpty())
             throw new NoJobsFoundException("No jobs found in the specified year.");
+        return sumJobs(filteredJobs, mapper);
+    }
+
+    public BigDecimal calculateAverage(List<Job> jobs, Function<Job, BigDecimal> mapper) {
         return averageJobs(jobs, mapper);
+    }
+
+    public BigDecimal calculateAverageByMonth(List<Job> jobs, int year, int month, Function<Job, BigDecimal> mapper) {
+        return averageJobs(filterJobs(jobs, byMonth(year, month)), mapper);
+    }
+
+    public BigDecimal calculateAverageByYear(List<Job> jobs, int year, Function<Job, BigDecimal> mapper) {
+        List<Job> filteredJobs = filterJobs(jobs, byYear(year));
+        if (filteredJobs.isEmpty())
+            throw new NoJobsFoundException("No jobs found in the specified year.");
+        return averageJobs(filteredJobs, mapper);
     }
 
 }

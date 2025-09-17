@@ -28,6 +28,12 @@
         >
           Actualizar Datos
         </a>
+        <a
+          th:href="@{/job/jobList(contractId=${employee.contractId})}"
+          class="btn btn-info"
+        >
+          Tareas
+        </a>
       </div>
 
       <div class="row">
@@ -63,11 +69,15 @@
             <div class="card-body">
               <p>
                 <strong>Puesto:</strong>
-                <span id="jobType" th:text="${employee.jobTypeLabel}">Job Type</span>
+                <span id="jobType" th:text="${employee.jobTypeLabel}"
+                  >Job Type</span
+                >
               </p>
               <p>
                 <strong>Tipo de Empleo:</strong>
-                <span id="employmentType" th:text="${employee.employmentTypeLabel}"
+                <span
+                  id="employmentType"
+                  th:text="${employee.employmentTypeLabel}"
                   >Employment Type</span
                 >
               </p>
