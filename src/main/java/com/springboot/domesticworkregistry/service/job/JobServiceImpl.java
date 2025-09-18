@@ -6,8 +6,10 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -135,37 +137,49 @@ public class JobServiceImpl implements JobService {
         Contract contract = contractService.findById(contractId);
         List<Job> jobs = contract.getJobs();
         List<JobsTableDto> dtoList = new ArrayList<>();
-        JobsTotalsDto totals = new JobsTotalsDto();
-        JobsReportDto reportDto = new JobsReportDto(dtoList, totals);
+        List<JobsTotalsDto> totalsList = new ArrayList<>();
 
-        for (Job job : jobs) {
-            int yearValue = job.getDate().getYear();
-            int monthValue = job.getDate().getMonthValue();
-            BigDecimal hourlyFee = this.dataCollectionService.calculateAverageByMonth(jobs, yearValue, monthValue,
-                    Job::getHourlyRate);
-            Double workedHours = this.dataCollectionService.calculateHoursByMonth(jobs, yearValue, monthValue);
-            BigDecimal subtotal = this.dataCollectionService.calculateSumByMonth(jobs, yearValue, monthValue,
-                    Job::getPartialFee);
-            BigDecimal transportationFee = this.dataCollectionService.calculateSumByMonth(jobs, yearValue, monthValue,
-                    Job::getTransportationFee);
-            BigDecimal total = this.dataCollectionService.calculateSumByMonth(jobs, yearValue, monthValue,
-                    Job::getTotalFee);
-            totals.setHourlyFeeTotal(this.dataCollectionService.calculateAverageByYear(jobs, yearValue,
-                    Job::getHourlyRate));
-            totals.setWorkedHoursTotal(this.dataCollectionService.calculateHoursByYear(jobs, yearValue));
-            totals.setSubtotalTotal(this.dataCollectionService.calculateSumByYear(jobs, yearValue,
-                    Job::getPartialFee));
-            totals.setTransportationFeeTotal(this.dataCollectionService.calculateSumByYear(jobs, yearValue,
-                    Job::getTransportationFee));
-            totals.setTotalTotal(this.dataCollectionService.calculateSumByYear(jobs, yearValue, Job::getTotalFee));
-            String jobMonth = StringUtils.capitalize(this.getMonthNameInSpanish(job.getDate()));
+        // Group by year and then month
+        Map<Integer, Map<Integer, List<Job>>> jobsByYearMonth = jobs.stream().collect(Collectors.groupingBy(
+                job -> job.getDate().getYear(),
+                Collectors.groupingBy(job -> job.getDate().getMonthValue())));
 
-            JobsTableDto dto = new JobsTableDto(contractId, yearValue, jobMonth, workedHours, hourlyFee, subtotal,
-                    transportationFee, total);
-            dtoList.add(dto);
+        for (var yearEntry : jobsByYearMonth.entrySet()) {
+            int year = yearEntry.getKey();
+            Map<Integer, List<Job>> jobsByMonth = yearEntry.getValue();
+
+            // Monthly rows
+            for (var monthEntry : jobsByMonth.entrySet()) {
+                int month = monthEntry.getKey();
+                List<Job> monthlyJobs = monthEntry.getValue();
+                BigDecimal hourlyFee = dataCollectionService.calculateAverage(monthlyJobs, Job::getHourlyRate);
+                Double workedHours = dataCollectionService.calculateTotalHours(monthlyJobs);
+                BigDecimal subtotal = dataCollectionService.calculateSum(monthlyJobs,
+                        Job::getPartialFee);
+                BigDecimal transportationFee = dataCollectionService.calculateSum(monthlyJobs,
+                        Job::getTransportationFee);
+                BigDecimal total = dataCollectionService.calculateSum(monthlyJobs,
+                        Job::getTotalFee);
+                String jobMonth = StringUtils.capitalize(getMonthNameInSpanish(LocalDate.of(year, month, 1)));
+                dtoList.add(new JobsTableDto(contractId, LocalDate.of(year, month, 1), year, jobMonth, workedHours,
+                        hourlyFee, subtotal, transportationFee, total));
+            }
+            // yearly totals row
+            List<Job> yearlyJobs = yearEntry.getValue().values().stream().flatMap(List::stream).toList();
+
+            JobsTotalsDto yearTotals = new JobsTotalsDto(dataCollectionService.calculateTotalHours(yearlyJobs),
+                    dataCollectionService.calculateAverage(yearlyJobs, Job::getHourlyRate),
+                    dataCollectionService.calculateSum(yearlyJobs, Job::getPartialFee),
+                    dataCollectionService.calculateSum(yearlyJobs, Job::getTransportationFee),
+                    dataCollectionService.calculateSum(yearlyJobs, Job::getTotalFee));
+
+            totalsList.add(yearTotals);
         }
 
-        return reportDto;
+        // sort by date
+        dtoList.sort(Comparator.comparing(JobsTableDto::getDate));
+
+        return new JobsReportDto(dtoList, totalsList);
 
     }
 }

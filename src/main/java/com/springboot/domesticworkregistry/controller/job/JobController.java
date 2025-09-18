@@ -1,7 +1,5 @@
 package com.springboot.domesticworkregistry.controller.job;
 
-import java.util.List;
-
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,9 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.springboot.domesticworkregistry.dto.job.CreateJobDto;
-import com.springboot.domesticworkregistry.dto.job.JobsTableDto;
-import com.springboot.domesticworkregistry.entities.Job;
-import com.springboot.domesticworkregistry.service.dataCollection.DataCollectionService;
+import com.springboot.domesticworkregistry.dto.job.JobsReportDto;
 import com.springboot.domesticworkregistry.service.job.JobService;
 
 import jakarta.validation.Valid;
@@ -27,11 +23,9 @@ import jakarta.validation.Valid;
 public class JobController {
 
     private JobService jobService;
-    private DataCollectionService dataCollectionService;
 
-    public JobController(JobService jobService, DataCollectionService dataCollectionService) {
+    public JobController(JobService jobService) {
         this.jobService = jobService;
-        this.dataCollectionService = dataCollectionService;
     }
 
     @InitBinder
@@ -69,8 +63,9 @@ public class JobController {
 
     @GetMapping("/jobList")
     public String getJobsList(@RequestParam("contractId") int contractId, Model model) {
-        List<JobsTableDto> jobs = 
-        return "";
+        JobsReportDto jobs = this.jobService.getJobsByContracDto(contractId);
+        model.addAttribute("jobs", jobs);
+        return "jobs/job-table";
     }
 
 }

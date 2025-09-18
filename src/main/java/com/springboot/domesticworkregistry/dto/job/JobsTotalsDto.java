@@ -2,8 +2,6 @@ package com.springboot.domesticworkregistry.dto.job;
 
 import java.math.BigDecimal;
 
-import com.springboot.domesticworkregistry.service.dataCollection.DataCollectionService;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,5 +15,4 @@ public class JobsTotalsDto {
     private BigDecimal subtotalTotal;
     private BigDecimal transportationFeeTotal;
     private BigDecimal totalTotal;
-    private DataCollectionService dataCollectionServiceTotal;
 }

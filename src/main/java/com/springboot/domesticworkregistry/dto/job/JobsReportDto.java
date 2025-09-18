@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class JobsReportDto {
     private List<JobsTableDto> monthlyRows;
-    private JobsTotalsDto totals;
+    private List<JobsTotalsDto> totals;
 
 }

@@ -1,6 +1,7 @@
 package com.springboot.domesticworkregistry.dto.job;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class JobsTableDto {
     private int contractId;
+    private LocalDate date;
     private int year;
     private String month;
     private Double workedHours;
