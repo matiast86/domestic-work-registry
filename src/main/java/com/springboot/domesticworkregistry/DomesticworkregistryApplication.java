@@ -20,8 +20,7 @@ public class DomesticworkregistryApplication {
 	@Bean
 	public CommandLineRunner setupDefaultUser(
 			EmployerRepository employerRepository,
-			PasswordEncoder passwordEncoder // 👈 ya está bien inyectado acá
-	) {
+			PasswordEncoder passwordEncoder) {
 		return args -> {
 
 			if (employerRepository.findByEmail("employer@example.com").isEmpty()) {
