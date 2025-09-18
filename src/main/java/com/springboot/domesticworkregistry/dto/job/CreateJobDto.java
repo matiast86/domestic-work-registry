@@ -16,21 +16,21 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CreateJobDto {
 
-    @DateTimeFormat(pattern = "dd-MM-yyy")
-    @NotNull(message = "is requied")
-    private LocalDate jobDate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @NotNull(message = "is required")
+    private LocalDate date;
 
     @DateTimeFormat(pattern = "HH:mm")
-    @NotNull(message = "is requied")
-    private LocalTime starTime;
+    @NotNull(message = "is required")
+    private LocalTime startTime;
 
     @DateTimeFormat(pattern = "HH:mm")
-    @NotNull(message = "is requied")
+    @NotNull(message = "is required")
     private LocalTime endTime;
 
-    @NotNull(message = "is requied")
+    @NotNull(message = "is required")
     private BigDecimal hourlyRate;
 
-    @NotNull(message = "is requied")
+    @NotNull(message = "is required")
     private BigDecimal transportationFee;
 }

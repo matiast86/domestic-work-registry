@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class JobsTotalsDto {
+    private int year;
     private Double workedHoursTotal;
     private BigDecimal hourlyFeeTotal;
     private BigDecimal subtotalTotal;

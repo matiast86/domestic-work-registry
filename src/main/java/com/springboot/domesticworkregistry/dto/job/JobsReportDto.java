@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class JobsReportDto {
+    private int contractId;
     private List<JobsTableDto> monthlyRows;
     private List<JobsTotalsDto> totals;
 

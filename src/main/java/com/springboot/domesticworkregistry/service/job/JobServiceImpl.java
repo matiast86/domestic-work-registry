@@ -167,7 +167,7 @@ public class JobServiceImpl implements JobService {
             // yearly totals row
             List<Job> yearlyJobs = yearEntry.getValue().values().stream().flatMap(List::stream).toList();
 
-            JobsTotalsDto yearTotals = new JobsTotalsDto(dataCollectionService.calculateTotalHours(yearlyJobs),
+            JobsTotalsDto yearTotals = new JobsTotalsDto(year, dataCollectionService.calculateTotalHours(yearlyJobs),
                     dataCollectionService.calculateAverage(yearlyJobs, Job::getHourlyRate),
                     dataCollectionService.calculateSum(yearlyJobs, Job::getPartialFee),
                     dataCollectionService.calculateSum(yearlyJobs, Job::getTransportationFee),
@@ -179,7 +179,7 @@ public class JobServiceImpl implements JobService {
         // sort by date
         dtoList.sort(Comparator.comparing(JobsTableDto::getDate));
 
-        return new JobsReportDto(dtoList, totalsList);
+        return new JobsReportDto(contractId, dtoList, totalsList);
 
     }
 }

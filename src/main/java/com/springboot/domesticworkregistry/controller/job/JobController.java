@@ -35,30 +35,30 @@ public class JobController {
     }
 
     @GetMapping("/add")
-    public String jobForm(Model model) {
-        model.addAttribute("jobForm", new CreateJobDto());
-
+    public String jobForm(@RequestParam("contractId") int contractId, Model model) {
+        CreateJobDto jobForm = new CreateJobDto();
+        model.addAttribute("jobForm", jobForm);
+        model.addAttribute("contractId", contractId); // pass contractId to the form
         return "jobs/job-form";
     }
 
     @PostMapping("/create")
-    public String createJob(@RequestParam("contractId") int contractId,
-            @Valid @ModelAttribute("jobForm") CreateJobDto form, BindingResult bindingResult, Model model) {
+    public String createJob(
+            @RequestParam("contractId") int contractId,
+            @Valid @ModelAttribute("jobForm") CreateJobDto form,
+            BindingResult bindingResult,
+            Model model) {
 
         if (bindingResult.hasErrors()) {
-            model.addAttribute("jobForm", form);
+            model.addAttribute("contractId", contractId);
             return "jobs/job-form";
         }
-        model.addAttribute("jobForm", form);
+        
 
-        try {
-            jobService.save(form, contractId);
-        } catch (Exception e) {
-            model.addAttribute("jobForm", form);
-            throw e;
-        }
+        jobService.save(form, contractId);
 
-        return "jobs/job-table";
+        // Redirect to avoid resubmission
+        return "redirect:/job/jobList?contractId=" + contractId;
     }
 
     @GetMapping("/jobList")
