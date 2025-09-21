@@ -18,9 +18,9 @@ import lombok.NoArgsConstructor;
 public class Address {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private String id;
+    private int id;
 
     @Column(name = "street")
     private String street;
@@ -36,6 +36,16 @@ public class Address {
 
     @Column(name = "country")
     private String country;
+
+    public Address(String street, String number, String city, String postalCode, String country) {
+        this.street = street;
+        this.number = number;
+        this.city = city;
+        this.postalCode = postalCode;
+        this.country = country;
+    }
+
+    
 
 
  

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h2>User registered successfully!</h2>
+    <!-- display first name, last name and email
+    <ul>
+      <li th:text="'First name: ' + ${registerEmployerDto.firstName}"></li>
+      <li th:text="'Last name: ' + ${registerEmployerDto.lastName}"></li>
+      <li th:text="'Email name: ' + ${registerEmployerDto.email}"></li>
+    </ul> -->
+    <hr />
+    <a th:href="@{/login}">Login with new user name</a>
+  </body>
+</html>
