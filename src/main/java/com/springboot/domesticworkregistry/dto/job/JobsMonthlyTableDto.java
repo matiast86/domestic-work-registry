@@ -8,18 +8,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class JobsTableDto {
-    private int contractId;
+@NoArgsConstructor
+public class JobsMonthlyTableDto {
+    private int jobId;
     private LocalDate date;
     private int year;
-    private int monthValue;
     private String month;
     private Double workedHours;
-    private BigDecimal hourlyFee;
-    private BigDecimal subtotal;
+    private BigDecimal hourlyRate;
+    private BigDecimal partialFee;
     private BigDecimal transportationFee;
-    private BigDecimal total;
+    private BigDecimal totalFee;
 
 }
