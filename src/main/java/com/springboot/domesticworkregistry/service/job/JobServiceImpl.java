@@ -18,6 +18,8 @@ import org.springframework.util.StringUtils;
 
 import com.springboot.domesticworkregistry.dao.JobRepository;
 import com.springboot.domesticworkregistry.dto.job.CreateJobDto;
+import com.springboot.domesticworkregistry.dto.job.JobsMonthlyReportDto;
+import com.springboot.domesticworkregistry.dto.job.JobsMonthlyTableDto;
 import com.springboot.domesticworkregistry.dto.job.JobsReportDto;
 import com.springboot.domesticworkregistry.dto.job.JobsTableDto;
 import com.springboot.domesticworkregistry.dto.job.JobsTotalsDto;
@@ -25,6 +27,7 @@ import com.springboot.domesticworkregistry.entities.Contract;
 import com.springboot.domesticworkregistry.entities.Job;
 import com.springboot.domesticworkregistry.exceptions.EntityNotFoundException;
 import com.springboot.domesticworkregistry.mapper.JobMapper;
+import com.springboot.domesticworkregistry.mapper.JobsMonthlyTableMapper;
 import com.springboot.domesticworkregistry.service.contract.ContractService;
 import com.springboot.domesticworkregistry.service.dataCollection.DataCollectionService;
 
@@ -34,6 +37,7 @@ public class JobServiceImpl implements JobService {
     private final JobRepository jobRepository;
     private final ContractService contractService;
     private final JobMapper jobMapper;
+    private final JobsMonthlyTableMapper tableMapper;
     private final DataCollectionService dataCollectionService;
 
     private Double calculateHoursWorked(LocalTime startTime, LocalTime endTime) {
@@ -75,10 +79,12 @@ public class JobServiceImpl implements JobService {
 
     @Autowired
     public JobServiceImpl(JobRepository jobRepository,
-            ContractService contractService, JobMapper jobMapper, DataCollectionService dataCollectionService) {
+            ContractService contractService, JobMapper jobMapper, JobsMonthlyTableMapper tableMapper,
+            DataCollectionService dataCollectionService) {
         this.jobRepository = jobRepository;
         this.contractService = contractService;
         this.jobMapper = jobMapper;
+        this.tableMapper = tableMapper;
         this.dataCollectionService = dataCollectionService;
     }
 
@@ -106,11 +112,11 @@ public class JobServiceImpl implements JobService {
         job.setContract(contract);
         LocalTime startTime = job.getStartTime();
         LocalTime endTime = job.getEndTime();
-        Double workedHours = this.calculateHoursWorked(startTime, endTime);
+        Double workedHours = calculateHoursWorked(startTime, endTime);
         BigDecimal transportationFee = job.getTransportationFee();
         BigDecimal hourlyFee = job.getHourlyRate();
-        BigDecimal partialFee = this.calculatePartialFee(workedHours, hourlyFee);
-        BigDecimal totalFee = this.calculateTotalFee(partialFee, transportationFee);
+        BigDecimal partialFee = calculatePartialFee(workedHours, hourlyFee);
+        BigDecimal totalFee = calculateTotalFee(partialFee, transportationFee);
         job.setTotalFee(totalFee);
         job.setWorkedHours(workedHours);
         job.setPartialFee(partialFee);
@@ -161,8 +167,9 @@ public class JobServiceImpl implements JobService {
                 BigDecimal total = dataCollectionService.calculateSum(monthlyJobs,
                         Job::getTotalFee);
                 String jobMonth = StringUtils.capitalize(getMonthNameInSpanish(LocalDate.of(year, month, 1)));
-                dtoList.add(new JobsTableDto(contractId, LocalDate.of(year, month, 1), year, jobMonth, workedHours,
-                        hourlyFee, subtotal, transportationFee, total));
+                dtoList.add(
+                        new JobsTableDto(contractId, LocalDate.of(year, month, 1), year, month, jobMonth, workedHours,
+                                hourlyFee, subtotal, transportationFee, total));
             }
             // yearly totals row
             List<Job> yearlyJobs = yearEntry.getValue().values().stream().flatMap(List::stream).toList();
@@ -182,4 +189,71 @@ public class JobServiceImpl implements JobService {
         return new JobsReportDto(contractId, dtoList, totalsList);
 
     }
+
+    @Override
+    public JobsMonthlyReportDto getMonthlyJobsByContract(int contractId, int year, int month) {
+        Contract contract = contractService.findById(contractId);
+        List<Job> jobs = contract.getJobs().stream()
+                .filter(job -> job.getDate().getYear() == year && job.getDate().getMonthValue() == month).toList();
+        List<JobsMonthlyTableDto> tables = new ArrayList<>();
+        String jobMonth = StringUtils.capitalize(getMonthNameInSpanish(LocalDate.of(year, month, 1)));
+
+        for (Job job : jobs) {
+            JobsMonthlyTableDto tableDto = tableMapper.toDo(job);
+            tableDto.setYear(year);
+            tableDto.setMonth(jobMonth);
+            tables.add(tableDto);
+
+        }
+
+        BigDecimal hourlyFeeTotal = dataCollectionService.calculateAverage(jobs, Job::getHourlyRate);
+        Double workedHoursTotal = dataCollectionService.calculateTotalHours(jobs);
+        BigDecimal subtotalTotal = dataCollectionService.calculateSum(jobs,
+                Job::getPartialFee);
+        BigDecimal transportationFeeTotal = dataCollectionService.calculateSum(jobs,
+                Job::getTransportationFee);
+        BigDecimal totalTotal = dataCollectionService.calculateSum(jobs,
+                Job::getTotalFee);
+
+        JobsTotalsDto totalsDto = new JobsTotalsDto(year, workedHoursTotal, hourlyFeeTotal, subtotalTotal,
+                transportationFeeTotal, totalTotal);
+
+        return new JobsMonthlyReportDto(tables, totalsDto);
+
+    }
+
+    @Override
+    public CreateJobDto getJobDto(int jobId) {
+        Job job = jobRepository.findById(jobId)
+                .orElseThrow(() -> new EntityNotFoundException("Job with id " + jobId + " not found"));
+
+        return new CreateJobDto(job.getDate(), job.getStartTime(), job.getEndTime(), job.getHourlyRate(),
+                job.getTransportationFee());
+
+    }
+
+    @Override
+    public Job update(CreateJobDto form, int jobId) {
+        Job job = jobRepository.findById(jobId)
+                .orElseThrow(() -> new EntityNotFoundException("Job with id " + jobId + " not found"));
+
+        LocalTime startTime = form.getStartTime();
+        LocalTime endTime = form.getEndTime();
+        Double workedHours = calculateHoursWorked(startTime, endTime);
+        BigDecimal transportationFee = form.getTransportationFee();
+        BigDecimal hourlyFee = form.getHourlyRate();
+        BigDecimal partialFee = calculatePartialFee(workedHours, hourlyFee);
+        BigDecimal totalFee = calculateTotalFee(partialFee, transportationFee);
+        job.setDate(form.getDate());
+        job.setStartTime(startTime);
+        job.setEndTime(endTime);
+        job.setHourlyRate(hourlyFee);
+        job.setTransportationFee(transportationFee);
+        job.setTotalFee(totalFee);
+        job.setWorkedHours(workedHours);
+        job.setPartialFee(partialFee);
+
+        return jobRepository.save(job);
+    }
+
 }

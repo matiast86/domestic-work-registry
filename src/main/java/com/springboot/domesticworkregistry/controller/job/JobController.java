@@ -11,9 +11,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.springboot.domesticworkregistry.dto.job.CreateJobDto;
+import com.springboot.domesticworkregistry.dto.job.JobsMonthlyReportDto;
 import com.springboot.domesticworkregistry.dto.job.JobsReportDto;
+import com.springboot.domesticworkregistry.entities.Job;
 import com.springboot.domesticworkregistry.service.job.JobService;
 
 import jakarta.validation.Valid;
@@ -53,7 +56,6 @@ public class JobController {
             model.addAttribute("contractId", contractId);
             return "jobs/job-form";
         }
-        
 
         jobService.save(form, contractId);
 
@@ -66,6 +68,49 @@ public class JobController {
         JobsReportDto jobs = this.jobService.getJobsByContracDto(contractId);
         model.addAttribute("jobs", jobs);
         return "jobs/job-table";
+    }
+
+    @GetMapping("/monthlyDetails")
+    public String showMonthlyDetails(@RequestParam("contractId") int contractId, @RequestParam("year") int year,
+            @RequestParam("month") int month, Model model) {
+        JobsMonthlyReportDto jobs = this.jobService.getMonthlyJobsByContract(contractId, year, month);
+        model.addAttribute("jobs", jobs);
+
+        return "jobs/monthly-table";
+    }
+
+    @GetMapping("/updateForm")
+    public String updateForm(@RequestParam("jobId") int jobId, Model model) {
+        CreateJobDto dto = jobService.getJobDto(jobId);
+        model.addAttribute("jobForm", dto);
+        model.addAttribute("jobId", jobId);
+
+        return "jobs/job-update-form";
+    }
+
+    @PostMapping("/update")
+    public String update(@Valid @ModelAttribute("jobForm") CreateJobDto form, @RequestParam("jobId") int jobId,
+            BindingResult bindingResult,
+            Model model, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("jobForm", form);
+            return "jobs/job-update-form";
+        }
+
+        model.addAttribute("jobForm", form);
+        model.addAttribute("jobId", jobId);
+        Job updatedJob = jobService.update(form, jobId);
+
+        redirectAttributes.addFlashAttribute("successMessage", "Tarea actualizada con éxito");
+
+        // build redirect with contractId, year, month
+        int contractId = updatedJob.getContract().getId();
+        int year = updatedJob.getDate().getYear();
+        int month = updatedJob.getDate().getMonthValue();
+
+        return "redirect:/job/monthlyDetails?contractId=" + contractId +
+                "&year=" + year +
+                "&month=" + month;
     }
 
 }
