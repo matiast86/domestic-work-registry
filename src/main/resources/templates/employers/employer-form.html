@@ -20,12 +20,13 @@
       <div class="container">
         <h2 class="text-center mb-4">Registrarse como Empleador</h2>
         <form
-          th:action="@{/register/processRegistrationForm}"
+          th:action="@{/employers/update}"
           method="post"
           class="mx-auto"
           style="max-width: 600px"
-          th:object="${registerEmployerDto}"
+          th:object="${employer}"
         >
+          <input type="hidden" th:field="*{employerId}" />
           <!-- Nombre -->
           <div class="mb-3">
             <label for="firstName" class="form-label">Nombre</label>
@@ -116,42 +117,6 @@
             </div>
           </div>
 
-          <!-- Contraseña -->
-          <div class="mb-3">
-            <label for="password" class="form-label">Contraseña</label>
-            <input
-              type="password"
-              th:field="*{password}"
-              class="form-control"
-              required
-            />
-            <div
-              class="invalid-feedback"
-              th:if="${#fields.hasErrors('password')}"
-            >
-              <span th:errors="*{password}"></span>
-            </div>
-          </div>
-
-          <!-- Repetir Contraseña -->
-          <div class="mb-3">
-            <label for="repeatPassword" class="form-label"
-              >Repetir Contraseña</label
-            >
-            <input
-              type="password"
-              th:field="*{repeatPassword}"
-              class="form-control"
-              required
-            />
-            <div
-              class="invalid-feedback"
-              th:if="${#fields.hasErrors('repeatPassword')}"
-            >
-              <span th:errors="*{repeatPassword}"></span>
-            </div>
-          </div>
-
           <!-- ADDRESS DATA -->
           <h4>Address</h4>
           <div class="mb-3">
@@ -206,7 +171,7 @@
 
           <!-- Botón -->
           <div class="d-grid">
-            <button type="submit" class="btn btn-primary">Registrarse</button>
+            <button type="submit" class="btn btn-primary">Guardar</button>
           </div>
         </form>
       </div>

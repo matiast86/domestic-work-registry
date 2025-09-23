@@ -3,6 +3,7 @@ package com.springboot.domesticworkregistry.service.employer;
 import java.util.List;
 
 import com.springboot.domesticworkregistry.dto.employer.RegisterEmployerDto;
+import com.springboot.domesticworkregistry.dto.employer.UpdateEmployerDto;
 import com.springboot.domesticworkregistry.entities.Contract;
 import com.springboot.domesticworkregistry.entities.Employer;
 
@@ -14,7 +15,9 @@ public interface EmployerService {
 
     Employer findByEmail(String email);
 
-    Employer save(Employer theEmployer);
+    UpdateEmployerDto getEmployerDto(String id);
+
+    Employer update(UpdateEmployerDto form, String id);
 
     void delete(String theId);
 

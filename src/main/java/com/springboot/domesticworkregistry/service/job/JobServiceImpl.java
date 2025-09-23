@@ -71,7 +71,7 @@ public class JobServiceImpl implements JobService {
     }
 
     private String getMonthNameInSpanish(LocalDate date) {
-        Locale spanishArgentina = new Locale("es", "AR");
+        Locale spanishArgentina = Locale.of("es", "AR");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM", spanishArgentina);
         return date.format(formatter);
 

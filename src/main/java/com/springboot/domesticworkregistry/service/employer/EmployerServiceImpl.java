@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.springboot.domesticworkregistry.dao.EmployerRepository;
 import com.springboot.domesticworkregistry.dto.employer.RegisterEmployerDto;
+import com.springboot.domesticworkregistry.dto.employer.UpdateEmployerDto;
+import com.springboot.domesticworkregistry.entities.Address;
 import com.springboot.domesticworkregistry.entities.Contract;
 import com.springboot.domesticworkregistry.entities.Employer;
 import com.springboot.domesticworkregistry.exceptions.EntityNotFoundException;
@@ -51,11 +53,6 @@ public class EmployerServiceImpl implements EmployerService {
     }
 
     @Override
-    public Employer save(Employer theEmployer) {
-        return employerRepository.save(theEmployer);
-    }
-
-    @Override
     public void delete(String theId) {
         employerRepository.deleteById(theId);
     }
@@ -71,6 +68,9 @@ public class EmployerServiceImpl implements EmployerService {
         Employer employer = employerMapper.toEmployer(dto);
         employer.setPassword(passwordEncoder.encode(dto.getPassword()));
         employer.setEmail(dto.getEmail().toLowerCase());
+        Address address = new Address(dto.getStreet(), dto.getNumber(), dto.getCity(), dto.getPostalCode(),
+                dto.getCountry());
+        employer.setAddress(address);
 
         return employerRepository.save(employer);
 
@@ -84,6 +84,49 @@ public class EmployerServiceImpl implements EmployerService {
         List<Contract> contracts = employer.getContracts();
 
         return contracts;
+    }
+
+    @Override
+    public UpdateEmployerDto getEmployerDto(String id) {
+        Employer employer = employerRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Employer with id " + id + " not found"));
+        Address address = employer.getAddress();
+        UpdateEmployerDto dto = new UpdateEmployerDto();
+        dto.setEmployerId(id);
+        dto.setFirstName(employer.getFirstName());
+        dto.setLastName(employer.getLastName());
+        dto.setAge(employer.getAge());
+        dto.setEmail(employer.getEmail());
+        dto.setIdentificationNumber(employer.getIdentificationNumber());
+        dto.setPhone(employer.getPhone());
+        dto.setStreet(address.getStreet());
+        dto.setNumber(address.getNumber());
+        dto.setCity(address.getCity());
+        dto.setPostalCode(address.getPostalCode());
+        dto.setCountry(address.getCountry());
+
+        return dto;
+    }
+
+    @Override
+    public Employer update(UpdateEmployerDto form, String id) {
+        Employer employer = employerRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Employer with id " + id + " not found"));
+
+        employer.setFirstName(form.getFirstName());
+        employer.setLastName(form.getLastName());
+        employer.setEmail(form.getEmail());
+        employer.setIdentificationNumber(form.getIdentificationNumber());
+        employer.setAge(form.getAge());
+        Address address = employer.getAddress();
+
+        address.setStreet(form.getStreet());
+        address.setNumber(form.getNumber());
+        address.setCity(form.getCity());
+        address.setPostalCode(form.getPostalCode());
+        address.setCountry(form.getCountry());
+
+        return employerRepository.save(employer);
     }
 
 }

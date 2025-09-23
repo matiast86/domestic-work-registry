@@ -115,6 +115,7 @@ public class ContractController {
             return "contracts/contract-update-form";
         }
         model.addAttribute("contractForm", form);
+        
 
         contractService.update(form.getContractId(), form);
 
