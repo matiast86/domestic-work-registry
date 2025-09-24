@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
@@ -24,15 +23,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Employer extends User {
 
-    @Column(name = "age")
-    private int age;
-
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "address_id")
     private Address address;
-
-    @Column(name = "identification-number")
-    private String identificationNumber;
 
     @OneToMany(mappedBy = "employer", cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
             CascadeType.REFRESH }, fetch = FetchType.LAZY)
@@ -45,6 +38,5 @@ public class Employer extends User {
         contracts.add(contract);
         contract.setEmployer(this);
     }
-
 
 }

@@ -1,6 +1,5 @@
 package com.springboot.domesticworkregistry.controller.employer;
 
-import java.security.Principal;
 import java.util.List;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -73,8 +72,7 @@ public class EmployerController {
     }
 
     @GetMapping("/dashboard")
-    public String showDashboard(Principal principal, Model model) {
-        Employer employer = employerService.findByEmail(principal.getName());
+    public String showDashboard(@AuthenticationPrincipal Employer employer, Model model) {
         model.addAttribute("employer", employer);
         return "employers/employer-dashboard";
     }

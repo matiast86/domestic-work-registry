@@ -1,5 +1,6 @@
 package com.springboot.domesticworkregistry.entities;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -40,6 +41,12 @@ public abstract class User implements UserDetails {
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
+    @Column(name = "birthdate")
+    private LocalDate birthDate;
+
+    @Column(name = "identificationNumber", unique = true, nullable = false)
+    private String identificationNumber;
+
     @Column(name = "password", nullable = false, length = 100)
     private String password;
 
@@ -56,10 +63,17 @@ public abstract class User implements UserDetails {
     @Column(name = "created_at")
     private Date createdAt;
 
-    public User(String firstName, String lastName, String email, String password, Role role, String phone) {
+    @Column(name = "first_login")
+    private boolean firstLogin = false;
+
+    public User(String firstName, String lastName, String email, LocalDate birthDate, String identificationNumber,
+            String password,
+            Role role, String phone) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.birthDate = birthDate;
+        this.identificationNumber = identificationNumber;
         this.password = password;
         this.role = role;
         this.phone = phone;
@@ -70,10 +84,10 @@ public abstract class User implements UserDetails {
         this.createdAt = new Date();
     }
 
-@Override
-public Collection<? extends GrantedAuthority> getAuthorities() {
-    return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
-}
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
+    }
 
     @Override
     public String getUsername() {
