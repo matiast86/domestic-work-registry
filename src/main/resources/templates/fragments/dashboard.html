@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <!-- Employer Contracts -->
+    <div th:fragment="employerContracts">
+      <h4>Contratos como Empleador</h4>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Empleado</th>
+            <th>Tipo de Empleo</th>
+            <th>Salario</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="contract : ${contracts}">
+            <td
+              th:text="${contract.employee.firstName + ' ' + contract.employee.lastName}"
+            ></td>
+            <td th:text="${contract.employmentType}"></td>
+            <td th:text="${contract.salary}"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Employee Contracts -->
+    <div th:fragment="employeeContracts">
+      <h4>Contratos como Empleado</h4>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Empleador</th>
+            <th>Tipo de Empleo</th>
+            <th>Salario</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="contract : ${contracts}">
+            <td
+              th:text="${contract.employer.firstName + ' ' + contract.employer.lastName}"
+            ></td>
+            <td th:text="${contract.employmentType}"></td>
+            <td th:text="${contract.salary}"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

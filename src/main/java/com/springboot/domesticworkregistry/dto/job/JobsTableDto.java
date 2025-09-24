@@ -16,7 +16,7 @@ public class JobsTableDto {
     private int year;
     private int monthValue;
     private String month;
-    private Double workedHours;
+    private BigDecimal workedHours;
     private BigDecimal hourlyFee;
     private BigDecimal subtotal;
     private BigDecimal transportationFee;
