@@ -64,15 +64,13 @@ public class Contract {
         @Column(name = "active")
         private boolean active;
 
-        @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
-                        CascadeType.REFRESH })
+        @ManyToOne
         @JoinColumn(name = "employer_id")
-        private Employer employer;
+        private User employer;
 
-        @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
-                        CascadeType.REFRESH })
+        @ManyToOne
         @JoinColumn(name = "employee_id")
-        private Employee employee;
+        private User employee;
 
         @OneToMany(mappedBy = "contract", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
         private List<Job> jobs = new ArrayList<>();

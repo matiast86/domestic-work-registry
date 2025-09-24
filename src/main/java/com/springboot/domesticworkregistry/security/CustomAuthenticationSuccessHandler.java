@@ -7,6 +7,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Component;
 
 import com.springboot.domesticworkregistry.entities.User;
+import com.springboot.domesticworkregistry.enums.Role;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,8 +18,8 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
-            HttpServletResponse response,
-            Authentication authentication)
+                                        HttpServletResponse response,
+                                        Authentication authentication)
             throws IOException, ServletException {
 
         User user = (User) authentication.getPrincipal();
@@ -29,13 +30,23 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             return;
         }
 
-        // 🔹 Redirect by role
-        String redirectUrl = switch (user.getRole()) {
-            case EMPLOYER -> "/employers/dashboard";
-            case EMPLOYEE -> "/employees/dashboard";
-            default -> "/";
-        };
+        // 🔹 Handle multiple roles
+        if (user.getRoles().contains(Role.EMPLOYER) && user.getRoles().contains(Role.EMPLOYEE)) {
+            // Redirect to a "role chooser" page
+            getRedirectStrategy().sendRedirect(request, response, "/choose-role");
+            return;
+        }
 
-        getRedirectStrategy().sendRedirect(request, response, redirectUrl);
+        // 🔹 Single role handling
+        if (user.getRoles().contains(Role.EMPLOYER)) {
+            getRedirectStrategy().sendRedirect(request, response, "/employers/dashboard");
+        } else if (user.getRoles().contains(Role.EMPLOYEE)) {
+            getRedirectStrategy().sendRedirect(request, response, "/employees/dashboard");
+        } else if (user.getRoles().contains(Role.ADMIN)) {
+            getRedirectStrategy().sendRedirect(request, response, "/admin/dashboard");
+        } else {
+            getRedirectStrategy().sendRedirect(request, response, "/");
+        }
     }
 }
+

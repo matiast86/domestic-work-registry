@@ -4,18 +4,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import com.springboot.domesticworkregistry.dao.EmployeeRepository;
-import com.springboot.domesticworkregistry.dao.EmployerRepository;
+import com.springboot.domesticworkregistry.dao.UserRepository;
 
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private EmployerRepository employerRepository;
-    private EmployeeRepository employeeRepository;
+    private UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return employerRepository.findByEmail(email).map(UserDetails.class::cast)
-                .or(() -> employeeRepository.findByEmail(email).map(UserDetails.class::cast))
+        return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
     }
 
