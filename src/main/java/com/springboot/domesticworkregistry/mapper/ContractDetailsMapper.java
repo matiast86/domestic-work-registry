@@ -11,7 +11,7 @@ public interface ContractDetailsMapper {
     @Mapping(source = "employee.firstName", target = "firstName")
     @Mapping(source = "employee.lastName", target = "lastName")
     @Mapping(source = "employee.email", target = "email")
-    @Mapping(source = "employee.cuil", target = "cuil")
+    @Mapping(source = "employee.identificationNumber", target = "identificationNumber")
     @Mapping(source = "employee.phone", target = "phone")
     @Mapping(source = "id", target = "contractId")
     @Mapping(source = "employee.homeAddress.street", target = "street")

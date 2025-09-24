@@ -28,6 +28,9 @@ public class Address {
     @Column(name = "number")
     private String number;
 
+    @Column(name = "apartment", nullable = true)
+    private String apartment;
+
     @Column(name = "city")
     private String city;
 
@@ -37,16 +40,13 @@ public class Address {
     @Column(name = "country")
     private String country;
 
-    public Address(String street, String number, String city, String postalCode, String country) {
+    public Address(String street, String number, String apartment, String city, String postalCode, String country) {
         this.street = street;
         this.number = number;
+        this.apartment = apartment;
         this.city = city;
         this.postalCode = postalCode;
         this.country = country;
     }
 
-    
-
-
- 
 }

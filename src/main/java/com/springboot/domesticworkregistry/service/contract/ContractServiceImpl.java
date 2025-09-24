@@ -1,6 +1,6 @@
 package com.springboot.domesticworkregistry.service.contract;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -63,7 +63,7 @@ public class ContractServiceImpl implements ContractService {
                 form.getFirstName(),
                 form.getLastName(),
                 form.getEmail(),
-                form.getCuil(),
+                form.getIdentificationNumber(),
                 form.getPhone()
 
         );
@@ -78,14 +78,16 @@ public class ContractServiceImpl implements ContractService {
         CreateEmployeeWithAddressDto employeeWithAddressDto = new CreateEmployeeWithAddressDto(employeeDto, addressDto);
 
         CreateContractDto contractDto = new CreateContractDto(
+                form.getSince(),
                 form.getJobType(),
                 form.getEmploymentType(),
-                form.getSalary());
+                form.getSalary(),
+                form.getEntries());
 
         Employee employee = employeeService.save(employeeWithAddressDto);
         Contract newContract = contractMapper.toContract(contractDto);
         newContract.setName(employer.getLastName().toUpperCase() + "-" + employee.getLastName().toUpperCase());
-        newContract.setStartDate(new Date());
+        newContract.setStartDate(LocalDate.now());
         newContract.setActive(true);
         employer.addContract(newContract);
         employee.addContract(newContract);
@@ -122,7 +124,7 @@ public class ContractServiceImpl implements ContractService {
         employee.setFirstName(form.getFirstName());
         employee.setLastName(form.getLastName());
         employee.setEmail(form.getEmail());
-        employee.setCuil(form.getCuil());
+        employee.setIdentificationNumber(form.getIdentificationNumber());
         employee.setPhone(form.getPhone());
 
         // update address

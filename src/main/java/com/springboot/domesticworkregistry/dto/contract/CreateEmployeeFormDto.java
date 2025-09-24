@@ -1,5 +1,10 @@
 package com.springboot.domesticworkregistry.dto.contract;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+
+import com.springboot.domesticworkregistry.entities.ScheduleEntry;
 import com.springboot.domesticworkregistry.enums.EmploymentType;
 import com.springboot.domesticworkregistry.enums.JobType;
 
@@ -15,23 +20,27 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CreateEmployeeFormDto {
 
-    @NotNull(message = "is requied")
+    @NotNull(message = "is required")
     @Size(min = 1, message = "is required")
     private String firstName;
 
-    @NotNull(message = "is requied")
+    @NotNull(message = "is required")
     @Size(min = 1, message = "is required")
     private String lastName;
 
-    @NotNull(message = "is requied")
+    @NotNull(message = "is required")
     @Email
     private String email;
-
+    
     @NotNull(message = "is required")
-    private String cuil;
-
+    private String identificationNumber;
+    
+    @NotNull(message = "is required")
     @Size(min = 1)
     private String phone;
+    
+    @NotNull(message = "is required")
+    private LocalDate since;
 
     @NotNull(message = "is required")
     private JobType jobType;
@@ -39,13 +48,20 @@ public class CreateEmployeeFormDto {
     @NotNull(message = "is required")
     private EmploymentType employmentType;
 
-    private Double salary;
+    @NotNull(message = "is required")
+    private BigDecimal salary;
+
+    @NotNull(message = "is required")
+    private List<ScheduleEntry> entries;
 
     @NotNull(message = "is required")
     private String street;
 
     @NotNull(message = "is required")
     private String number;
+
+    @NotNull(message = "is required")
+    private String apartment;
 
     @NotNull(message = "is required")
     private String city;
