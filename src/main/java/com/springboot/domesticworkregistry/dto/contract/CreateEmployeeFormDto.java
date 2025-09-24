@@ -31,6 +31,9 @@ public class CreateEmployeeFormDto {
     @NotNull(message = "is required")
     @Email
     private String email;
+
+    @NotNull(message = "is required")
+    private LocalDate birthDate;
     
     @NotNull(message = "is required")
     private String identificationNumber;

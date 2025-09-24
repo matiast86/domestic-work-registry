@@ -1,4 +1,6 @@
-package com.springboot.domesticworkregistry.dto.employee;
+package com.springboot.domesticworkregistry.dto.user;
+
+import java.time.LocalDate;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -10,7 +12,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateEmployeeDto {
+public class UpdateUserDto {
+    private String userId;
+
     @NotNull(message = "is requied")
     @Size(min = 1, message = "is required")
     private String firstName;
@@ -24,8 +28,28 @@ public class CreateEmployeeDto {
     private String email;
 
     @NotNull(message = "is required")
-    private String cuil;
+    private String identificationNumber;
 
     @Size(min = 1)
     private String phone;
+
+    private LocalDate birthDate;
+
+    @NotNull(message = "is required")
+    private String street;
+
+    @NotNull(message = "is required")
+    private String number;
+
+    private String apartment;
+
+    @NotNull(message = "is required")
+    private String city;
+
+    @NotNull(message = "is required")
+    private String postalCode;
+
+    @NotNull(message = "is required")
+    private String country;
+
 }

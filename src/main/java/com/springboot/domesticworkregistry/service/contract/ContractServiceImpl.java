@@ -6,21 +6,19 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.springboot.domesticworkregistry.dao.ContractRepository;
-import com.springboot.domesticworkregistry.dto.address.CreateAddressDto;
 import com.springboot.domesticworkregistry.dto.contract.ContractDetailsWithemployeeDto;
 import com.springboot.domesticworkregistry.dto.contract.CreateContractDto;
 import com.springboot.domesticworkregistry.dto.contract.CreateEmployeeFormDto;
-import com.springboot.domesticworkregistry.dto.employee.CreateEmployeeDto;
-import com.springboot.domesticworkregistry.dto.employee.CreateEmployeeWithAddressDto;
+import com.springboot.domesticworkregistry.dto.user.RegisterUserEmployeeDto;
 import com.springboot.domesticworkregistry.entities.Address;
 import com.springboot.domesticworkregistry.entities.Contract;
-import com.springboot.domesticworkregistry.entities.Employee;
-import com.springboot.domesticworkregistry.entities.Employer;
+import com.springboot.domesticworkregistry.entities.User;
+import com.springboot.domesticworkregistry.enums.Role;
 import com.springboot.domesticworkregistry.exceptions.EntityNotFoundException;
 import com.springboot.domesticworkregistry.mapper.ContractDetailsMapper;
 import com.springboot.domesticworkregistry.mapper.ContractMapper;
-import com.springboot.domesticworkregistry.service.employee.EmployeeService;
-import com.springboot.domesticworkregistry.service.employer.EmployerService;
+import com.springboot.domesticworkregistry.mapper.RegisterEmployeeDtoMapper;
+import com.springboot.domesticworkregistry.service.user.UserService;
 
 import jakarta.transaction.Transactional;
 
@@ -29,18 +27,18 @@ public class ContractServiceImpl implements ContractService {
 
     private final ContractRepository contractRepository;
     private final ContractMapper contractMapper;
-    private final EmployerService employerService;
-    private final EmployeeService employeeService;
+    private final UserService userService;
     private final ContractDetailsMapper contractDetailsMapper;
+    private final RegisterEmployeeDtoMapper employeeDtoMapper;
 
     public ContractServiceImpl(ContractRepository contractRepository, ContractMapper contractMapper,
-            EmployerService employerService,
-            EmployeeService employeeService, ContractDetailsMapper contractDetailsMapper) {
+            UserService userService, ContractDetailsMapper contractDetailsMapper,
+            RegisterEmployeeDtoMapper employeeDtoMapper) {
         this.contractRepository = contractRepository;
         this.contractMapper = contractMapper;
-        this.employerService = employerService;
-        this.employeeService = employeeService;
+        this.userService = userService;
         this.contractDetailsMapper = contractDetailsMapper;
+        this.employeeDtoMapper = employeeDtoMapper;
 
     }
 
@@ -57,25 +55,7 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public Contract save(String employerEmail, CreateEmployeeFormDto form) {
-        Employer employer = employerService.findByEmail(employerEmail);
-
-        CreateEmployeeDto employeeDto = new CreateEmployeeDto(
-                form.getFirstName(),
-                form.getLastName(),
-                form.getEmail(),
-                form.getIdentificationNumber(),
-                form.getPhone()
-
-        );
-
-        CreateAddressDto addressDto = new CreateAddressDto(
-                form.getStreet(),
-                form.getNumber(),
-                form.getCity(),
-                form.getPostalCode(),
-                form.getCountry());
-
-        CreateEmployeeWithAddressDto employeeWithAddressDto = new CreateEmployeeWithAddressDto(employeeDto, addressDto);
+        User employer = userService.findByEmail(employerEmail);
 
         CreateContractDto contractDto = new CreateContractDto(
                 form.getSince(),
@@ -84,13 +64,39 @@ public class ContractServiceImpl implements ContractService {
                 form.getSalary(),
                 form.getEntries());
 
-        Employee employee = employeeService.save(employeeWithAddressDto);
         Contract newContract = contractMapper.toContract(contractDto);
+        User existingUser = userService.findByEmail(form.getEmail());
+        if (existingUser != null && existingUser.getRoles().contains(Role.EMPLOYEE)) {
+            newContract.setEmployer(employer);
+            employer.addEmployerContract(newContract);
+            newContract.setEmployee(existingUser);
+            existingUser.addEmployeeContract(newContract);
+            newContract.setName(employer.getLastName().toUpperCase() + "-" + existingUser.getLastName().toUpperCase());
+            newContract.setStartDate(LocalDate.now());
+            newContract.setActive(true);
+            return newContract;
+        }
+        if (existingUser != null && !existingUser.getRoles().contains(Role.EMPLOYEE)) {
+            existingUser.getRoles().add(Role.EMPLOYEE);
+            newContract.setEmployer(employer);
+            employer.addEmployerContract(newContract);
+            newContract.setEmployee(existingUser);
+            existingUser.addEmployeeContract(newContract);
+            newContract.setName(employer.getLastName().toUpperCase() + "-" + existingUser.getLastName().toUpperCase());
+            newContract.setStartDate(LocalDate.now());
+            newContract.setActive(true);
+            return newContract;
+        }
+        RegisterUserEmployeeDto employeeDto = employeeDtoMapper.toDto(form);
+        User employee = userService.registerEmployee(employeeDto);
+
         newContract.setName(employer.getLastName().toUpperCase() + "-" + employee.getLastName().toUpperCase());
         newContract.setStartDate(LocalDate.now());
         newContract.setActive(true);
-        employer.addContract(newContract);
-        employee.addContract(newContract);
+        employer.addEmployerContract(newContract);
+        newContract.setEmployer(employer);
+        employee.addEmployeeContract(newContract);
+        newContract.setEmployee(employee);
         return contractRepository.save(newContract);
 
     }
@@ -117,20 +123,22 @@ public class ContractServiceImpl implements ContractService {
         Contract contract = contractRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Contract with id " + id + " not found"));
 
-        Employee employee = contract.getEmployee(); // direct, no iterator
-        Employer employer = contract.getEmployer();
+        User employee = contract.getEmployee(); // direct, no iterator
+        User employer = contract.getEmployer();
 
         // update employee fields
         employee.setFirstName(form.getFirstName());
         employee.setLastName(form.getLastName());
         employee.setEmail(form.getEmail());
+        employee.setBirthDate(form.getBirthdate());
         employee.setIdentificationNumber(form.getIdentificationNumber());
         employee.setPhone(form.getPhone());
 
         // update address
-        Address address = employee.getHomeAddress();
+        Address address = employee.getAddress();
         address.setStreet(form.getStreet());
         address.setNumber(form.getNumber());
+        address.setApartment(form.getApartment());
         address.setCity(form.getCity());
         address.setPostalCode(form.getPostalCode());
         address.setCountry(form.getCountry());

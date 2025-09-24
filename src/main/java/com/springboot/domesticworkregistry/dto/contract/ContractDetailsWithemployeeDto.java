@@ -32,14 +32,17 @@ public class ContractDetailsWithemployeeDto {
     @NotNull(message = "is required")
     @Email
     private String email;
-    
+
+    @NotNull(message = "is required")
+    private LocalDate birthdate;
+
     @NotNull(message = "is required")
     private String identificationNumber;
-    
+
     @NotNull(message = "is required")
     @Size(min = 1)
     private String phone;
-    
+
     @NotNull(message = "is required")
     private LocalDate since;
 
