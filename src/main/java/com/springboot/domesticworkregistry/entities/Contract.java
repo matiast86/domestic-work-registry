@@ -23,12 +23,14 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "contracts")
+@Table(name = "contracts", uniqueConstraints = @UniqueConstraint(columnNames = { "employer_id", "employee_id",
+                "active" }))
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -75,7 +77,7 @@ public class Contract {
         @OneToMany(mappedBy = "contract", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
         private List<Job> jobs = new ArrayList<>();
 
-        @OneToOne
+        @OneToOne(cascade = CascadeType.ALL)
         @JoinColumn(name = "schedule_id")
         private Schedule schedule;
 

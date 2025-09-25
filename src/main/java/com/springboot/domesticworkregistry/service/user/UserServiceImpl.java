@@ -98,6 +98,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User with id " + id + " not found"));
         user.setActive(false);
+        userRepository.save(user);
     }
 
     @Override
@@ -140,6 +141,7 @@ public class UserServiceImpl implements UserService {
         newUser.getRoles().add(Role.EMPLOYEE);
         newUser.setPassword(passwordEncoder.encode(form.getIdentificationNumber()));
         newUser.setFirstLogin(true);
+        newUser.setEmail(form.getEmail().toLowerCase());
         Address address = new Address(form.getStreet(), form.getNumber(), form.getApartment(), form.getCity(),
                 form.getPostalCode(),
                 form.getCountry());

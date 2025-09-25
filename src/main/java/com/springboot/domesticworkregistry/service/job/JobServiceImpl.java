@@ -47,12 +47,16 @@ public class JobServiceImpl implements JobService {
         }
 
         long minutes = ChronoUnit.MINUTES.between(startTime, endTime);
-        int hoursScale = 8;
         BigDecimal fractionalHours = BigDecimal.valueOf(minutes)
-                .divide(BigDecimal.valueOf(60), hoursScale, RoundingMode.HALF_UP);
+                .divide(BigDecimal.valueOf(60), 2, RoundingMode.HALF_UP);
 
-        return fractionalHours.setScale(0, RoundingMode.CEILING);
+        // Round to nearest 0.5
+        BigDecimal multiplier = BigDecimal.valueOf(2); // because 1 / 0.5 = 2
+        BigDecimal rounded = fractionalHours.multiply(multiplier)
+                .setScale(0, RoundingMode.HALF_UP) // round to nearest int
+                .divide(multiplier, 1, RoundingMode.HALF_UP); // back to increments of 0.5
 
+        return rounded;
     }
 
     private BigDecimal calculatePartialFee(BigDecimal workedHours, BigDecimal hourlyRate) {

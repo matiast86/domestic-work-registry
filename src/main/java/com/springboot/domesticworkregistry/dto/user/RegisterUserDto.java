@@ -2,6 +2,7 @@ package com.springboot.domesticworkregistry.dto.user;
 
 import java.time.LocalDate;
 
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -57,5 +58,10 @@ public class RegisterUserDto {
 
     @NotNull(message = "is required")
     private String country;
+
+    @AssertTrue(message = "Passwords do not match")
+    public boolean isPasswordsMatching() {
+        return password != null && password.equals(repeatPassword);
+    }
 
 }

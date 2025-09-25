@@ -14,10 +14,11 @@ public interface ContractDetailsMapper {
     @Mapping(source = "employee.identificationNumber", target = "identificationNumber")
     @Mapping(source = "employee.phone", target = "phone")
     @Mapping(source = "id", target = "contractId")
-    @Mapping(source = "employee.homeAddress.street", target = "street")
-    @Mapping(source = "employee.homeAddress.number", target = "number")
-    @Mapping(source = "employee.homeAddress.city", target = "city")
-    @Mapping(source = "employee.homeAddress.postalCode", target = "postalCode")
-    @Mapping(source = "employee.homeAddress.country", target = "country")
+    @Mapping(source = "employee.address.street", target = "street")
+    @Mapping(source = "employee.address.number", target = "number")
+    @Mapping(source = "employee.address.apartment", target = "apartment")
+    @Mapping(source = "employee.address.city", target = "city")
+    @Mapping(source = "employee.address.postalCode", target = "postalCode")
+    @Mapping(source = "employee.address.country", target = "country")
     ContractDetailsWithemployeeDto toDto(Contract contract);
 }

@@ -2,9 +2,8 @@ package com.springboot.domesticworkregistry.dto.contract;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 
-import com.springboot.domesticworkregistry.entities.ScheduleEntry;
+import com.springboot.domesticworkregistry.entities.Schedule;
 import com.springboot.domesticworkregistry.enums.EmploymentType;
 import com.springboot.domesticworkregistry.enums.JobType;
 
@@ -56,7 +55,7 @@ public class ContractDetailsWithemployeeDto {
     private BigDecimal salary;
 
     @NotNull(message = "is required")
-    private List<ScheduleEntry> entries;
+    private Schedule schedule;
 
     @NotNull(message = "is required")
     private String street;
@@ -64,7 +63,6 @@ public class ContractDetailsWithemployeeDto {
     @NotNull(message = "is required")
     private String number;
 
-    @NotNull(message = "is required")
     private String apartment;
 
     @NotNull(message = "is required")
