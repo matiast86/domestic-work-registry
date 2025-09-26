@@ -9,6 +9,7 @@ import com.springboot.domesticworkregistry.enums.EmploymentType;
 import com.springboot.domesticworkregistry.enums.JobType;
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -20,12 +21,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CreateEmployeeFormDto {
 
-    @NotNull(message = "is required")
-    @Size(min = 1, message = "is required")
+    @NotBlank(message = "is required")
     private String firstName;
 
-    @NotNull(message = "is required")
-    @Size(min = 1, message = "is required")
+    @NotBlank(message = "is required")
     private String lastName;
 
     @NotNull(message = "is required")
@@ -38,8 +37,7 @@ public class CreateEmployeeFormDto {
     @NotNull(message = "is required")
     private String identificationNumber;
     
-    @NotNull(message = "is required")
-    @Size(min = 1)
+    @NotBlank(message = "is required")
     private String phone;
     
     @NotNull(message = "is required")

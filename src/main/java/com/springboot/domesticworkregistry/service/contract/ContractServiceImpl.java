@@ -22,8 +22,6 @@ import com.springboot.domesticworkregistry.mapper.RegisterEmployeeDtoMapper;
 import com.springboot.domesticworkregistry.service.schedule.ScheduleService;
 import com.springboot.domesticworkregistry.service.user.UserService;
 
-import jakarta.transaction.Transactional;
-
 @Service
 public class ContractServiceImpl implements ContractService {
 
@@ -52,25 +50,29 @@ public class ContractServiceImpl implements ContractService {
         return contracts;
     }
 
+    // Fast query
     @Override
     public List<Contract> findAllByEmployer(String employerId) {
-        return contractRepository.findAllByEmployerId(employerId);
+        return contractRepository.findSummaryByEmployerId(employerId);
     }
 
     @Override
     public Contract save(String employerEmail, CreateEmployeeFormDto form) {
         User employer = userService.findByEmail(employerEmail);
-        // check if active contract already exists
-    contractRepository.findByEmployerIdAndEmployeeEmailAndActiveTrue(employer.getId(), form.getEmail())
-        .ifPresent(existing -> {
-            throw new IllegalStateException(
-                "There is already an active contract between employer " + employer.getEmail() +
-                " and employee " + form.getEmail());
-        });
 
+        // check if active contract already exists
+        contractRepository.findByEmployerIdAndEmployeeEmailAndActiveTrue(employer.getId(), form.getEmail())
+                .ifPresent(existing -> {
+                    throw new IllegalStateException(
+                            "There is already an active contract between employer " + employer.getEmail() +
+                                    " and employee " + form.getEmail());
+                });
+
+        // Build schedule
         Schedule schedule = new Schedule();
         schedule.setEntries(form.getEntries());
 
+        // Build contract from DTO
         CreateContractDto contractDto = new CreateContractDto(
                 form.getSince(),
                 form.getJobType(),
@@ -79,58 +81,46 @@ public class ContractServiceImpl implements ContractService {
                 schedule);
 
         Contract newContract = contractMapper.toContract(contractDto);
-        User existingUser = userService.findByEmail(form.getEmail());
-        if (existingUser != null && existingUser.getRoles().contains(Role.EMPLOYEE)) {
-            schedule.setContract(newContract);
-            newContract.setEmployer(employer);
-            employer.addEmployerContract(newContract);
-            newContract.setEmployee(existingUser);
-            existingUser.addEmployeeContract(newContract);
-            newContract.setName(employer.getLastName().toUpperCase() + "-" + existingUser.getLastName().toUpperCase());
-            newContract.setStartDate(LocalDate.now());
-            newContract.setActive(true);
-            return newContract;
-        }
-        if (existingUser != null && !existingUser.getRoles().contains(Role.EMPLOYEE)) {
-            existingUser.getRoles().add(Role.EMPLOYEE);
-            schedule.setContract(newContract);
-            newContract.setEmployer(employer);
-            employer.addEmployerContract(newContract);
-            newContract.setEmployee(existingUser);
-            existingUser.addEmployeeContract(newContract);
-            newContract.setName(employer.getLastName().toUpperCase() + "-" + existingUser.getLastName().toUpperCase());
-            newContract.setStartDate(LocalDate.now());
-            newContract.setActive(true);
-            return newContract;
-        }
-        RegisterUserEmployeeDto employeeDto = employeeDtoMapper.toDto(form);
-        User employee = userService.registerEmployee(employeeDto);
 
+        // Find or create employee
+        User employee;
+        try {
+            employee = userService.findByEmail(form.getEmail());
+            if (!employee.getRoles().contains(Role.EMPLOYEE)) {
+                employee.getRoles().add(Role.EMPLOYEE);
+            }
+        } catch (EntityNotFoundException e) {
+            RegisterUserEmployeeDto employeeDto = employeeDtoMapper.toDto(form);
+            employee = userService.registerEmployee(employeeDto);
+        }
+
+        // Common setup
         schedule.setContract(newContract);
+
+        newContract.setEmployer(employer);
+        employer.addEmployerContract(newContract);
+
+        newContract.setEmployee(employee);
+        employee.addEmployeeContract(newContract);
+
         newContract.setName(employer.getLastName().toUpperCase() + "-" + employee.getLastName().toUpperCase());
         newContract.setStartDate(LocalDate.now());
         newContract.setActive(true);
-        employer.addEmployerContract(newContract);
-        newContract.setEmployer(employer);
-        employee.addEmployeeContract(newContract);
-        newContract.setEmployee(employee);
 
         return contractRepository.save(newContract);
-
     }
 
     @Override
     public Contract findById(int id) {
-        Contract contract = contractRepository.findById(id)
+        Contract contract = contractRepository.findDetailById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Contract with id " + id + " not found"));
 
         return contract;
     }
 
-    @Transactional
     @Override
     public ContractDetailsWithemployeeDto findByIdWithEmployee(int id) {
-        Contract contract = contractRepository.findById(id)
+        Contract contract = contractRepository.findDetailById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Contract with id " + id + " not found"));
 
         return contractDetailsMapper.toDto(contract);
@@ -141,10 +131,13 @@ public class ContractServiceImpl implements ContractService {
         Contract contract = contractRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Contract with id " + id + " not found"));
 
-        User employee = contract.getEmployee(); // direct, no iterator
+        User employee = contract.getEmployee();
         User employer = contract.getEmployer();
 
-        // update employee fields
+        // Let MapStruct handle contract fields
+        contractDetailsMapper.updateContractFromDto(form, contract);
+
+        // Update employee fields
         employee.setFirstName(form.getFirstName());
         employee.setLastName(form.getLastName());
         employee.setEmail(form.getEmail());
@@ -152,7 +145,7 @@ public class ContractServiceImpl implements ContractService {
         employee.setIdentificationNumber(form.getIdentificationNumber());
         employee.setPhone(form.getPhone());
 
-        // update address
+        // Update employee address
         Address address = employee.getAddress();
         address.setStreet(form.getStreet());
         address.setNumber(form.getNumber());
@@ -161,10 +154,7 @@ public class ContractServiceImpl implements ContractService {
         address.setPostalCode(form.getPostalCode());
         address.setCountry(form.getCountry());
 
-        // update contract details
-        contract.setJobType(form.getJobType());
-        contract.setEmploymentType(form.getEmploymentType());
-        contract.setSalary(form.getSalary());
+        // Update contract name
         contract.setName(employer.getLastName().toUpperCase() + "-" + employee.getLastName().toUpperCase());
 
         return contractRepository.save(contract);
