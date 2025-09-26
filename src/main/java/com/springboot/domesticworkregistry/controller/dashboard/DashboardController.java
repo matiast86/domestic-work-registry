@@ -1,15 +1,13 @@
 package com.springboot.domesticworkregistry.controller.dashboard;
 
-import java.util.List;
-
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import com.springboot.domesticworkregistry.entities.Contract;
 import com.springboot.domesticworkregistry.entities.User;
 import com.springboot.domesticworkregistry.service.contract.ContractService;
 import com.springboot.domesticworkregistry.service.user.UserService;
@@ -37,18 +35,28 @@ public class DashboardController {
     // Employer contracts fragment
     @GetMapping("/employer-contracts")
     @PreAuthorize("hasRole('EMPLOYER')") // only employers see this tab
-    public String employerContracts(@AuthenticationPrincipal User employer, Model model) {
-        List<Contract> contracts = contractService.findAllByEmployer(employer.getId());
-        model.addAttribute("contracts", contracts);
-        return "fragments/dashboard :: employerContracts";
+    public String employerContracts(@AuthenticationPrincipal User employer,
+            Model model,
+            @RequestParam(name = "standalone", defaultValue = "false") boolean standalone) {
+        model.addAttribute("contracts", contractService.findAllByEmployer(employer.getId()));
+
+        if (standalone) {
+            return "contracts/employer-contracts-page"; // full page with layout
+        }
+        return "fragments/dashboard :: employerContracts"; // fragment only
     }
 
     // Employee contracts fragment
     @GetMapping("/employee-contracts")
     @PreAuthorize("hasRole('EMPLOYEE')") // only employees see this tab
-    public String employeeContracts(@AuthenticationPrincipal User employee, Model model) {
-        List<Contract> contracts = userService.findContractsByEmployee(employee.getId());
-        model.addAttribute("contracts", contracts);
+    public String employeeContracts(@AuthenticationPrincipal User employee,
+            Model model,
+            @RequestParam(name = "standalone", defaultValue = "false") boolean standalone) {
+        model.addAttribute("contracts", userService.findContractsByEmployee(employee.getId()));
+
+        if (standalone) {
+            return "contracts/employee-contracts-page";
+        }
         return "fragments/dashboard :: employeeContracts";
     }
 }

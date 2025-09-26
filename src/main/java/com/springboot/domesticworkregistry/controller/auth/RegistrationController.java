@@ -41,7 +41,7 @@ public class RegistrationController {
     @GetMapping("/registrationForm")
     public String registrationForm(Model theModel) {
         theModel.addAttribute("registerEmployerDto", new RegisterUserDto());
-        return "registration-form";
+        return "auth/registration-form";
     }
 
     @PostMapping("/processRegistrationForm")
@@ -53,12 +53,12 @@ public class RegistrationController {
             Model theModel) {
 
         if (bindingResult.hasErrors()) {
-            return "registration-form";
+            return "auth/registration-form";
         }
 
         if (!registerUserDto.getPassword().equals(registerUserDto.getRepeatPassword())) {
             bindingResult.rejectValue("repeatPassword", "error.repeatPassword", "Passwords must match.");
-            return "registration-form";
+            return "auth/registration-form";
         }
 
         try {
@@ -77,7 +77,7 @@ public class RegistrationController {
 
     @GetMapping("/registrationConfirmation")
     public String showConfirmationPage() {
-        return "registration-confirmation";
+        return "auth/registration-confirmation";
     }
 
     @ExceptionHandler(EmailAlreadyExistsException.class)
@@ -92,7 +92,7 @@ public class RegistrationController {
             model.addAttribute("registerEmployerDto", new RegisterUserDto());
         }
 
-        return "registration-form";
+        return "auth/registration-form";
     }
 
 }

@@ -3,9 +3,21 @@
   <body>
     <!-- Employer Contracts -->
     <div th:fragment="employerContracts">
-      <a th:href="@{/contracts/contractForm}" class="btn btn-primary btn-sm mb-3">Crear contrato</a>
       <h4>Contratos como Empleador</h4>
-      <table class="table table-striped">
+
+      <!-- Empty state -->
+      <div
+        th:if="${#lists.isEmpty(contracts)}"
+        class="alert alert-info d-flex justify-content-between align-items-center"
+      >
+        <span>No tienes contratos activos como empleador.</span>
+        <a th:href="@{/contracts/contractForm}" class="btn btn-sm btn-primary">
+          Crear contrato
+        </a>
+      </div>
+
+      <!-- Table only if contracts exist -->
+      <table class="table table-striped" th:if="${!#lists.isEmpty(contracts)}">
         <thead>
           <tr>
             <th>Empleado</th>
@@ -25,12 +37,29 @@
           </tr>
         </tbody>
       </table>
+
+      <!-- Secondary CTA below table -->
+      <div th:if="${!#lists.isEmpty(contracts)}" class="mt-2">
+        <a
+          th:href="@{/contracts/contractForm}"
+          class="btn btn-sm btn-outline-primary"
+        >
+          Crear nuevo contrato
+        </a>
+      </div>
     </div>
 
     <!-- Employee Contracts -->
     <div th:fragment="employeeContracts">
       <h4>Contratos como Empleado</h4>
-      <table class="table table-striped">
+
+      <!-- Empty state -->
+      <div th:if="${#lists.isEmpty(contracts)}" class="alert alert-info">
+        No tienes contratos activos como empleado.
+      </div>
+
+      <!-- Table only if contracts exist -->
+      <table class="table table-striped" th:if="${!#lists.isEmpty(contracts)}">
         <thead>
           <tr>
             <th>Empleador</th>
