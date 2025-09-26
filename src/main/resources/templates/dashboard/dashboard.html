@@ -1,96 +1,103 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard</title>
     <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
   </head>
+
   <body>
     <!-- Navbar -->
     <th:block th:replace="~{fragments/nav :: navbar}"></th:block>
-    <div class="container mt-5">
-      <h2 th:text="'Bienvenido, ' + ${user.firstName}"></h2>
 
-      <!-- Tabs -->
-      <ul class="nav nav-tabs mt-4" id="dashboardTabs" role="tablist">
-        <li class="nav-item">
+    <div class="container mt-4">
+      <!-- Profile Header -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Bienvenido, <span th:text="${user.firstName}">Nombre</span>!</h2>
+        <a
+          th:href="@{/users/updateEmployer(employerId=${user.id})}"
+          class="btn btn-info"
+        >
+          Actualizar Datos
+        </a>
+      </div>
+
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5
+            class="card-title"
+            th:text="${user.firstName + ' ' + user.lastName}"
+          >
+            Full Name
+          </h5>
+          <p class="card-text mb-1">
+            <strong>Email:</strong>
+            <span th:text="${user.email}">email@example.com</span>
+          </p>
+          <p class="card-text mb-1">
+            <strong>CUIL:</strong>
+            <span th:text="${user.identificationNumber}">00-00000000-0</span>
+          </p>
+          <p class="card-text">
+            <strong>Teléfono:</strong>
+            <span th:text="${user.phone}">+54...</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Tabs for Employer vs Employee -->
+      <ul class="nav nav-tabs" id="dashboardTabs" role="tablist">
+        <li
+          class="nav-item"
+          role="presentation"
+          th:if="${#authentication.principal.roles.contains('EMPLOYER')}"
+        >
           <button
             class="nav-link active"
-            data-bs-toggle="tab"
-            data-bs-target="#profile"
-          >
-            Perfil
-          </button>
-        </li>
-        <li
-          class="nav-item"
-          th:if="${user.roles.contains(T(com.springboot.domesticworkregistry.enums.Role).EMPLOYER)}"
-        >
-          <button
-            class="nav-link"
+            id="employer-tab"
             data-bs-toggle="tab"
             data-bs-target="#employer"
+            type="button"
           >
-            Contratos como Empleador
+            Como Empleador
           </button>
         </li>
         <li
           class="nav-item"
-          th:if="${user.roles.contains(T(com.springboot.domesticworkregistry.enums.Role).EMPLOYEE)}"
+          role="presentation"
+          th:if="${#authentication.principal.roles.contains('EMPLOYEE')}"
         >
           <button
             class="nav-link"
+            id="employee-tab"
             data-bs-toggle="tab"
             data-bs-target="#employee"
+            type="button"
           >
-            Contratos como Empleado
+            Como Empleado
           </button>
         </li>
       </ul>
 
-      <!-- Tab Content -->
       <div class="tab-content mt-3">
-        <!-- Profile tab -->
-        <div class="tab-pane fade show active" id="profile">
-          <h4>Información Personal</h4>
-          <p>
-            <strong>Nombre:</strong>
-            <span th:text="${user.firstName} + ' ' + ${user.lastName}"></span>
-          </p>
-          <p><strong>Email:</strong> <span th:text="${user.email}"></span></p>
-          <p>
-            <strong>Teléfono:</strong> <span th:text="${user.phone}"></span>
-          </p>
-          <p>
-            <strong>Dirección:</strong>
-            <span
-              th:text="${user.address != null ? user.address.street + ' ' + user.address.number : 'N/A'}"
-            ></span>
-          </p>
-          <p>
-            <strong>Roles:</strong>
-            <span
-              th:each="role : ${user.roles}"
-              th:text="${role}"
-              class="badge bg-info text-dark me-2"
-            ></span>
-          </p>
+        <div class="tab-pane fade show active" id="employer" role="tabpanel">
+          <!-- Employer contracts will be loaded here via fetch -->
         </div>
-
-        <!-- Employer contracts -->
-        <div class="tab-pane fade" id="employer"></div>
-
-        <!-- Employee contracts -->
-        <div class="tab-pane fade" id="employee"></div>
+        <div class="tab-pane fade" id="employee" role="tabpanel">
+          <!-- Employee contracts will be loaded here via fetch -->
+        </div>
       </div>
     </div>
 
+    <!-- Footer -->
     <th:block th:replace="~{fragments/footer :: footer}"></th:block>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script th:src="@{/js/dashboard.js}"></script>
   </body>
 </html>

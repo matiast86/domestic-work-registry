@@ -1,6 +1,5 @@
 package com.springboot.domesticworkregistry.controller.user;
 
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.springboot.domesticworkregistry.dto.user.UpdateUserDto;
-import com.springboot.domesticworkregistry.entities.User;
 import com.springboot.domesticworkregistry.exceptions.EmailAlreadyExistsException;
 import com.springboot.domesticworkregistry.service.user.UserService;
 
@@ -26,12 +24,6 @@ public class UserController {
 
     public UserController(UserService userService) {
         this.userService = userService;
-    }
-
-    @GetMapping("/dashboard")
-    public String showDashboard(@AuthenticationPrincipal User user, Model model) {
-        model.addAttribute("user", user);
-        return "dashboard/dashboard";
     }
 
     @GetMapping("/updateEmployer")

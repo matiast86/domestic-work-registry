@@ -3,6 +3,7 @@
   <body>
     <!-- Employer Contracts -->
     <div th:fragment="employerContracts">
+      <a th:href="@{/contracts/contractForm}" class="btn btn-primary btn-sm mb-3">Crear contrato</a>
       <h4>Contratos como Empleador</h4>
       <table class="table table-striped">
         <thead>
@@ -18,7 +19,9 @@
               th:text="${contract.employee.firstName + ' ' + contract.employee.lastName}"
             ></td>
             <td th:text="${contract.employmentType}"></td>
-            <td th:text="${contract.salary}"></td>
+            <td
+              th:text="${#numbers.formatDecimal(contract.salary, 1, 'COMMA', 2, 'POINT')}"
+            ></td>
           </tr>
         </tbody>
       </table>
@@ -41,7 +44,9 @@
               th:text="${contract.employer.firstName + ' ' + contract.employer.lastName}"
             ></td>
             <td th:text="${contract.employmentType}"></td>
-            <td th:text="${contract.salary}"></td>
+            <td
+              th:text="${#numbers.formatDecimal(contract.salary, 1, 'COMMA', 2, 'POINT')}"
+            ></td>
           </tr>
         </tbody>
       </table>

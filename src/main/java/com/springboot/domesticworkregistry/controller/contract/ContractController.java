@@ -23,7 +23,7 @@ import com.springboot.domesticworkregistry.service.contract.ContractService;
 import jakarta.validation.Valid;
 
 @Controller
-@RequestMapping("/contract")
+@RequestMapping("/contracts")
 public class ContractController {
 
     private final ContractService contractService;
@@ -48,7 +48,7 @@ public class ContractController {
     @GetMapping("/contractForm")
     public String contractForm(Model model) {
         model.addAttribute("employeeForm", new CreateEmployeeFormDto());
-        return "employees/employee-form";
+        return "contracts/contract-form";
     }
 
     @PostMapping("/save")
@@ -60,7 +60,7 @@ public class ContractController {
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("employeeForm", form);
-            return "employees/employee-form";
+            return "contracts/contract-form";
         }
 
         contractService.save(employer.getEmail(), form);
@@ -74,6 +74,6 @@ public class ContractController {
             Model model) {
         model.addAttribute("errorMessage", ex.getMessage());
         model.addAttribute("employeeForm", form); // repopulate form with user input
-        return "employees/employee-form";
+        return "contracts/contract-form";
     }
 }

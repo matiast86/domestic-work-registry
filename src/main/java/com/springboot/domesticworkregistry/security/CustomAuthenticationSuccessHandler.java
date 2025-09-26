@@ -18,8 +18,8 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
-                                        HttpServletResponse response,
-                                        Authentication authentication)
+            HttpServletResponse response,
+            Authentication authentication)
             throws IOException, ServletException {
 
         User user = (User) authentication.getPrincipal();
@@ -30,23 +30,25 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             return;
         }
 
-        // 🔹 Handle multiple roles
+        // 🔹 Multi-role handling (EMPLOYER + EMPLOYEE)
         if (user.getRoles().contains(Role.EMPLOYER) && user.getRoles().contains(Role.EMPLOYEE)) {
-            // Redirect to a "role chooser" page
-            getRedirectStrategy().sendRedirect(request, response, "/choose-role");
+            // Either redirect to unified dashboard (tabs show both roles)…
+            getRedirectStrategy().sendRedirect(request, response, "/dashboard");
             return;
+            // …or if you want them to explicitly choose a role:
+            // getRedirectStrategy().sendRedirect(request, response, "/choose-role");
         }
 
         // 🔹 Single role handling
-        if (user.getRoles().contains(Role.EMPLOYER)) {
-            getRedirectStrategy().sendRedirect(request, response, "/employers/dashboard");
-        } else if (user.getRoles().contains(Role.EMPLOYEE)) {
-            getRedirectStrategy().sendRedirect(request, response, "/employees/dashboard");
+        if (user.getRoles().contains(Role.EMPLOYER) ||
+                user.getRoles().contains(Role.EMPLOYEE)) {
+            // Both roles now share the same dashboard with tabs
+            getRedirectStrategy().sendRedirect(request, response, "/dashboard");
         } else if (user.getRoles().contains(Role.ADMIN)) {
             getRedirectStrategy().sendRedirect(request, response, "/admin/dashboard");
         } else {
+            // Fallback → landing page
             getRedirectStrategy().sendRedirect(request, response, "/");
         }
     }
 }
-

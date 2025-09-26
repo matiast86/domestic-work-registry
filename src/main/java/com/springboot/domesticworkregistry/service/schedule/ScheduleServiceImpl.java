@@ -2,10 +2,13 @@ package com.springboot.domesticworkregistry.service.schedule;
 
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.springboot.domesticworkregistry.dao.ScheduleRepository;
 import com.springboot.domesticworkregistry.entities.Schedule;
 import com.springboot.domesticworkregistry.exceptions.EntityNotFoundException;
 
+@Service
 public class ScheduleServiceImpl implements ScheduleService {
 
     private final ScheduleRepository scheduleRepository;

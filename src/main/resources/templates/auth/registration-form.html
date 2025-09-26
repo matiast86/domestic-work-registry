@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}">
+<head>
+  <title>Registro de Empleador</title>
+  <link rel="stylesheet" th:href="@{/css/auth.css}" layout:fragment="styles"/>
+</head>
+<body>
+  <div layout:fragment="content">
+    <section class="py-5">
+      <div class="container">
+        <h2 class="text-center mb-4">Registrarse como Empleador</h2>
+
+        <form th:action="@{/register/processRegistrationForm}"
+              method="post"
+              th:object="${registerEmployerDto}"
+              class="mx-auto"
+              style="max-width: 600px">
+
+          <!-- Nombre -->
+          <div class="mb-3">
+            <label for="firstName" class="form-label">Nombre</label>
+            <input type="text" th:field="*{firstName}" class="form-control" required/>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('firstName')}"
+                 th:errors="*{firstName}"></div>
+          </div>
+
+          <!-- Apellido -->
+          <div class="mb-3">
+            <label for="lastName" class="form-label">Apellido</label>
+            <input type="text" th:field="*{lastName}" class="form-control" required/>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('lastName')}"
+                 th:errors="*{lastName}"></div>
+          </div>
+
+          <!-- Email -->
+          <div class="mb-3">
+            <label for="email" class="form-label">Correo Electrónico</label>
+            <input type="email" th:field="*{email}" class="form-control" required/>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}"
+                 th:errors="*{email}"></div>
+          </div>
+
+          <!-- Teléfono -->
+          <div class="mb-3">
+            <label for="phone" class="form-label">Teléfono</label>
+            <input type="text" th:field="*{phone}" class="form-control"/>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('phone')}"
+                 th:errors="*{phone}"></div>
+          </div>
+
+          <!-- Número de Identificación -->
+          <div class="mb-3">
+            <label for="identificationNumber" class="form-label">CUIL</label>
+            <input type="text" th:field="*{identificationNumber}" class="form-control" required/>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('identificationNumber')}"
+                 th:errors="*{identificationNumber}"></div>
+          </div>
+
+          <!-- Contraseña -->
+          <div class="mb-3">
+            <label for="password" class="form-label">Contraseña</label>
+            <input type="password" th:field="*{password}" class="form-control" required/>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}"
+                 th:errors="*{password}"></div>
+          </div>
+
+          <!-- Repetir Contraseña -->
+          <div class="mb-3">
+            <label for="repeatPassword" class="form-label">Repetir Contraseña</label>
+            <input type="password" th:field="*{repeatPassword}" class="form-control" required/>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('repeatPassword')}"
+                 th:errors="*{repeatPassword}"></div>
+          </div>
+
+          <!-- Dirección -->
+          <h4>Dirección</h4>
+          <div class="mb-3">
+            <label for="street" class="form-label">Calle</label>
+            <input type="text" th:field="*{street}" class="form-control"/>
+            <div class="text-danger" th:if="${#fields.hasErrors('street')}" th:errors="*{street}"></div>
+          </div>
+
+          <div class="mb-3">
+            <label for="number" class="form-label">Número</label>
+            <input type="text" th:field="*{number}" class="form-control"/>
+            <div class="text-danger" th:if="${#fields.hasErrors('number')}" th:errors="*{number}"></div>
+          </div>
+
+          <div class="mb-3">
+            <label for="city" class="form-label">Ciudad</label>
+            <input type="text" th:field="*{city}" class="form-control"/>
+            <div class="text-danger" th:if="${#fields.hasErrors('city')}" th:errors="*{city}"></div>
+          </div>
+
+          <div class="mb-3">
+            <label for="postalCode" class="form-label">Código Postal</label>
+            <input type="text" th:field="*{postalCode}" class="form-control"/>
+            <div class="text-danger" th:if="${#fields.hasErrors('postalCode')}" th:errors="*{postalCode}"></div>
+          </div>
+
+          <div class="mb-3">
+            <label for="country" class="form-label">País</label>
+            <input type="text" th:field="*{country}" class="form-control"/>
+            <div class="text-danger" th:if="${#fields.hasErrors('country')}" th:errors="*{country}"></div>
+          </div>
+
+          <!-- Botón -->
+          <div class="d-grid">
+            <button type="submit" class="btn btn-primary">Registrarse</button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </div>
+</body>
+</html>
+
