@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html
+  lang="es"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{fragments/layout}"
+>
+  <head>
+    <title>Inicio | DomesticWork</title>
+    <th:block layout:fragment="home">
+    <link rel="stylesheet" th:href="@{/css/home.css}" />
+  </th:block>
+  </head>
+  <body>
+    <div layout:fragment="content">
+      <!-- Hero Section -->
+      <section class="text-center py-5 bg-primary text-white">
+        <div class="container">
+          <h1 class="display-4 fw-bold">Registro de Trabajo Doméstico</h1>
+          <p class="lead mb-4">
+            Formalizá y gestioná tus relaciones laborales de manera simple,
+            justa y segura.
+          </p>
+          <div>
+            <a
+              th:href="@{/register/registrationForm}"
+              class="btn btn-light btn-lg me-2"
+            >
+              Registrarse
+            </a>
+            <a th:href="@{/loginPage}" class="btn btn-outline-light btn-lg">
+              Iniciar Sesión
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- How It Works -->
+      <section class="py-5">
+        <div class="container">
+          <h2 class="text-center mb-5">¿Cómo Funciona?</h2>
+          <div class="row text-center">
+            <div class="col-md-4 mb-4">
+              <i class="bi bi-person-add fs-1 text-primary mb-3"></i>
+              <h5>1. Crear Cuenta</h5>
+              <p>
+                Registrate como empleador y comenzá el proceso de formalización.
+              </p>
+            </div>
+            <div class="col-md-4 mb-4">
+              <i class="bi bi-house-door fs-1 text-primary mb-3"></i>
+              <h5>2. Cargar Datos del Empleado</h5>
+              <p>Completá información como el rol, horario y remuneración.</p>
+            </div>
+            <div class="col-md-4 mb-4">
+              <i class="bi bi-check-circle fs-1 text-primary mb-3"></i>
+              <h5>3. Mantenete en Régimen</h5>
+              <p>
+                Tené todo registrado y actualizado para auditorías o tu
+                tranquilidad.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Why Register -->
+      <section class="bg-light py-5">
+        <div class="container text-center">
+          <h2 class="mb-4">¿Por Qué Registrar?</h2>
+          <p class="lead mx-auto" style="max-width: 700px">
+            El trabajo doméstico merece ser formal, justo y respetado.
+            Registrando tu relación laboral contribuís a un entorno laboral
+            transparente y seguro, tanto para empleadores como empleados.
+          </p>
+        </div>
+      </section>
+
+      <!-- Call to Action -->
+      <section class="py-5 text-center">
+        <div class="container">
+          <h3 class="fw-bold mb-3">¿Listo para comenzar?</h3>
+          <a
+            th:href="@{/register/registrationForm}"
+            class="btn btn-primary btn-lg"
+          >
+            Crear una Cuenta Gratis
+          </a>
+        </div>
+      </section>
+    </div>
+  </body>
+</html>

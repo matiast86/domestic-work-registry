@@ -45,7 +45,7 @@ public class UserController {
         }
 
         userService.update(form, form.getUserId());
-        return "redirect:/users/dashboard"; // ✅ fixed missing slash
+        return "redirect:/dashboard"; // ✅ fixed missing slash
     }
 
     @ExceptionHandler({ EmailAlreadyExistsException.class, IllegalStateException.class })

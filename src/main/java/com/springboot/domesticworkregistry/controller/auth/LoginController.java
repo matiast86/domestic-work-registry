@@ -13,7 +13,7 @@ public class LoginController {
 
     @GetMapping("/")
     public String showLanding() {
-        return "static/index";
+        return "index";
     }
 
 }

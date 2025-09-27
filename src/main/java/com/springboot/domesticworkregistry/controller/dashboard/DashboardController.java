@@ -43,7 +43,7 @@ public class DashboardController {
         if (standalone) {
             return "contracts/employer-contracts-page"; // full page with layout
         }
-        return "fragments/dashboard :: employerContracts"; // fragment only
+        return "dashboard/fragment :: employerContracts"; // fragment only
     }
 
     // Employee contracts fragment
@@ -57,6 +57,6 @@ public class DashboardController {
         if (standalone) {
             return "contracts/employee-contracts-page";
         }
-        return "fragments/dashboard :: employeeContracts";
+        return "dashboard/fragment :: employeeContracts";
     }
 }

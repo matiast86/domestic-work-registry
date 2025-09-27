@@ -17,7 +17,7 @@
       rel="stylesheet"
     />
     <!-- Global CSS -->
-    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <link rel="stylesheet" th:href="@{/css/home.css}" />
     <!-- Page-specific CSS -->
     <link rel="stylesheet" layout:fragment="styles" />
   </head>
@@ -25,7 +25,7 @@
     <!-- ✅ Global Navbar -->
     <header>
       <!-- Navbar -->
-      <th:block th:replace="fragments/nav :: navbar"></th:block>
+      <th:block th:replace="~{fragments/nav :: navbar}"></th:block>
     </header>
 
     <!-- ✅ Page-specific content slot -->
@@ -35,9 +35,8 @@
     </main>
 
     <!-- ✅ Global Footer -->
-    <footer>
-      <th:block th:replace="fragments/footer :: footer"></th:block>
-    </footer>
+
+    <th:block th:replace="~{fragments/footer :: footer}"></th:block>
 
     <!-- Scripts -->
     <script

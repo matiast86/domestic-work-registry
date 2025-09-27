@@ -20,13 +20,13 @@
       <div class="container">
         <h2 class="text-center mb-4">Registrarse como Empleador</h2>
         <form
-          th:action="@{/employers/update}"
+          th:action="@{/users/update}"
           method="post"
           class="mx-auto"
           style="max-width: 600px"
           th:object="${employer}"
         >
-          <input type="hidden" th:field="*{employerId}" />
+          <input type="hidden" th:field="*{userId}" />
           <!-- Nombre -->
           <div class="mb-3">
             <label for="firstName" class="form-label">Nombre</label>
@@ -58,20 +58,6 @@
               th:if="${#fields.hasErrors('lastName')}"
             >
               <span th:errors="*{lastName}"></span>
-            </div>
-          </div>
-
-          <!-- Edad -->
-          <div class="mb-3">
-            <label for="age" class="form-label">Edad</label>
-            <input
-              type="number"
-              th:field="*{age}"
-              class="form-control"
-              required
-            />
-            <div class="invalid-feedback" th:if="${#fields.hasErrors('age')}">
-              <span th:errors="*{age}"></span>
             </div>
           </div>
 
@@ -117,6 +103,22 @@
             </div>
           </div>
 
+          <!-- Fecha Nacimiento -->
+          <div class="mb-3">
+            <label for="birthDate" class="form-label">Fecha Nacimiento</label>
+            <input
+              type="date"
+              th:field="*{birthDate}"
+              class="form-control"
+              required
+            />
+            <div
+              class="invalid-feedback"
+              th:if="${#fields.hasErrors('birthDate')}"
+              th:errors="*{birthDate}"
+            ></div>
+          </div>
+
           <!-- ADDRESS DATA -->
           <h4>Address</h4>
           <div class="mb-3">
@@ -136,6 +138,16 @@
               class="text-danger"
               th:if="${#fields.hasErrors('number')}"
               th:errors="*{number}"
+            ></div>
+          </div>
+
+          <div class="mb-3">
+            <label for="apartment" class="form-label">Número</label>
+            <input type="text" th:field="*{apartment}" class="form-control" />
+            <div
+              class="text-danger"
+              th:if="${#fields.hasErrors('apartment')}"
+              th:errors="*{apartment}"
             ></div>
           </div>
 

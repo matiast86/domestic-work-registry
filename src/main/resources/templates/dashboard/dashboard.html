@@ -5,7 +5,9 @@
       layout:decorate="~{fragments/layout}">
   <head>
     <title>Dashboard</title>
-    <link rel="stylesheet" th:href="@{/css/dashboard.css}" layout:fragment="styles"/>
+    <th:block layout:fragment="dashboard">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}" />
+  </th:block>
   </head>
 
   <body>

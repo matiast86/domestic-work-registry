@@ -75,10 +75,6 @@ public class RegistrationController {
 
     }
 
-    @GetMapping("/registrationConfirmation")
-    public String showConfirmationPage() {
-        return "auth/registration-confirmation";
-    }
 
     @ExceptionHandler(EmailAlreadyExistsException.class)
     public String handleEmailExists(EmailAlreadyExistsException ex, Model model, HttpSession session) {

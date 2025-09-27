@@ -58,6 +58,14 @@
                  th:errors="*{identificationNumber}"></div>
           </div>
 
+          <!-- Fecha Nacimiento -->
+          <div class="mb-3">
+            <label for="birthDate" class="form-label">Fecha Nacimiento</label>
+            <input type="date" th:field="*{birthDate}" class="form-control" required/>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('birthDate')}"
+                 th:errors="*{birthDate}"></div>
+          </div>
+
           <!-- Contraseña -->
           <div class="mb-3">
             <label for="password" class="form-label">Contraseña</label>
@@ -86,6 +94,12 @@
             <label for="number" class="form-label">Número</label>
             <input type="text" th:field="*{number}" class="form-control"/>
             <div class="text-danger" th:if="${#fields.hasErrors('number')}" th:errors="*{number}"></div>
+          </div>
+
+          <div class="mb-3">
+            <label for="apartment" class="form-label">Número</label>
+            <input type="text" th:field="*{apartment}" class="form-control"/>
+            <div class="text-danger" th:if="${#fields.hasErrors('apartment')}" th:errors="*{apartment}"></div>
           </div>
 
           <div class="mb-3">

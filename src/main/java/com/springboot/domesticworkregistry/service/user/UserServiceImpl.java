@@ -62,6 +62,7 @@ public class UserServiceImpl implements UserService {
         dto.setBirthDate(user.getBirthDate());
         dto.setEmail(user.getEmail());
         dto.setIdentificationNumber(user.getIdentificationNumber());
+        dto.setBirthDate(user.getBirthDate());
         dto.setPhone(user.getPhone());
         dto.setStreet(address.getStreet());
         dto.setNumber(address.getNumber());
