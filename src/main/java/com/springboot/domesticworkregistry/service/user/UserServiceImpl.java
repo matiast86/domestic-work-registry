@@ -113,9 +113,8 @@ public class UserServiceImpl implements UserService {
         User newUser = mapper.toEmployer(form);
         newUser.setPassword(passwordEncoder.encode(form.getPassword()));
         newUser.setEmail(form.getEmail().toLowerCase());
-        Set<Role> roles = newUser.getRoles();
+        newUser.setRoles(Set.of(Role.EMPLOYER));
         newUser.setFirstLogin(false);
-        roles.add(Role.EMPLOYER);
         Address address = new Address(form.getStreet(), form.getNumber(), form.getApartment(), form.getCity(),
                 form.getPostalCode(),
                 form.getCountry());
@@ -141,7 +140,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User registerEmployee(RegisterUserEmployeeDto form) {
         User newUser = mapper.toEmployee(form);
-        newUser.getRoles().add(Role.EMPLOYEE);
+        newUser.setRoles(Set.of(Role.EMPLOYEE));
         newUser.setPassword(passwordEncoder.encode(form.getIdentificationNumber()));
         newUser.setFirstLogin(true);
         newUser.setEmail(form.getEmail().toLowerCase());

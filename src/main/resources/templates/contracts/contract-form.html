@@ -96,7 +96,7 @@
             <option
               th:each="type : ${T(com.springboot.domesticworkregistry.enums.JobType).values()}"
               th:value="${type}"
-              th:text="${type}"
+              th:text="${type.label}"
             ></option>
           </select>
           <div
@@ -112,7 +112,7 @@
             <option
               th:each="type : ${T(com.springboot.domesticworkregistry.enums.EmploymentType).values()}"
               th:value="${type}"
-              th:text="${type}"
+              th:text="${type.label}"
             ></option>
           </select>
           <div

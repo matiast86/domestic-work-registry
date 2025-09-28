@@ -30,7 +30,7 @@ addRow = () => {
 };
 
 removeRow = (btn) => {
-  const row = btn.colsest("tr");
+  const row = btn.closest("tr");
   const tbody = row.parentNode;
   if (tbody.rows.length > 1) {
     row.remove();

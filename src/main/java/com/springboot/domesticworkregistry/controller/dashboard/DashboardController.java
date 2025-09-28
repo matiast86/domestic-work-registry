@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.springboot.domesticworkregistry.entities.User;
+import com.springboot.domesticworkregistry.enums.Role;
 import com.springboot.domesticworkregistry.service.contract.ContractService;
 import com.springboot.domesticworkregistry.service.user.UserService;
 
@@ -29,12 +30,25 @@ public class DashboardController {
     @GetMapping
     public String dashboard(@AuthenticationPrincipal User user, Model model) {
         model.addAttribute("user", user);
+
+        // Preload employer contracts if user is an EMPLOYER
+        if (user.getRoles().contains(Role.EMPLOYER)) {
+            model.addAttribute("contracts", contractService.findAllByEmployer(user.getId()));
+            model.addAttribute("preloadedTab", "employer");
+        }
+
+        // Preload employee contracts if user is an EMPLOYEE
+        if (user.getRoles().contains(Role.EMPLOYEE)) {
+            model.addAttribute("employeeContracts", userService.findContractsByEmployee(user.getId()));
+            model.addAttribute("preloadedTab", "employee");
+        }
+
         return "dashboard/dashboard";
     }
 
     // Employer contracts fragment
     @GetMapping("/employer-contracts")
-    @PreAuthorize("hasRole('EMPLOYER')") // only employers see this tab
+    @PreAuthorize("hasRole('EMPLOYER')")
     public String employerContracts(@AuthenticationPrincipal User employer,
             Model model,
             @RequestParam(name = "standalone", defaultValue = "false") boolean standalone) {
@@ -43,12 +57,12 @@ public class DashboardController {
         if (standalone) {
             return "contracts/employer-contracts-page"; // full page with layout
         }
-        return "dashboard/fragment :: employerContracts"; // fragment only
+        return "dashboard/fragment :: employerContracts"; // ✅ correct path
     }
 
     // Employee contracts fragment
     @GetMapping("/employee-contracts")
-    @PreAuthorize("hasRole('EMPLOYEE')") // only employees see this tab
+    @PreAuthorize("hasRole('EMPLOYEE')")
     public String employeeContracts(@AuthenticationPrincipal User employee,
             Model model,
             @RequestParam(name = "standalone", defaultValue = "false") boolean standalone) {
@@ -57,6 +71,7 @@ public class DashboardController {
         if (standalone) {
             return "contracts/employee-contracts-page";
         }
-        return "dashboard/fragment :: employeeContracts";
+        return "dashboard/fragment :: employeeContracts"; // ✅ correct path
     }
+
 }
