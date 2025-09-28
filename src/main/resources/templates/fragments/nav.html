@@ -1,74 +1,91 @@
-<!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Navbar</title>
-  </head>
-  <body>
-    <nav
-      th:fragment="navbar"
-      class="navbar navbar-expand-lg navbar-dark bg-dark"
-    >
-      <div class="container-fluid">
-        <a class="navbar-brand" th:href="@{/}">DomesticWork</a>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
+<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold" th:href="@{/}">DomesticWork</a>
 
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav ms-auto">
-            <!-- Show when NOT authenticated -->
-            <li
-              class="nav-item"
-              th:if="${#authorization.expression('!isAuthenticated()')}"
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <!-- Show when NOT authenticated -->
+        <li
+          class="nav-item"
+          th:if="${#authorization.expression('!isAuthenticated()')}"
+        >
+          <a class="nav-link" th:href="@{/register/registrationForm}"
+            >Registrarse</a
+          >
+        </li>
+        <li
+          class="nav-item"
+          th:if="${#authorization.expression('!isAuthenticated()')}"
+        >
+          <a class="nav-link" th:href="@{/loginPage}">Iniciar Sesión</a>
+        </li>
+
+        <!-- Show when authenticated -->
+        <li
+          class="nav-item dropdown"
+          th:if="${#authorization.expression('isAuthenticated()')}"
+        >
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            id="userDropdown"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            👤
+            <span th:text="${#authentication.principal.firstName}"
+              >Usuario</span
             >
-              <a class="nav-link" th:href="@{/register/registrationForm}"
-                >Registrarse</a
+          </a>
+          <ul
+            class="dropdown-menu dropdown-menu-end"
+            aria-labelledby="userDropdown"
+          >
+            <li>
+              <a class="dropdown-item" th:href="@{/dashboard}">Mi Dashboard</a>
+            </li>
+            <li>
+              <a
+                class="dropdown-item"
+                th:href="@{/dashboard/employer-contracts}"
+                >Contratos</a
               >
             </li>
-            <li
-              class="nav-item"
-              th:if="${#authorization.expression('!isAuthenticated()')}"
-            >
-              <a class="nav-link" th:href="@{/loginForm}">Iniciar Sesión</a>
-            </li>
-
-            <!-- Show when authenticated -->
-            <li
-              class="nav-item"
-              th:if="${#authorization.expression('isAuthenticated()')}"
-            >
-              <a class="nav-link" th:href="@{/contract/list}">Contratos</a>
-            </li>
-            <li
-              class="nav-item"
-              th:if="${#authorization.expression('isAuthenticated()')}"
-            >
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+              <!-- Logout -->
               <a
-                class="nav-link"
+                class="dropdown-item"
                 href="#"
                 onclick="document.getElementById('logoutForm').submit(); return false;"
               >
-                Logout
+                Cerrar Sesión
               </a>
             </li>
           </ul>
-        </div>
-      </div>
+        </li>
+      </ul>
+    </div>
+  </div>
 
-      <!-- Hidden logout form -->
-      <form
-        id="logoutForm"
-        th:action="@{/logout}"
-        method="post"
-        style="display: none"
-      ></form>
-    </nav>
-  </body>
-</html>
+  <!-- Hidden logout form -->
+  <form
+    id="logoutForm"
+    th:action="@{/logout}"
+    method="post"
+    style="display: none"
+  ></form>
+</nav>
