@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.springboot.domesticworkregistry.dto.employer.RegisterEmployerDto;
+import com.springboot.domesticworkregistry.dto.user.RegisterUserDto;
 import com.springboot.domesticworkregistry.exceptions.EmailAlreadyExistsException;
-import com.springboot.domesticworkregistry.service.employer.EmployerService;
+import com.springboot.domesticworkregistry.service.user.UserService;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -25,11 +25,11 @@ import jakarta.validation.Valid;
 @RequestMapping("/register")
 public class RegistrationController {
 
-    private final EmployerService employerService;
+    private final UserService userService;
 
     @Autowired
-    public RegistrationController(EmployerService employerService) {
-        this.employerService = employerService;
+    public RegistrationController(UserService userService) {
+        this.userService = userService;
     }
 
     @InitBinder
@@ -40,33 +40,33 @@ public class RegistrationController {
 
     @GetMapping("/registrationForm")
     public String registrationForm(Model theModel) {
-        theModel.addAttribute("registerEmployerDto", new RegisterEmployerDto());
-        return "registration-form";
+        theModel.addAttribute("registerEmployerDto", new RegisterUserDto());
+        return "auth/registration-form";
     }
 
     @PostMapping("/processRegistrationForm")
     public String processRegistrationForm(
-            @Valid @ModelAttribute("registerEmployerDto") RegisterEmployerDto registerEmployerDto,
+            @Valid @ModelAttribute("registerEmployerDto") RegisterUserDto registerUserDto,
             BindingResult bindingResult,
             HttpSession session,
             RedirectAttributes redirectAttributes,
             Model theModel) {
 
         if (bindingResult.hasErrors()) {
-            return "registration-form";
+            return "auth/registration-form";
         }
 
-        if (!registerEmployerDto.getPassword().equals(registerEmployerDto.getRepeatPassword())) {
+        if (!registerUserDto.getPassword().equals(registerUserDto.getRepeatPassword())) {
             bindingResult.rejectValue("repeatPassword", "error.repeatPassword", "Passwords must match.");
-            return "registration-form";
+            return "auth/registration-form";
         }
 
         try {
-            employerService.save(registerEmployerDto);
+            userService.registerEmployer(registerUserDto);
             System.out.println("Employer registration successful");
         } catch (EmailAlreadyExistsException e) {
             // Save the DTO in session so the exception handler can access it
-            session.setAttribute("registerEmployerDto", registerEmployerDto);
+            session.setAttribute("registerEmployerDto", registerUserDto);
             throw e;
         }
 
@@ -75,24 +75,20 @@ public class RegistrationController {
 
     }
 
-    @GetMapping("/registrationConfirmation")
-    public String showConfirmationPage() {
-        return "registration-confirmation";
-    }
 
     @ExceptionHandler(EmailAlreadyExistsException.class)
     public String handleEmailExists(EmailAlreadyExistsException ex, Model model, HttpSession session) {
         model.addAttribute("errorMessage", ex.getMessage());
 
-        RegisterEmployerDto dto = (RegisterEmployerDto) session.getAttribute("registerEmployerDto");
+        RegisterUserDto dto = (RegisterUserDto) session.getAttribute("registerEmployerDto");
         if (dto != null) {
             model.addAttribute("registerEmployerDto", dto);
             session.removeAttribute("registerEmployerDto"); // clear after use
         } else {
-            model.addAttribute("registerEmployerDto", new RegisterEmployerDto());
+            model.addAttribute("registerEmployerDto", new RegisterUserDto());
         }
 
-        return "registration-form";
+        return "auth/registration-form";
     }
 
 }

@@ -1,0 +1,79 @@
+/* ===== home.css ===== */
+
+/* Hero Section */
+section.bg-primary {
+  background: linear-gradient(135deg, #0d6efd, #3a86ff);
+  color: white;
+  padding: 5rem 1rem;
+}
+
+section.bg-primary h1 {
+  font-size: 2.5rem;
+}
+
+section.bg-primary p.lead {
+  font-size: 1.25rem;
+  opacity: 0.9;
+}
+
+/* How it Works */
+#how-it-works .col-md-4 {
+  transition: transform 0.2s ease-in-out;
+}
+#how-it-works .col-md-4:hover {
+  transform: translateY(-5px);
+}
+
+#how-it-works i {
+  color: #0d6efd;
+  margin-bottom: 1rem;
+}
+
+/* Why Register */
+section.bg-light {
+  padding: 4rem 1rem;
+}
+
+section.bg-light p.lead {
+  font-size: 1.2rem;
+  color: #444;
+}
+
+/* CTA Section */
+section.text-center h3 {
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
+}
+
+section.text-center .btn {
+  padding: 0.75rem 2rem;
+  font-size: 1.1rem;
+  border-radius: 50px;
+}
+
+/* General spacing */
+section {
+  padding: 3rem 1rem;
+}
+
+/* Navbar */
+.bg-gradient-primary {
+  background: linear-gradient(90deg, #0d6efd, #3a86ff);
+}
+
+.navbar .nav-link {
+  color: white !important;
+  transition: color 0.2s ease-in-out;
+}
+.navbar .nav-link:hover {
+  color: #ffd166 !important;
+}
+
+/* Footer */
+footer {
+  background: #1a1a1a;
+}
+footer p,
+footer small {
+  color: #ccc;
+}

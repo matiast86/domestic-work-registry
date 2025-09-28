@@ -1,6 +1,9 @@
 package com.springboot.domesticworkregistry.entities;
 
-import java.util.Date;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.springboot.domesticworkregistry.enums.EmploymentType;
@@ -18,13 +21,16 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "contract")
+@Table(name = "contracts", uniqueConstraints = @UniqueConstraint(columnNames = { "employer_id", "employee_id",
+                "active" }))
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -37,11 +43,14 @@ public class Contract {
         @Column(name = "name")
         private String name;
 
+        @Column(name = "since")
+        private LocalDate since;
+
         @Column(name = "start_date")
-        private Date startDate;
+        private LocalDate startDate;
 
         @Column(name = "end_date")
-        private Date endDate;
+        private LocalDate endDate;
 
         @Column(name = "job_type")
         @Enumerated(EnumType.STRING)
@@ -52,23 +61,45 @@ public class Contract {
         private EmploymentType employmentType;
 
         @Column(name = "salary")
-        private Double salary;
+        private BigDecimal salary;
 
         @Column(name = "active")
         private boolean active;
 
-        @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
-                        CascadeType.REFRESH })
+        @ManyToOne
         @JoinColumn(name = "employer_id")
-        private Employer employer;
+        private User employer;
 
-        @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
-                        CascadeType.REFRESH })
+        @ManyToOne
         @JoinColumn(name = "employee_id")
-        private Employee employee;
+        private User employee;
 
-        @OneToMany(mappedBy = "contract", cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
-                        CascadeType.REFRESH }, fetch = FetchType.LAZY)
-        private List<Job> jobs;
+        @OneToMany(mappedBy = "contract", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+        private List<Job> jobs = new ArrayList<>();
+
+        @OneToOne(mappedBy = "contract", cascade = CascadeType.ALL, orphanRemoval = true)
+        private Schedule schedule;
+
+        @OneToOne
+        @JoinColumn(name = "work_address")
+        private Address workAddress; // Generaly the emloyer's address
+
+        public int getService() {
+                if (since == null)
+                        return 0;
+                return Period.between(since, LocalDate.now()).getYears();
+        }
+
+        public void addJob(Job job) {
+                jobs.add(job);
+                job.setContract(this);
+        }
+
+        public void setSchedule(Schedule schedule) {
+                this.schedule = schedule;
+                if (schedule != null) {
+                        schedule.setContract(this);
+                }
+        }
 
 }

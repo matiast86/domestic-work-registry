@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html
+  lang="es"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout}"
+>
+  <head>
+    <title>Contratos como Empleado</title>
+  </head>
+  <body>
+    <main layout:fragment="content">
+      <th:block
+        th:replace="fragments/dashboard :: employeeContracts"
+      ></th:block>
+    </main>
+  </body>
+</html>

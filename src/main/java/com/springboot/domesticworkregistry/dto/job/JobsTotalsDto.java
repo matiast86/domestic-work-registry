@@ -15,7 +15,7 @@ public class JobsTotalsDto {
      * For monthly totals, this field is just set to the year but not actually used.
      */
     private int year;
-    private Double workedHoursTotal;
+    private BigDecimal workedHoursTotal;
     private BigDecimal hourlyFeeTotal;
     private BigDecimal subtotalTotal;
     private BigDecimal transportationFeeTotal;

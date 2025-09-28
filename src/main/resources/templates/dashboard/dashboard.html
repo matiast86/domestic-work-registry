@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}">
+  <head>
+    <title>Dashboard</title>
+    <th:block layout:fragment="dashboard">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}" />
+  </th:block>
+  </head>
+
+  <body>
+    <div layout:fragment="content" class="container mt-4">
+      <!-- Profile Header -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Bienvenido, <span th:text="${user.firstName}">Nombre</span>!</h2>
+        <a th:href="@{/users/updateEmployer(employerId=${user.id})}" 
+           class="btn btn-info">
+          Actualizar Datos
+        </a>
+      </div>
+
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5 class="card-title" th:text="${user.firstName + ' ' + user.lastName}">
+            Full Name
+          </h5>
+          <p class="card-text mb-1">
+            <strong>Email:</strong>
+            <span th:text="${user.email}">email@example.com</span>
+          </p>
+          <p class="card-text mb-1">
+            <strong>CUIL:</strong>
+            <span th:text="${user.identificationNumber}">00-00000000-0</span>
+          </p>
+          <p class="card-text">
+            <strong>Teléfono:</strong>
+            <span th:text="${user.phone}">+54...</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Tabs for Employer vs Employee -->
+      <ul class="nav nav-tabs" id="dashboardTabs" role="tablist">
+  <li class="nav-item" role="presentation"
+      th:if="${#authorization.expression('hasRole(''EMPLOYER'')')}">
+    <button class="nav-link active" id="employer-tab"
+            data-bs-toggle="tab" data-bs-target="#employer" type="button">
+      Como Empleador
+    </button>
+  </li>
+  <li class="nav-item" role="presentation"
+      th:if="${#authorization.expression('hasRole(''EMPLOYEE'')')}">
+    <button class="nav-link" id="employee-tab"
+            data-bs-toggle="tab" data-bs-target="#employee" type="button">
+      Como Empleado
+    </button>
+  </li>
+</ul>
+
+
+<div class="tab-pane fade show active" id="employer" role="tabpanel">
+  <th:block th:if="${preloadedTab == 'employer'}"
+            th:replace="~{dashboard/fragment :: employerContracts}"></th:block>
+</div>
+
+<div class="tab-pane fade" id="employee" role="tabpanel">
+  <th:block th:if="${preloadedTab == 'employee'}"
+            th:replace="~{dashboard/fragment :: employeeContracts}"></th:block>
+</div>
+
+
+
+    <script th:src="@{/js/dashboard.js}" layout:fragment="scripts"></script>
+  </body>
+</html>
+

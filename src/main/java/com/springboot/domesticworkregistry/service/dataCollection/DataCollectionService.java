@@ -31,10 +31,10 @@ public class DataCollectionService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    private double sumHours(List<Job> jobs) {
+    private BigDecimal sumHours(List<Job> jobs) {
         return jobs.stream()
-                .mapToDouble(job -> job.getWorkedHours() != null ? job.getWorkedHours() : 0)
-                .sum();
+                .map(Job::getWorkedHours)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     private BigDecimal averageJobs(List<Job> jobs, Function<Job, BigDecimal> mapper) {
@@ -54,15 +54,15 @@ public class DataCollectionService {
     }
 
     // --- Hours ---
-    public Double calculateTotalHours(List<Job> jobs) {
+    public BigDecimal calculateTotalHours(List<Job> jobs) {
         return sumHours(jobs);
     }
 
-    public Double calculateHoursByMonth(List<Job> jobs, int year, int month) {
+    public BigDecimal calculateHoursByMonth(List<Job> jobs, int year, int month) {
         return sumHours(filterJobs(jobs, byMonth(year, month)));
     }
 
-    public Double calculateHoursByYear(List<Job> jobs, int year) {
+    public BigDecimal calculateHoursByYear(List<Job> jobs, int year) {
         List<Job> filteredJobs = filterJobs(jobs, byYear(year));
         if (filteredJobs.isEmpty())
             throw new NoJobsFoundException("No jobs found in the specified year.");

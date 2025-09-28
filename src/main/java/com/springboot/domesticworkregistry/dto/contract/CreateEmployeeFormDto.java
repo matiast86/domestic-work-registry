@@ -1,11 +1,18 @@
 package com.springboot.domesticworkregistry.dto.contract;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.springboot.domesticworkregistry.dto.schedule_entry.ScheduleEntryDto;
 import com.springboot.domesticworkregistry.enums.EmploymentType;
 import com.springboot.domesticworkregistry.enums.JobType;
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,23 +22,29 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CreateEmployeeFormDto {
 
-    @NotNull(message = "is requied")
-    @Size(min = 1, message = "is required")
+    @NotBlank(message = "is required")
     private String firstName;
 
-    @NotNull(message = "is requied")
-    @Size(min = 1, message = "is required")
+    @NotBlank(message = "is required")
     private String lastName;
 
-    @NotNull(message = "is requied")
+    @NotNull(message = "is required")
     @Email
     private String email;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @NotNull(message = "is required")
-    private String cuil;
+    private LocalDate birthDate;
 
-    @Size(min = 1)
+    @NotNull(message = "is required")
+    private String identificationNumber;
+
+    @NotBlank(message = "is required")
     private String phone;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @NotNull(message = "is required")
+    private LocalDate since;
 
     @NotNull(message = "is required")
     private JobType jobType;
@@ -39,13 +52,20 @@ public class CreateEmployeeFormDto {
     @NotNull(message = "is required")
     private EmploymentType employmentType;
 
-    private Double salary;
+    @NotNull(message = "is required")
+    private BigDecimal salary;
+
+    @NotNull(message = "is required")
+    private List<ScheduleEntryDto> entries;
 
     @NotNull(message = "is required")
     private String street;
 
     @NotNull(message = "is required")
     private String number;
+
+    @NotNull(message = "is required")
+    private String apartment;
 
     @NotNull(message = "is required")
     private String city;

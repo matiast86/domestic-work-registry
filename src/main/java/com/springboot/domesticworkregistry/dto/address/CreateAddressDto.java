@@ -17,11 +17,14 @@ public class CreateAddressDto {
     private String number;
 
     @NotNull(message = "is required")
+    private String apartment;
+
+    @NotNull(message = "is required")
     private String city;
 
     @NotNull(message = "is required")
     private String postalCode;
-    
+
     @NotNull(message = "is required")
     private String country;
 }

@@ -1,6 +1,7 @@
 package com.springboot.domesticworkregistry.service.job;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -40,19 +41,26 @@ public class JobServiceImpl implements JobService {
     private final JobsMonthlyTableMapper tableMapper;
     private final DataCollectionService dataCollectionService;
 
-    private Double calculateHoursWorked(LocalTime startTime, LocalTime endTime) {
+    private BigDecimal calculateHoursWorked(LocalTime startTime, LocalTime endTime) {
         if (startTime.isAfter(endTime)) {
             throw new IllegalArgumentException("Start Time should be before end time.");
         }
 
         long minutes = ChronoUnit.MINUTES.between(startTime, endTime);
-        double fractionalHours = minutes / 60.0; // Convert minutes to hours
+        BigDecimal fractionalHours = BigDecimal.valueOf(minutes)
+                .divide(BigDecimal.valueOf(60), 2, RoundingMode.HALF_UP);
 
-        return Math.ceil(fractionalHours * 2) / 2;
+        // Round to nearest 0.5
+        BigDecimal multiplier = BigDecimal.valueOf(2); // because 1 / 0.5 = 2
+        BigDecimal rounded = fractionalHours.multiply(multiplier)
+                .setScale(0, RoundingMode.HALF_UP) // round to nearest int
+                .divide(multiplier, 1, RoundingMode.HALF_UP); // back to increments of 0.5
+
+        return rounded;
     }
 
-    private BigDecimal calculatePartialFee(Double workedHours, BigDecimal hourlyRate) {
-        return hourlyRate.multiply(BigDecimal.valueOf(workedHours));
+    private BigDecimal calculatePartialFee(BigDecimal workedHours, BigDecimal hourlyRate) {
+        return hourlyRate.multiply(workedHours);
     }
 
     private BigDecimal calculateTotalFee(BigDecimal partialFee, BigDecimal transportationFee) {
@@ -71,7 +79,7 @@ public class JobServiceImpl implements JobService {
     }
 
     private String getMonthNameInSpanish(LocalDate date) {
-        Locale spanishArgentina = new Locale("es", "AR");
+        Locale spanishArgentina = Locale.of("es", "AR");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM", spanishArgentina);
         return date.format(formatter);
 
@@ -112,7 +120,7 @@ public class JobServiceImpl implements JobService {
         job.setContract(contract);
         LocalTime startTime = job.getStartTime();
         LocalTime endTime = job.getEndTime();
-        Double workedHours = calculateHoursWorked(startTime, endTime);
+        BigDecimal workedHours = calculateHoursWorked(startTime, endTime);
         BigDecimal transportationFee = job.getTransportationFee();
         BigDecimal hourlyFee = job.getHourlyRate();
         BigDecimal partialFee = calculatePartialFee(workedHours, hourlyFee);
@@ -159,7 +167,7 @@ public class JobServiceImpl implements JobService {
                 int month = monthEntry.getKey();
                 List<Job> monthlyJobs = monthEntry.getValue();
                 BigDecimal hourlyFee = dataCollectionService.calculateAverage(monthlyJobs, Job::getHourlyRate);
-                Double workedHours = dataCollectionService.calculateTotalHours(monthlyJobs);
+                BigDecimal workedHours = dataCollectionService.calculateTotalHours(monthlyJobs);
                 BigDecimal subtotal = dataCollectionService.calculateSum(monthlyJobs,
                         Job::getPartialFee);
                 BigDecimal transportationFee = dataCollectionService.calculateSum(monthlyJobs,
@@ -207,7 +215,7 @@ public class JobServiceImpl implements JobService {
         }
 
         BigDecimal hourlyFeeTotal = dataCollectionService.calculateAverage(jobs, Job::getHourlyRate);
-        Double workedHoursTotal = dataCollectionService.calculateTotalHours(jobs);
+        BigDecimal workedHoursTotal = dataCollectionService.calculateTotalHours(jobs);
         BigDecimal subtotalTotal = dataCollectionService.calculateSum(jobs,
                 Job::getPartialFee);
         BigDecimal transportationFeeTotal = dataCollectionService.calculateSum(jobs,
@@ -239,7 +247,7 @@ public class JobServiceImpl implements JobService {
 
         LocalTime startTime = form.getStartTime();
         LocalTime endTime = form.getEndTime();
-        Double workedHours = calculateHoursWorked(startTime, endTime);
+        BigDecimal workedHours = calculateHoursWorked(startTime, endTime);
         BigDecimal transportationFee = form.getTransportationFee();
         BigDecimal hourlyFee = form.getHourlyRate();
         BigDecimal partialFee = calculatePartialFee(workedHours, hourlyFee);

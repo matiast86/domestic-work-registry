@@ -38,7 +38,7 @@ public class Job {
         private LocalTime endTime;
 
         @Column(name = "worked_hours")
-        private Double workedHours;
+        private BigDecimal workedHours;
 
         @Column(name = "hourly_rate")
         private BigDecimal hourlyRate;
@@ -57,7 +57,7 @@ public class Job {
         @JoinColumn(name = "contract_id")
         private Contract contract;
 
-        public Job(LocalDate date, LocalTime startTime, LocalTime endTime, Double workedHours, BigDecimal hourlyRate,
+        public Job(LocalDate date, LocalTime startTime, LocalTime endTime, BigDecimal workedHours, BigDecimal hourlyRate,
                         BigDecimal partialFee, BigDecimal transportationFee, BigDecimal totalFee) {
                 this.date = date;
                 this.startTime = startTime;
