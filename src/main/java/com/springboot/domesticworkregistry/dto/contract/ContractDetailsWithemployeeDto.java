@@ -3,6 +3,8 @@ package com.springboot.domesticworkregistry.dto.contract;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import com.springboot.domesticworkregistry.entities.Schedule;
 import com.springboot.domesticworkregistry.enums.EmploymentType;
 import com.springboot.domesticworkregistry.enums.JobType;
@@ -30,6 +32,7 @@ public class ContractDetailsWithemployeeDto {
     @Email
     private String email;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @NotNull(message = "is required")
     private LocalDate birthdate;
 
@@ -39,6 +42,7 @@ public class ContractDetailsWithemployeeDto {
     @NotBlank(message = "is required")
     private String phone;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @NotNull(message = "is required")
     private LocalDate since;
 

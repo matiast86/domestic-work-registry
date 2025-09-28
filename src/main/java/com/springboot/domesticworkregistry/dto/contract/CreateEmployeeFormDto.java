@@ -4,14 +4,15 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.springboot.domesticworkregistry.entities.ScheduleEntry;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.springboot.domesticworkregistry.dto.schedule_entry.ScheduleEntryDto;
 import com.springboot.domesticworkregistry.enums.EmploymentType;
 import com.springboot.domesticworkregistry.enums.JobType;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,15 +32,17 @@ public class CreateEmployeeFormDto {
     @Email
     private String email;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @NotNull(message = "is required")
     private LocalDate birthDate;
-    
+
     @NotNull(message = "is required")
     private String identificationNumber;
-    
+
     @NotBlank(message = "is required")
     private String phone;
-    
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @NotNull(message = "is required")
     private LocalDate since;
 
@@ -53,7 +56,7 @@ public class CreateEmployeeFormDto {
     private BigDecimal salary;
 
     @NotNull(message = "is required")
-    private List<ScheduleEntry> entries;
+    private List<ScheduleEntryDto> entries;
 
     @NotNull(message = "is required")
     private String street;

@@ -2,6 +2,8 @@ package com.springboot.domesticworkregistry.dto.user;
 
 import java.time.LocalDate;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -26,6 +28,7 @@ public class RegisterUserEmployeeDto {
     @Email
     private String email;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @NotNull(message = "is required")
     private LocalDate birthDate;
 

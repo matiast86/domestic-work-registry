@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.springboot.domesticworkregistry.dto.contract.CreateEmployeeFormDto;
+import com.springboot.domesticworkregistry.dto.schedule_entry.ScheduleEntryDto;
 import com.springboot.domesticworkregistry.entities.Contract;
 import com.springboot.domesticworkregistry.entities.User;
 import com.springboot.domesticworkregistry.service.contract.ContractService;
@@ -47,7 +48,11 @@ public class ContractController {
 
     @GetMapping("/contractForm")
     public String contractForm(Model model) {
-        model.addAttribute("employeeForm", new CreateEmployeeFormDto());
+        CreateEmployeeFormDto form = new CreateEmployeeFormDto();
+        if (form.getEntries() == null || form.getEntries().isEmpty()) {
+            form.setEntries(List.of(new ScheduleEntryDto())); // one blank row
+        }
+        model.addAttribute("employeeForm", form);
         return "contracts/contract-form";
     }
 
@@ -65,7 +70,7 @@ public class ContractController {
 
         contractService.save(employer.getEmail(), form);
 
-        return "redirect:/contract/list";
+        return "redirect:/dashboard";
     }
 
     @ExceptionHandler(IllegalStateException.class)

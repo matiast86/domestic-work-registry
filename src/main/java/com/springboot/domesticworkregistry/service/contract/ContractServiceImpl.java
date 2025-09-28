@@ -1,25 +1,21 @@
 package com.springboot.domesticworkregistry.service.contract;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import com.springboot.domesticworkregistry.dao.ContractRepository;
 import com.springboot.domesticworkregistry.dto.contract.ContractDetailsWithemployeeDto;
-import com.springboot.domesticworkregistry.dto.contract.CreateContractDto;
+import com.springboot.domesticworkregistry.dto.contract.ContractMapper;
 import com.springboot.domesticworkregistry.dto.contract.CreateEmployeeFormDto;
 import com.springboot.domesticworkregistry.dto.user.RegisterUserEmployeeDto;
 import com.springboot.domesticworkregistry.entities.Address;
 import com.springboot.domesticworkregistry.entities.Contract;
-import com.springboot.domesticworkregistry.entities.Schedule;
 import com.springboot.domesticworkregistry.entities.User;
 import com.springboot.domesticworkregistry.enums.Role;
 import com.springboot.domesticworkregistry.exceptions.EntityNotFoundException;
 import com.springboot.domesticworkregistry.mapper.ContractDetailsMapper;
-import com.springboot.domesticworkregistry.mapper.ContractMapper;
 import com.springboot.domesticworkregistry.mapper.RegisterEmployeeDtoMapper;
-import com.springboot.domesticworkregistry.service.schedule.ScheduleService;
 import com.springboot.domesticworkregistry.service.user.UserService;
 
 @Service
@@ -28,17 +24,15 @@ public class ContractServiceImpl implements ContractService {
     private final ContractRepository contractRepository;
     private final ContractMapper contractMapper;
     private final UserService userService;
-    private final ScheduleService scheduleService;
     private final ContractDetailsMapper contractDetailsMapper;
     private final RegisterEmployeeDtoMapper employeeDtoMapper;
 
     public ContractServiceImpl(ContractRepository contractRepository, ContractMapper contractMapper,
-            UserService userService, ScheduleService scheduleService, ContractDetailsMapper contractDetailsMapper,
+            UserService userService, ContractDetailsMapper contractDetailsMapper,
             RegisterEmployeeDtoMapper employeeDtoMapper) {
         this.contractRepository = contractRepository;
         this.contractMapper = contractMapper;
         this.userService = userService;
-        this.scheduleService = scheduleService;
         this.contractDetailsMapper = contractDetailsMapper;
         this.employeeDtoMapper = employeeDtoMapper;
 
@@ -68,20 +62,6 @@ public class ContractServiceImpl implements ContractService {
                                     " and employee " + form.getEmail());
                 });
 
-        // Build schedule
-        Schedule schedule = new Schedule();
-        schedule.setEntries(form.getEntries());
-
-        // Build contract from DTO
-        CreateContractDto contractDto = new CreateContractDto(
-                form.getSince(),
-                form.getJobType(),
-                form.getEmploymentType(),
-                form.getSalary(),
-                schedule);
-
-        Contract newContract = contractMapper.toContract(contractDto);
-
         // Find or create employee
         User employee;
         try {
@@ -94,18 +74,7 @@ public class ContractServiceImpl implements ContractService {
             employee = userService.registerEmployee(employeeDto);
         }
 
-        // Common setup
-        schedule.setContract(newContract);
-
-        newContract.setEmployer(employer);
-        employer.addEmployerContract(newContract);
-
-        newContract.setEmployee(employee);
-        employee.addEmployeeContract(newContract);
-
-        newContract.setName(employer.getLastName().toUpperCase() + "-" + employee.getLastName().toUpperCase());
-        newContract.setStartDate(LocalDate.now());
-        newContract.setActive(true);
+        Contract newContract = contractMapper.fromForm(form, employer, employee);
 
         return contractRepository.save(newContract);
     }

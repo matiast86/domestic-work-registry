@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -27,6 +28,7 @@ public class Schedule {
     int id;
 
     @OneToOne
+    @JoinColumn(name = "contract_id")
     private Contract contract;
 
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -35,6 +37,11 @@ public class Schedule {
     public void addEntry(ScheduleEntry entry) {
         entries.add(entry);
         entry.setSchedule(this);
+    }
+
+    public void removeEntry(ScheduleEntry entry) {
+        entries.remove(entry);
+        entry.setSchedule(null);
     }
 
 }

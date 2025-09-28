@@ -77,8 +77,7 @@ public class Contract {
         @OneToMany(mappedBy = "contract", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
         private List<Job> jobs = new ArrayList<>();
 
-        @OneToOne(cascade = CascadeType.ALL)
-        @JoinColumn(name = "schedule_id")
+        @OneToOne(mappedBy = "contract", cascade = CascadeType.ALL, orphanRemoval = true)
         private Schedule schedule;
 
         @OneToOne
@@ -94,6 +93,13 @@ public class Contract {
         public void addJob(Job job) {
                 jobs.add(job);
                 job.setContract(this);
+        }
+
+        public void setSchedule(Schedule schedule) {
+                this.schedule = schedule;
+                if (schedule != null) {
+                        schedule.setContract(this);
+                }
         }
 
 }
