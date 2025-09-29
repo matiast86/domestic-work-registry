@@ -1,5 +1,7 @@
 package com.springboot.domesticworkregistry.controller.user;
 
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -10,7 +12,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.springboot.domesticworkregistry.dto.user.ChangePasswordDto;
 import com.springboot.domesticworkregistry.dto.user.UpdateUserDto;
+import com.springboot.domesticworkregistry.entities.User;
 import com.springboot.domesticworkregistry.exceptions.EmailAlreadyExistsException;
 import com.springboot.domesticworkregistry.service.user.UserService;
 
@@ -55,5 +59,33 @@ public class UserController {
         model.addAttribute("errorMessage", ex.getMessage());
         model.addAttribute("employer", form); // repopulate form with submitted data
         return "employers/employer-form";
+    }
+
+    @GetMapping("/changePassword")
+    public String passwordForm(Model model) {
+        model.addAttribute("passwordForm", new ChangePasswordDto());
+        return "auth/change-password"; // ✅ make sure your template is in `templates/auth/change-password.html`
+    }
+
+    @PostMapping("/change-password")
+    public String changePassword(
+            @AuthenticationPrincipal User user,
+            @Valid @ModelAttribute("passwordForm") ChangePasswordDto form,
+            BindingResult bindingResult,
+            Model model) {
+
+        if (bindingResult.hasErrors()) {
+            return "auth/change-password";
+        }
+
+        try {
+            userService.changePassword(user, form);
+        } catch (BadCredentialsException e) {
+            model.addAttribute("passwordForm", form);
+            model.addAttribute("errorMessage", e.getMessage());
+            return "auth/change-password";
+        }
+
+        return "redirect:/loginPage?passwordChanged";
     }
 }

@@ -26,7 +26,7 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         // 🔹 First login → force password change
         if (user.isFirstLogin()) {
-            getRedirectStrategy().sendRedirect(request, response, "/change-password");
+            getRedirectStrategy().sendRedirect(request, response, "/users/changePassword");
             return;
         }
 

@@ -4,10 +4,12 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.springboot.domesticworkregistry.dao.UserRepository;
+import com.springboot.domesticworkregistry.dto.user.ChangePasswordDto;
 import com.springboot.domesticworkregistry.dto.user.RegisterUserDto;
 import com.springboot.domesticworkregistry.dto.user.RegisterUserEmployeeDto;
 import com.springboot.domesticworkregistry.dto.user.UpdateUserDto;
@@ -25,12 +27,15 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper mapper;
+    private final CustomUserDetailsService userDetails;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, UserMapper mapper) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, UserMapper mapper,
+            CustomUserDetailsService userDetails) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.mapper = mapper;
+        this.userDetails = userDetails;
     }
 
     @Override
@@ -149,6 +154,23 @@ public class UserServiceImpl implements UserService {
                 form.getCountry());
         newUser.setAddress(address);
         return userRepository.save(newUser);
+    }
+
+    @Override
+    public void changePassword(User user, ChangePasswordDto form) {
+        // 1. Check that new password and confirmation match
+        if (!passwordEncoder.matches(form.getCurrentPassword(), user.getPassword())) {
+            throw new BadCredentialsException("Incorrect current password");
+        }
+
+        if (user.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_EMPLOYEE"))) {
+            user.setFirstLogin(false);
+        }
+
+        user.setPassword(passwordEncoder.encode(form.getNewPassword()));
+        userRepository.save(user);
+
     }
 
 }

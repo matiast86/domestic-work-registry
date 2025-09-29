@@ -2,6 +2,7 @@ package com.springboot.domesticworkregistry.service.user;
 
 import java.util.List;
 
+import com.springboot.domesticworkregistry.dto.user.ChangePasswordDto;
 import com.springboot.domesticworkregistry.dto.user.RegisterUserDto;
 import com.springboot.domesticworkregistry.dto.user.RegisterUserEmployeeDto;
 import com.springboot.domesticworkregistry.dto.user.UpdateUserDto;
@@ -29,5 +30,7 @@ public interface UserService {
     List<Contract> findContractsByEmployer(String id);
 
     List<Contract> findContractsByEmployee(String id);
+
+    void changePassword(User user, ChangePasswordDto form);
 
 }
