@@ -244,7 +244,14 @@
 
         <div class="mb-3">
           <label for="country" class="form-label">País</label>
-          <input type="text" th:field="*{country}" class="form-control" />
+          <select
+            th:filed="*{country}"
+            class="form-select"
+            name="country"
+            id="country"
+          >
+            <option value=""></option>
+          </select>
           <div
             class="text-danger"
             th:if="${#fields.hasErrors('country')}"
@@ -259,5 +266,6 @@
     </div>
 
     <script th:src="@{/js/contract-form.js}" layout:fragment="scripts"></script>
+    <script th:src="@{/js/forms.js}" layout:fragment="scripts"></script>
   </body>
 </html>

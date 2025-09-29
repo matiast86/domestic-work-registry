@@ -168,14 +168,21 @@
           </div>
 
           <div class="mb-3">
-            <label for="country" class="form-label">Country</label>
-            <input type="text" th:field="*{country}" class="form-control" />
-            <div
-              class="text-danger"
-              th:if="${#fields.hasErrors('country')}"
-              th:errors="*{country}"
-            ></div>
-          </div>
+          <label for="country" class="form-label">País</label>
+          <select
+            th:filed="*{country}"
+            class="form-select"
+            name="country"
+            id="country"
+          >
+            <option value=""></option>
+          </select>
+          <div
+            class="text-danger"
+            th:if="${#fields.hasErrors('country')}"
+            th:errors="*{country}"
+          ></div>
+        </div>
 
           <!-- Botón -->
           <div class="d-grid">
@@ -187,5 +194,6 @@
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/forms.js}" layout:fragment="scripts"></script>
   </body>
 </html>
