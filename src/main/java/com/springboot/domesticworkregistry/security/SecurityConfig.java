@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.springboot.domesticworkregistry.service.user.CustomUserDetailsService;
 
@@ -17,11 +18,14 @@ public class SecurityConfig {
 
         private final CustomUserDetailsService customUserDetailsService;
         private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+        private final FirstLoginRedirectFilter filter;
 
         public SecurityConfig(CustomUserDetailsService customUserDetailsService,
-                        CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler) {
+                        CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler,
+                        FirstLoginRedirectFilter filter) {
                 this.customUserDetailsService = customUserDetailsService;
                 this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;
+                this.filter = filter;
         }
 
         @Bean
@@ -68,6 +72,8 @@ public class SecurityConfig {
                                 .exceptionHandling(config -> config
                                                 .accessDeniedPage("/access-denied"))
                                 .authenticationProvider(authenticationProvider());
+
+                http.addFilterAfter(filter, UsernamePasswordAuthenticationFilter.class);
 
                 return http.build();
         }
