@@ -184,8 +184,22 @@
             </div>
 
             <div class="mb-3">
+              <label for="country" class="form-label">País</label>
+              <select th:field="*{country}" class="form-select" id="country">
+                <option value="">-- Seleccione un país --</option>
+              </select>
+              <div
+                class="text-danger"
+                th:if="${#fields.hasErrors('country')}"
+                th:errors="*{country}"
+              ></div>
+            </div>
+
+            <div class="mb-3">
               <label for="city" class="form-label">Ciudad</label>
-              <input type="text" th:field="*{city}" class="form-control" />
+              <select th:field="*{city}" class="form-select" id="city">
+                <option value="">-- Seleccione un ciudad --</option>
+              </select>
               <div
                 class="text-danger"
                 th:if="${#fields.hasErrors('city')}"
@@ -204,23 +218,6 @@
                 class="text-danger"
                 th:if="${#fields.hasErrors('postalCode')}"
                 th:errors="*{postalCode}"
-              ></div>
-            </div>
-
-            <div class="mb-3">
-              <label for="country" class="form-label">País</label>
-              <select
-                th:field="*{country}"
-                class="form-select"
-                name="country"
-                id="country"
-              >
-                <option value=""></option>
-              </select>
-              <div
-                class="text-danger"
-                th:if="${#fields.hasErrors('country')}"
-                th:errors="*{country}"
               ></div>
             </div>
 

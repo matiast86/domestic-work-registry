@@ -46,7 +46,7 @@ public class SecurityConfig {
                 http
                                 .authorizeHttpRequests(config -> config
                                                 // public
-                                                .requestMatchers("/css/**", "/js/**", "/images/**", "/", "/register/**")
+                                                .requestMatchers("/css/**", "/js/**", "/images/**", "/", "/register/**", "/data/**")
                                                 .permitAll()
 
                                                 // employer-only
