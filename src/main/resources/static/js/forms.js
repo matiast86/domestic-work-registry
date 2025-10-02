@@ -1,20 +1,17 @@
 const countrySelect = document.getElementById("country");
-const citySelect = document.getElementById("city");
+const stateSelect = document.getElementById("state");
 
+// Fetch helper
 const getData = async (url) => {
-  // Await the fetch call to get the Response object
   const res = await fetch(url);
-  // Await the .json() call to get the parsed data
-  const data = await res.json();
-
-  // Now access the property on the fully resolved data object
-  return data;
+  if (!res.ok) throw new Error("Error al cargar datos");
+  return await res.json();
 };
 
+// Load countries into <select>
 const processCountriesData = async () => {
   try {
     const countries = await getData("/data/countries.json");
-
     countries.forEach((country) => {
       const option = document.createElement("option");
       option.textContent = country;
@@ -22,44 +19,45 @@ const processCountriesData = async () => {
       countrySelect.appendChild(option);
     });
   } catch (error) {
-    console.error(error.message);
+    console.error("Error cargando países:", error.message);
   }
 };
 
-const processCityData = async (countryName) => {
+// Load states when a country is chosen
+const processStateData = async (countryName) => {
   try {
-    const result = await getData(
-      "https://countriesnow.space/api/v0.1/countries/states"
-    );
-    const data = result.data;
+    const data = await getData("/data/provinces.json");
 
-    // Find selected country
-    const country = data.find((c) => c.name === countryName);
+    // Clear old states
+    stateSelect.innerHTML =
+      "<option value=''>-- Seleccione una provincia --</option>";
 
-    // Clear previous cities
-    citySelect.innerHTML = "<option value=''>--Seleccione ciudad--</option>";
-
-    if (country && country.states) {
-      const cities = country.states.map((s) => s.name);
-      cities.forEach((city) => {
+    const states = data[countryName]; // directly use the JSON object key
+    if (states && Array.isArray(states)) {
+      states.forEach((state) => {
         const option = document.createElement("option");
-        option.textContent = city;
-        option.value = city;
-        citySelect.appendChild(option);
+        option.textContent = state;
+        option.value = state;
+        stateSelect.appendChild(option);
       });
     } else {
-      console.warn(`No states found for ${countryName}`);
+      console.warn(`No se encontraron provincias para ${countryName}`);
     }
   } catch (error) {
-    console.error(error.message);
+    console.error("Error cargando provincias:", error.message);
   }
 };
 
+// Init
 processCountriesData();
 
+// Listener: when selecting a country, load states
 countrySelect.addEventListener("change", () => {
   const selectedCountry = countrySelect.value;
   if (selectedCountry) {
-    processCityData(selectedCountry);
+    processStateData(selectedCountry);
+  } else {
+    stateSelect.innerHTML =
+      "<option value=''>-- Seleccione una provincia --</option>";
   }
 });

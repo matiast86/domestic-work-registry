@@ -196,10 +196,20 @@
             </div>
 
             <div class="mb-3">
-              <label for="city" class="form-label">Ciudad</label>
-              <select th:field="*{city}" class="form-select" id="city">
-                <option value="">-- Seleccione un ciudad --</option>
+              <label for="state" class="form-label">Provincia/Estado</label>
+              <select th:field="*{state}" class="form-select" id="state">
+                <option value="">-- Seleccione una provincia --</option>
               </select>
+              <div
+                class="text-danger"
+                th:if="${#fields.hasErrors('state')}"
+                th:errors="*{state}"
+              ></div>
+            </div>
+
+            <div class="mb-3">
+              <label for="city" class="form-label">Localidad</label>
+              <input type="text" th:field="*{city}" class="form-control" />
               <div
                 class="text-danger"
                 th:if="${#fields.hasErrors('city')}"
