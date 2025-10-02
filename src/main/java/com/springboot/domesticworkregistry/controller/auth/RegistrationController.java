@@ -75,7 +75,6 @@ public class RegistrationController {
 
     }
 
-
     @ExceptionHandler(EmailAlreadyExistsException.class)
     public String handleEmailExists(EmailAlreadyExistsException ex, Model model, HttpSession session) {
         model.addAttribute("errorMessage", ex.getMessage());

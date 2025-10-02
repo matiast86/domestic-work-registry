@@ -47,6 +47,8 @@ public class RegisterUserEmployeeDto {
     private String apartment;
 
     @NotNull(message = "is required")
+    private String state;
+
     private String city;
 
     @NotNull(message = "is required")

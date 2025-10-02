@@ -223,14 +223,38 @@
         </div>
 
         <div class="mb-3">
-          <label for="city" class="form-label">Ciudad</label>
-          <input type="text" th:field="*{city}" class="form-control" />
+          <label for="country" class="form-label">País</label>
+          <select th:field="*{country}" class="form-select" id="country">
+            <option value="">-- Seleccione un país --</option>
+          </select>
           <div
             class="text-danger"
-            th:if="${#fields.hasErrors('city')}"
-            th:errors="*{city}"
+            th:if="${#fields.hasErrors('country')}"
+            th:errors="*{country}"
           ></div>
         </div>
+
+        <div class="mb-3">
+              <label for="state" class="form-label">Provincia/Estado</label>
+              <select th:field="*{state}" class="form-select" id="state">
+                <option value="">-- Seleccione una provincia --</option>
+              </select>
+              <div
+                class="text-danger"
+                th:if="${#fields.hasErrors('state')}"
+                th:errors="*{state}"
+              ></div>
+            </div>
+
+            <div class="mb-3">
+              <label for="city" class="form-label">Localidad</label>
+              <input type="text" th:field="*{city}" class="form-control" />
+              <div
+                class="text-danger"
+                th:if="${#fields.hasErrors('city')}"
+                th:errors="*{city}"
+              ></div>
+            </div>
 
         <div class="mb-3">
           <label for="postalCode" class="form-label">Código Postal</label>
@@ -242,16 +266,6 @@
           ></div>
         </div>
 
-        <div class="mb-3">
-          <label for="country" class="form-label">País</label>
-          <input type="text" th:field="*{country}" class="form-control" />
-          <div
-            class="text-danger"
-            th:if="${#fields.hasErrors('country')}"
-            th:errors="*{country}"
-          ></div>
-        </div>
-
         <div class="mt-3">
           <button type="submit" class="btn btn-primary">Guardar</button>
         </div>
@@ -259,5 +273,6 @@
     </div>
 
     <script th:src="@{/js/contract-form.js}" layout:fragment="scripts"></script>
+    <script th:src="@{/js/forms.js}" layout:fragment="scripts"></script>
   </body>
 </html>

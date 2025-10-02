@@ -60,9 +60,29 @@
             <li>
               <a
                 class="dropdown-item"
+                th:if="${#authorization.expression('hasRole(''EMPLOYER'')')}"
                 th:href="@{/dashboard/employer-contracts}"
-                >Contratos</a
               >
+                Contratos como Empleador
+              </a>
+            </li>
+
+            <li>
+              <a
+                class="dropdown-item"
+                th:if="${#authorization.expression('hasRole(''EMPLOYEE'')')}"
+                th:href="@{/dashboard/employee-contracts}"
+              >
+                Contratos como Empleado
+              </a>
+            </li>
+
+            <li><hr class="dropdown-divider" /></li>
+
+            <li>
+              <a class="dropdown-item" th:href="@{/users/changePassword}">
+                Cambiar Contraseña
+              </a>
             </li>
             <li><hr class="dropdown-divider" /></li>
             <li>
