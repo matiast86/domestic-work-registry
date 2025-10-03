@@ -8,6 +8,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,7 +23,7 @@ import com.springboot.domesticworkregistry.service.job.JobService;
 import jakarta.validation.Valid;
 
 @Controller
-@RequestMapping("/job")
+@RequestMapping("/jobs")
 public class JobController {
 
     private JobService jobService;
@@ -37,8 +38,8 @@ public class JobController {
         dataBinder.registerCustomEditor(String.class, stringTrimmerEditor);
     }
 
-    @GetMapping("/add")
-    public String jobForm(@RequestParam("contractId") int contractId, Model model) {
+    @GetMapping("/add/{id}")
+    public String jobForm(@PathVariable("id") int contractId, Model model) {
         CreateJobDto jobForm = new CreateJobDto();
         model.addAttribute("jobForm", jobForm);
         model.addAttribute("contractId", contractId); // pass contractId to the form
@@ -63,15 +64,15 @@ public class JobController {
         return "redirect:/job/jobList?contractId=" + contractId;
     }
 
-    @GetMapping("/jobList")
-    public String getJobsList(@RequestParam("contractId") int contractId, Model model) {
+    @GetMapping("/jobList/{id}")
+    public String getJobsList(@PathVariable("id") int contractId, Model model) {
         JobsReportDto jobs = this.jobService.getJobsByContracDto(contractId);
         model.addAttribute("jobs", jobs);
         return "jobs/job-table";
     }
 
-    @GetMapping("/monthlyDetails")
-    public String showMonthlyDetails(@RequestParam("contractId") int contractId, @RequestParam("year") int year,
+    @GetMapping("/monthlyDetails/{id}")
+    public String showMonthlyDetails(@PathVariable("id") int contractId, @RequestParam("year") int year,
             @RequestParam("month") int month, Model model) {
         JobsMonthlyReportDto jobs = this.jobService.getMonthlyJobsByContract(contractId, year, month);
         model.addAttribute("jobs", jobs);
@@ -79,8 +80,8 @@ public class JobController {
         return "jobs/monthly-table";
     }
 
-    @GetMapping("/updateForm")
-    public String updateForm(@RequestParam("jobId") int jobId, Model model) {
+    @GetMapping("/updateForm/{id}")
+    public String updateForm(@PathVariable("id") int jobId, Model model) {
         CreateJobDto dto = jobService.getJobDto(jobId);
         model.addAttribute("jobForm", dto);
         model.addAttribute("jobId", jobId);
@@ -88,8 +89,8 @@ public class JobController {
         return "jobs/job-update-form";
     }
 
-    @PostMapping("/update")
-    public String update(@Valid @ModelAttribute("jobForm") CreateJobDto form, @RequestParam("jobId") int jobId,
+    @PostMapping("/update/{id}")
+    public String update(@Valid @ModelAttribute("jobForm") CreateJobDto form, @PathVariable("jobId") int jobId,
             BindingResult bindingResult,
             Model model, RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
