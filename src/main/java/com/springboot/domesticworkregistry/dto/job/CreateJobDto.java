@@ -16,6 +16,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CreateJobDto {
 
+    private int jobId;
+
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @NotNull(message = "is required")
     private LocalDate date;

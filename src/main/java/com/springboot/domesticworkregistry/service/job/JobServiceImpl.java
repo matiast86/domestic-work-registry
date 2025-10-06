@@ -235,15 +235,15 @@ public class JobServiceImpl implements JobService {
         Job job = jobRepository.findById(jobId)
                 .orElseThrow(() -> new EntityNotFoundException("Job with id " + jobId + " not found"));
 
-        return new CreateJobDto(job.getDate(), job.getStartTime(), job.getEndTime(), job.getHourlyRate(),
+        return new CreateJobDto(job.getId(), job.getDate(), job.getStartTime(), job.getEndTime(), job.getHourlyRate(),
                 job.getTransportationFee());
 
     }
 
     @Override
-    public Job update(CreateJobDto form, int jobId) {
-        Job job = jobRepository.findById(jobId)
-                .orElseThrow(() -> new EntityNotFoundException("Job with id " + jobId + " not found"));
+    public Job update(CreateJobDto form) {
+        Job job = jobRepository.findById(form.getJobId())
+                .orElseThrow(() -> new EntityNotFoundException("Job with id " + form.getJobId() + " not found"));
 
         LocalTime startTime = form.getStartTime();
         LocalTime endTime = form.getEndTime();

@@ -46,9 +46,9 @@ public class JobController {
         return "jobs/job-form";
     }
 
-    @PostMapping("/create")
+    @PostMapping("/create/{id}")
     public String createJob(
-            @RequestParam("contractId") int contractId,
+            @PathVariable("id") int contractId,
             @Valid @ModelAttribute("jobForm") CreateJobDto form,
             BindingResult bindingResult,
             Model model) {
@@ -61,7 +61,7 @@ public class JobController {
         jobService.save(form, contractId);
 
         // Redirect to avoid resubmission
-        return "redirect:/job/jobList?contractId=" + contractId;
+        return "redirect:/jobs/jobList/" + contractId;
     }
 
     @GetMapping("/jobList/{id}")
@@ -89,8 +89,8 @@ public class JobController {
         return "jobs/job-update-form";
     }
 
-    @PostMapping("/update/{id}")
-    public String update(@Valid @ModelAttribute("jobForm") CreateJobDto form, @PathVariable("jobId") int jobId,
+    @PostMapping("/update")
+    public String update(@Valid @ModelAttribute("jobForm") CreateJobDto form,
             BindingResult bindingResult,
             Model model, RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
@@ -99,8 +99,8 @@ public class JobController {
         }
 
         model.addAttribute("jobForm", form);
-        model.addAttribute("jobId", jobId);
-        Job updatedJob = jobService.update(form, jobId);
+
+        Job updatedJob = jobService.update(form);
 
         redirectAttributes.addFlashAttribute("successMessage", "Tarea actualizada con éxito");
 
@@ -109,8 +109,8 @@ public class JobController {
         int year = updatedJob.getDate().getYear();
         int month = updatedJob.getDate().getMonthValue();
 
-        return "redirect:/job/monthlyDetails?contractId=" + contractId +
-                "&year=" + year +
+        return "redirect:/jobs/monthlyDetails/" + contractId +
+                "?year=" + year +
                 "&month=" + month;
     }
 
