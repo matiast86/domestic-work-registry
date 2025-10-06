@@ -23,6 +23,7 @@
             <th>Empleado</th>
             <th>Tipo de Empleo</th>
             <th>Salario</th>
+            <th>Detalles</th>
           </tr>
         </thead>
         <tbody>
@@ -34,6 +35,14 @@
             <td
               th:text="${#numbers.formatDecimal(contract.salary, 1, 'COMMA', 2, 'POINT')}"
             ></td>
+            <td>
+              <a
+                th:href="@{/contracts/details/{id}(id=${contract.id})}"
+                class="btn btn-sm btn-primary"
+              >
+                Ver detalles
+              </a>
+            </td>
           </tr>
         </tbody>
       </table>

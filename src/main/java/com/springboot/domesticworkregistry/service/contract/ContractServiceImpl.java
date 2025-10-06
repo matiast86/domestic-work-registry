@@ -2,12 +2,14 @@ package com.springboot.domesticworkregistry.service.contract;
 
 import java.util.List;
 
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import com.springboot.domesticworkregistry.dao.ContractRepository;
 import com.springboot.domesticworkregistry.dto.contract.ContractDetailsWithemployeeDto;
 import com.springboot.domesticworkregistry.dto.contract.ContractMapper;
 import com.springboot.domesticworkregistry.dto.contract.CreateEmployeeFormDto;
+import com.springboot.domesticworkregistry.dto.schedule_entry.ScheduleEntryDto;
 import com.springboot.domesticworkregistry.dto.user.RegisterUserEmployeeDto;
 import com.springboot.domesticworkregistry.entities.Address;
 import com.springboot.domesticworkregistry.entities.Contract;
@@ -88,11 +90,22 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public ContractDetailsWithemployeeDto findByIdWithEmployee(int id) {
+    public ContractDetailsWithemployeeDto findByIdWithEmployee(int id, String currentUserId) {
         Contract contract = contractRepository.findDetailById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Contract with id " + id + " not found"));
 
-        return contractDetailsMapper.toDto(contract);
+        if (!contract.getEmployer().getId().equals(currentUserId) &&
+                !contract.getEmployee().getId().equals(currentUserId)) {
+            throw new AccessDeniedException("You are not allowed to view this contract");
+        }
+
+        ContractDetailsWithemployeeDto details = contractDetailsMapper.toDto(contract);
+        List<ScheduleEntryDto> entries = contract.getSchedule().getEntries().stream()
+                .map(entry -> new ScheduleEntryDto(entry.getDayOfWeek(), entry.getStartTime(), entry.getEndTime()))
+                .toList();
+
+        details.setEntries(entries);
+        return details;
     }
 
     @Override
@@ -119,6 +132,7 @@ public class ContractServiceImpl implements ContractService {
         address.setStreet(form.getStreet());
         address.setNumber(form.getNumber());
         address.setApartment(form.getApartment());
+        address.setState(form.getState());
         address.setCity(form.getCity());
         address.setPostalCode(form.getPostalCode());
         address.setCountry(form.getCountry());

@@ -15,7 +15,7 @@ public interface ContractService {
 
     public Contract findById(int id);
 
-    public ContractDetailsWithemployeeDto findByIdWithEmployee(int id);
+    public ContractDetailsWithemployeeDto findByIdWithEmployee(int id, String currentUserId);
 
     public Contract update(int id, ContractDetailsWithemployeeDto form);
 

@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.springboot.domesticworkregistry.dto.contract.ContractDetailsWithemployeeDto;
 import com.springboot.domesticworkregistry.dto.contract.CreateEmployeeFormDto;
 import com.springboot.domesticworkregistry.dto.schedule_entry.ScheduleEntryDto;
 import com.springboot.domesticworkregistry.entities.Contract;
@@ -80,5 +82,38 @@ public class ContractController {
         model.addAttribute("errorMessage", ex.getMessage());
         model.addAttribute("employeeForm", form); // repopulate form with user input
         return "contracts/contract-form";
+    }
+
+    @GetMapping("/details/{id}")
+    private String cotractDetailsForEmployer(@AuthenticationPrincipal User employer, @PathVariable("id") int id,
+            Model model) {
+        ContractDetailsWithemployeeDto contract = contractService.findByIdWithEmployee(id, employer.getId());
+        model.addAttribute("contract", contract);
+
+        return "employees/employee-details";
+    }
+
+    @GetMapping("/updateForm/{id}")
+    private String updateForm(@AuthenticationPrincipal User employer, @PathVariable("id") int id, Model model) {
+        ContractDetailsWithemployeeDto contract = contractService.findByIdWithEmployee(id, employer.getId());
+        model.addAttribute("contract", contract);
+
+        return "contracts/contract-update-form";
+    }
+
+    @PostMapping("update")
+    public String update(@Valid @ModelAttribute("contract") ContractDetailsWithemployeeDto form,
+            BindingResult bindingResult,
+            Model model) {
+        int contractId = form.getContractId();
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("contract", form);
+            return "contracts/contract-update-form";
+        }
+
+        contractService.update(contractId, form);
+
+        return "redirect:/contracts/details/" + contractId;
     }
 }
