@@ -8,7 +8,6 @@ import java.util.List;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.springboot.domesticworkregistry.dto.schedule_entry.ScheduleEntryDto;
-import com.springboot.domesticworkregistry.entities.Schedule;
 import com.springboot.domesticworkregistry.enums.EmploymentType;
 import com.springboot.domesticworkregistry.enums.JobType;
 

@@ -143,4 +143,10 @@ public class ContractServiceImpl implements ContractService {
         return contractRepository.save(contract);
     }
 
+    @Override
+    public Contract findByIdWithSchedule(int id) {
+        return contractRepository.findByIdWithSchedule(id)
+                .orElseThrow(() -> new EntityNotFoundException("Contract with id " + id + " not found"));
+    }
+
 }

@@ -25,4 +25,10 @@ public interface ContractRepository extends JpaRepository<Contract, Integer> {
 
     Optional<Contract> findByEmployerIdAndEmployeeEmailAndActiveTrue(String employerId, String employeeEmail);
 
+    @EntityGraph(attributePaths = {
+            "schedule",
+            "schedule.entries"
+    })
+    Optional<Contract> findByIdWithSchedule(Integer id);
+
 }
