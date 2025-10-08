@@ -73,4 +73,21 @@ public class AttendanceRecordServiceImpl implements AttendanceRecordService {
         attendanceRepository.save(record);
     }
 
+    @Override
+    public List<AttendanceRecord> findByScheduleAndMonth(int scheduleId, int year, int month) {
+        return attendanceRepository.findByScheduleAndMonth(scheduleId, year, month);
+
+    }
+
+    @Override
+    public void updateStatus(int recordId, AttendanceStatus newStatus) {
+        AttendanceRecord record = attendanceRepository.findById(recordId)
+                .orElseThrow(() -> new EntityNotFoundException("Record with id " + recordId + " not found."));
+
+        if (record.getAttendanceStatus() != newStatus) {
+            record.setAttendanceStatus(newStatus);
+            attendanceRepository.save(record);
+        }
+    }
+
 }
