@@ -45,6 +45,12 @@ public class ContractDetailsWithemployeeDto {
 
     private BigDecimal salary;
 
+    private int scheduleId;
+
+    private int year;
+
+    private int month;
+
     private List<ScheduleEntryDto> entries;
 
     private String street;
@@ -63,6 +69,14 @@ public class ContractDetailsWithemployeeDto {
 
     public int getService() {
         return since != null ? Period.between(since, LocalDate.now()).getYears() : 0;
+    }
+
+    public int getYear() {
+        return LocalDate.now().getYear();
+    }
+
+    public int getMonth() {
+        return LocalDate.now().getMonthValue();
     }
 
 }

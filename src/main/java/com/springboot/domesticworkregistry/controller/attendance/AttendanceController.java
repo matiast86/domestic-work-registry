@@ -1,5 +1,6 @@
 package com.springboot.domesticworkregistry.controller.attendance;
 
+import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.TextStyle;
 import java.util.List;
@@ -38,13 +39,31 @@ public class AttendanceController {
     }
 
     @GetMapping("/view/{scheduleId}")
-    public String viewAttendance(@PathVariable("scheduleId") int scheduleId, @RequestParam("year") int year,
-            @RequestParam("month") int month, Model model) {
-        List<AttendanceRecord> records = attendanceService.findByScheduleAndMonth(scheduleId, year, month);
+    public String viewAttendance(@PathVariable("scheduleId") int scheduleId,
+            @RequestParam(name = "year", required = false) Integer year,
+            @RequestParam(name = "month", required = false) Integer month, Model model) {
+
+        LocalDate now = LocalDate.now();
+        int selectedYear = (year != null) ? year : now.getYear();
+        int selectedMonth = (month != null) ? month : now.getMonthValue();
+
+        List<AttendanceRecord> records = attendanceService.findByScheduleAndMonth(scheduleId, selectedYear,
+                selectedMonth);
+
+        // ✅ Sanitize invalid months (e.g. 0, 13, etc.)
+        if (selectedMonth < 1) {
+            selectedMonth = 12;
+            selectedYear -= 1;
+        } else if (selectedMonth > 12) {
+            selectedMonth = 1;
+            selectedYear += 1;
+        }
 
         model.addAttribute("attendanceRecords", records);
-        model.addAttribute("monthName", Month.of(month).getDisplayName(TextStyle.FULL, Locale.of("es")));
-        model.addAttribute("year", year);
+        model.addAttribute("monthName", Month.of(selectedMonth).getDisplayName(TextStyle.FULL, Locale.of("es")));
+        model.addAttribute("year", selectedYear);
+        model.addAttribute("scheduleId", scheduleId);
+        model.addAttribute("month", selectedMonth);
         return "attendance/attendance-table";
     }
 
@@ -54,7 +73,18 @@ public class AttendanceController {
             RedirectAttributes redirectAttributes) {
         attendanceService.updateStatus(recordId, newStatus);
         redirectAttributes.addFlashAttribute("successMessage", "Asistencia actualizada correctamente");
-        return "redirect:/attendance/view/" + scheduleId;
+        return "redirect:/attendance/view/" + scheduleId + "?year=" + LocalDate.now().getYear() + "&month="
+                + LocalDate.now().getMonthValue();
+    }
+
+    @PostMapping("create/{scheduleId}")
+    public String createAttendance(@RequestParam("scheduleId") int scheduleId, @RequestParam("year") int year,
+            @RequestParam("month") int month, RedirectAttributes redirectAttributes) {
+        int attendance = attendanceService.generateMonthlyAttendance(scheduleId, year, month);
+        redirectAttributes.addFlashAttribute("successMessage", "Asistencias cargadas: " + String.valueOf(attendance));
+
+        return "redirect:/attendance/view/" + scheduleId + "?year=" + year + "&month=" + month;
+
     }
 
 }
