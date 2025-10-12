@@ -37,11 +37,17 @@ public class Payslip {
     @Column(name = "month")
     private int month;
 
-    @Column(name = "base_salary", precision = 10, scale = 2)
-    private BigDecimal baseSalary;
+    @Column(name = "service", nullable = true, precision = 10, scale = 2)
+    private int service;
 
-    @Column(name = "extras", precision = 10, scale = 2)
-    private BigDecimal extras;
+    @Column(name = "gross_salary", precision = 10, scale = 2)
+    private BigDecimal grossSalary;
+
+    @Column(name = "extra_worked_hours")
+    private BigDecimal extraWorkedHours;
+
+    @Column(name = "extra_hours", precision = 10, scale = 2)
+    private BigDecimal extraHours;
 
     @Column(name = "payroll_deduction", nullable = true, precision = 10, scale = 2)
     private BigDecimal payrollDeduction;
@@ -52,6 +58,15 @@ public class Payslip {
     @Column(name = "other", nullable = true, precision = 10, scale = 2)
     private BigDecimal other;
 
+    @Column(name = "transportation", nullable = true, precision = 10, scale = 2)
+    private BigDecimal transportation;
+
+    @Column(name = "service_plus", nullable = true, precision = 10, scale = 2)
+    private BigDecimal servicePlus;
+
+    @Column(name = "gratuities", nullable = true, precision = 10, scale = 2)
+    private BigDecimal gratuities;
+
     @Column(name = "net_salary", precision = 10, scale = 2)
     private BigDecimal netSalary;
 
@@ -61,6 +76,9 @@ public class Payslip {
 
     @Column(name = "generated_at")
     private LocalDate generatedAt = LocalDate.now();
+
+    @Column(name = "worked_hours")
+    private BigDecimal workedHours;
 
     @Column(name = "comments", nullable = true)
     private String comments;

@@ -85,7 +85,7 @@ public class Contract {
         private Address workAddress; // Generaly the emloyer's address
 
         @OneToMany(mappedBy = "contract", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-        private List<Payslip> payslips;
+        private List<Payslip> payslips = new ArrayList<>();
 
         public int getService() {
                 if (since == null)
@@ -103,6 +103,11 @@ public class Contract {
                 if (schedule != null) {
                         schedule.setContract(this);
                 }
+        }
+
+        public void addPayslip(Payslip payslip) {
+                payslips.add(payslip);
+                payslip.setContract(this);
         }
 
 }
