@@ -84,6 +84,9 @@ public class Contract {
         @JoinColumn(name = "work_address")
         private Address workAddress; // Generaly the emloyer's address
 
+        @OneToMany(mappedBy = "contract", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+        private List<Payslip> payslips;
+
         public int getService() {
                 if (since == null)
                         return 0;
