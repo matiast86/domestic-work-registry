@@ -46,17 +46,19 @@ public class SecurityConfig {
                 http
                                 .authorizeHttpRequests(config -> config
                                                 // public
-                                                .requestMatchers("/css/**", "/js/**", "/images/**", "/", "/register/**", "/data/**")
+                                                .requestMatchers("/css/**", "/js/**", "/images/**", "/", "/register/**",
+                                                                "/data/**")
                                                 .permitAll()
 
                                                 // employer-only
                                                 .requestMatchers("/employers/**", "/contract/**").hasRole("EMPLOYER")
 
                                                 // employee-only
-                                                .requestMatchers("/employees/**", "/attendance/**").hasRole("EMPLOYEE")
+                                                .requestMatchers("/employees/**").hasRole("EMPLOYEE")
 
                                                 // shared
-                                                .requestMatchers("/dashboard/**").hasAnyRole("EMPLOYER", "EMPLOYEE")
+                                                .requestMatchers("/dashboard/**", "/attendance/**")
+                                                .hasAnyRole("EMPLOYER", "EMPLOYEE")
 
                                                 .anyRequest().authenticated())
                                 .formLogin(form -> form

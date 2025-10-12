@@ -77,6 +77,7 @@ public class ContractServiceImpl implements ContractService {
         }
 
         Contract newContract = contractMapper.fromForm(form, employer, employee);
+        
 
         return contractRepository.save(newContract);
     }
@@ -141,6 +142,12 @@ public class ContractServiceImpl implements ContractService {
         contract.setName(employer.getLastName().toUpperCase() + "-" + employee.getLastName().toUpperCase());
 
         return contractRepository.save(contract);
+    }
+
+    @Override
+    public Contract findByIdWithSchedule(int id) {
+        return contractRepository.findByIdWithSchedule(id)
+                .orElseThrow(() -> new EntityNotFoundException("Contract with id " + id + " not found"));
     }
 
 }
