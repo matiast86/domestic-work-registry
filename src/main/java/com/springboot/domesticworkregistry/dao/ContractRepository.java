@@ -31,4 +31,8 @@ public interface ContractRepository extends JpaRepository<Contract, Integer> {
         @Query("SELECT c FROM Contract c WHERE c.id = :id")
         Optional<Contract> findByIdWithSchedule(@Param("id") Integer id);
 
+        @EntityGraph(attributePaths = "payslips")
+        @Query("SELECT c FROM Contract c WHERE c.id = :id")
+        Optional<Contract> findByIdWithPayslips(@Param("id") Integer id);
+
 }

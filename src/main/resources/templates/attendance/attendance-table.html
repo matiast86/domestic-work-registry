@@ -73,6 +73,14 @@
         </button>
       </form>
 
+      <!-- New payslip creation -->
+      <a
+        th:href="@{/payslips/create/{contractId}(contractId=${contractId})}"
+        class="btn btn-primary"
+      >
+        Generar Recibo de Sueldo
+      </a>
+
       <!-- Success message -->
       <div
         th:if="${successMessage}"

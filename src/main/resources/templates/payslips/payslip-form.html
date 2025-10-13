@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html
+  lang="es"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{fragments/layout}"
+>
+  <head>
+    <title>Nuevo Recibo de Sueldo</title>
+  </head>
+
+  <body>
+    <div layout:fragment="content" class="container mt-5">
+      <!-- Header -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Nuevo Recibo de Sueldo</h2>
+        <a
+          th:href="@{/payslips/list/{contractId}(contractId=${contractId})}"
+          class="btn btn-secondary"
+        >
+          Volver a la lista
+        </a>
+      </div>
+
+      <!-- Form -->
+      <form
+        th:action="@{/payslips/preview/{contractId}(contractId=${contractId})}"
+        th:object="${form}"
+        method="post"
+        class="needs-validation"
+        novalidate
+      >
+        <div class="row mb-3">
+          <!-- Period -->
+          <div class="col-md-6 mb-3">
+            <label for="period" class="form-label">Período</label>
+            <input
+              type="month"
+              id="period"
+              name="period"
+              class="form-control"
+              required
+            />
+            <div class="form-text">
+              Seleccioná el mes y año del recibo (por ejemplo, 2025-09).
+            </div>
+          </div>
+
+          <!-- Payroll deduction -->
+          <div class="col-md-6 mb-3">
+            <label for="payrollDeduction" class="form-label"
+              >Deducciones de nómina</label
+            >
+            <input
+              type="number"
+              id="payrollDeduction"
+              th:field="*{payrollDeduction}"
+              class="form-control"
+              step="0.01"
+              min="0"
+              placeholder="Ej. 25000.00"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <!-- Other deductions -->
+          <div class="col-md-6 mb-3">
+            <label for="otherDeductions" class="form-label"
+              >Otras deducciones</label
+            >
+            <input
+              type="number"
+              id="otherDeductions"
+              th:field="*{otherDeductions}"
+              class="form-control"
+              step="0.01"
+              min="0"
+              placeholder="Ej. 5000.00"
+            />
+          </div>
+
+          <!-- Other additions -->
+          <div class="col-md-6 mb-3">
+            <label for="other" class="form-label">Otros conceptos</label>
+            <input
+              type="number"
+              id="other"
+              th:field="*{other}"
+              class="form-control"
+              step="0.01"
+              min="0"
+              placeholder="Ej. 12000.00"
+            />
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <!-- Gratuities -->
+          <div class="col-md-6 mb-3">
+            <label for="gratuities" class="form-label">Gratificaciones</label>
+            <input
+              type="number"
+              id="gratuities"
+              th:field="*{gratuities}"
+              class="form-control"
+              step="0.01"
+              min="0"
+              placeholder="Ej. 15000.00"
+            />
+          </div>
+
+          <!-- Comments -->
+          <div class="col-md-6 mb-3">
+            <label for="comments" class="form-label">Comentarios</label>
+            <textarea
+              id="comments"
+              th:field="*{comments}"
+              class="form-control"
+              rows="2"
+              placeholder="Notas u observaciones del recibo"
+            ></textarea>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="text-end mt-4">
+          <button type="submit" class="btn btn-primary">
+            Generar Vista Previa
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

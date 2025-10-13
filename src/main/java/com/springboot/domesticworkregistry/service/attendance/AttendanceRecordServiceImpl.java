@@ -90,4 +90,10 @@ public class AttendanceRecordServiceImpl implements AttendanceRecordService {
         }
     }
 
+    @Override
+    public int getContractId(int scheduleId) {
+        Schedule schedule = scheduleService.findById(scheduleId);
+        return schedule.getContract().getId();
+    }
+
 }

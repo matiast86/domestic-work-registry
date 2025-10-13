@@ -33,4 +33,12 @@ public class CreatePayslipDto {
     @Size(max = 255, message = "Comments must be at most 255 characters")
     private String comments;
 
+    public int getYear() {
+        return period != null ? period.getYear() : 0;
+    }
+
+    public int getMonth() {
+        return period != null ? period.getMonthValue() : 0;
+    }
+
 }

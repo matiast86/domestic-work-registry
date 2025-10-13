@@ -2,21 +2,29 @@ package com.springboot.domesticworkregistry.service.payslip;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Locale;
+
+import org.springframework.stereotype.Service;
 
 import com.springboot.domesticworkregistry.dao.PayslipRepository;
 import com.springboot.domesticworkregistry.dto.payslip.CreatePayslipDto;
+import com.springboot.domesticworkregistry.dto.payslip.PayslipDetailsDto;
 import com.springboot.domesticworkregistry.entities.Contract;
 import com.springboot.domesticworkregistry.entities.Job;
 import com.springboot.domesticworkregistry.entities.Payslip;
 import com.springboot.domesticworkregistry.entities.ScheduleEntry;
 import com.springboot.domesticworkregistry.enums.EmploymentType;
+import com.springboot.domesticworkregistry.mapper.PayslipDetailsMapper;
 import com.springboot.domesticworkregistry.service.contract.ContractService;
 import com.springboot.domesticworkregistry.service.dataCollection.DataCollectionService;
 
 import jakarta.persistence.EntityNotFoundException;
 
+@Service
 public class PayslipServiceImpl implements PayslipService {
 
     private final PayslipRepository payslipRepository;
@@ -25,11 +33,25 @@ public class PayslipServiceImpl implements PayslipService {
 
     private final DataCollectionService dataCollectionService;
 
+    private final PayslipDetailsMapper detailsMapper;
+
+    private static final int SCALE = 2;
+
+    private static final RoundingMode ROUNDING = RoundingMode.HALF_UP;
+
     public PayslipServiceImpl(PayslipRepository payslipRepository, ContractService contractService,
-            DataCollectionService dataCollectionService) {
+            DataCollectionService dataCollectionService, PayslipDetailsMapper detailsMapper) {
         this.payslipRepository = payslipRepository;
         this.contractService = contractService;
         this.dataCollectionService = dataCollectionService;
+        this.detailsMapper = detailsMapper;
+
+    }
+
+    private String getMonthNameInSpanish(LocalDate date) {
+        Locale spanishArgentina = Locale.of("es", "AR");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM", spanishArgentina);
+        return date.format(formatter);
 
     }
 
@@ -60,15 +82,15 @@ public class PayslipServiceImpl implements PayslipService {
         for (ScheduleEntry entry : entries) {
             long minutes = ChronoUnit.MINUTES.between(entry.getStartTime(), entry.getEndTime());
             BigDecimal fractionalHours = BigDecimal.valueOf(minutes)
-                    .divide(BigDecimal.valueOf(60), 2, RoundingMode.HALF_UP);
+                    .divide(BigDecimal.valueOf(60), SCALE, ROUNDING);
             BigDecimal multiplier = BigDecimal.valueOf(2);
             BigDecimal rounded = fractionalHours.multiply(multiplier)
                     .setScale(0, RoundingMode.HALF_UP)
-                    .divide(multiplier, 1, RoundingMode.HALF_UP);
+                    .divide(multiplier, 1, ROUNDING);
             weeklyHours = weeklyHours.add(rounded);
         }
 
-        return weeklyHours.divide(BigDecimal.valueOf(7)).multiply(BigDecimal.valueOf(30));
+        return weeklyHours.divide(BigDecimal.valueOf(7), SCALE, ROUNDING).multiply(BigDecimal.valueOf(30));
     }
 
     private BigDecimal getgrossSalary(Contract contract, BigDecimal payrollDeduction, int month, int year) {
@@ -76,7 +98,7 @@ public class PayslipServiceImpl implements PayslipService {
                 .filter(job -> job.getDate().getYear() == year && job.getDate().getMonthValue() == month).toList();
 
         if (contract.getEmploymentType() == EmploymentType.HOURLY) {
-            return getPartial(monthlyJobs, year, month);
+            return getPartial(monthlyJobs, year, month).add(payrollDeduction);
         } else {
             return contract.getSalary().add(payrollDeduction);
         }
@@ -85,7 +107,7 @@ public class PayslipServiceImpl implements PayslipService {
 
     private BigDecimal calculateHourlyRate(Contract contract) {
         BigDecimal monthlyHours = getTotalMonthlyHours(contract);
-        return contract.getSalary().divide(monthlyHours, 2, RoundingMode.HALF_UP);
+        return contract.getSalary().divide(monthlyHours, SCALE, ROUNDING);
     }
 
     private BigDecimal getExtraWorkedHoursCount(Contract contract, int month, int year) {
@@ -96,14 +118,20 @@ public class PayslipServiceImpl implements PayslipService {
     }
 
     private BigDecimal getExtraHoursAmount(Contract contract, int month, int year) {
-        BigDecimal extraWorkedHours = getExtraWorkedHoursCount(contract, month, year);
-        if (contract.getEmploymentType() == EmploymentType.MONTHLY
-                || extraWorkedHours.compareTo(BigDecimal.ZERO) != 0) {
+        if (contract.getEmploymentType() == EmploymentType.HOURLY) {
 
-            return extraWorkedHours.multiply(calculateHourlyRate(contract));
-        } else {
             return BigDecimal.ZERO;
         }
+        BigDecimal actualWorked = getExtraWorkedHoursCount(contract, month, year);
+        BigDecimal expected = getTotalMonthlyHours(contract);
+
+        BigDecimal extra = actualWorked.subtract(expected);
+        if (extra.compareTo(BigDecimal.ZERO) > 0) {
+            return extra.multiply(calculateHourlyRate(contract));
+        }
+
+        return BigDecimal.ZERO;
+
     }
 
     private BigDecimal safe(BigDecimal value) {
@@ -121,8 +149,8 @@ public class PayslipServiceImpl implements PayslipService {
     }
 
     @Override
-    public List<Payslip> findAll() {
-        return payslipRepository.findAll();
+    public List<Payslip> findAllByContractId(int contractId) {
+        return payslipRepository.findByContractId(contractId);
     }
 
     @Override
@@ -133,7 +161,7 @@ public class PayslipServiceImpl implements PayslipService {
     }
 
     @Override
-    public Payslip save(int contractId, CreatePayslipDto form) {
+    public Payslip buildPayslip(int contractId, CreatePayslipDto form) {
         Contract contract = contractService.findById(contractId);
 
         int year = form.getPeriod().getYear();
@@ -148,7 +176,8 @@ public class PayslipServiceImpl implements PayslipService {
         BigDecimal extraWorkedHours = getExtraWorkedHoursCount(contract, month, year);
         BigDecimal extraHours = getExtraHoursAmount(contract, month, year);
         BigDecimal transportation = getTransportation(contract, year, month);
-        BigDecimal servicePlus = grossSalary.multiply(BigDecimal.valueOf(service)).divide(BigDecimal.valueOf(100));
+        BigDecimal servicePlus = grossSalary.multiply(BigDecimal.valueOf(service)).divide(BigDecimal.valueOf(100),
+                SCALE, ROUNDING);
         BigDecimal netSalary = claculateNetSalary(grossSalary, extraHours, payrollDeduction, otherDeductions, other,
                 transportation, servicePlus, gratuities);
 
@@ -170,7 +199,31 @@ public class PayslipServiceImpl implements PayslipService {
         payslip.setComments(comments);
         payslip.setContract(contract);
 
+        return payslip;
+    }
+
+    @Override
+    public Payslip save(int contractId, CreatePayslipDto form) {
+        Payslip payslip = buildPayslip(contractId, form);
         return payslipRepository.save(payslip);
+    }
+
+    @Override
+    public PayslipDetailsDto getDetails(int id) {
+        Payslip payslip = payslipRepository.findByIdWithContract(id)
+                .orElseThrow(() -> new EntityNotFoundException("Payslip with id: " + id + " not found."));
+        Contract contract = payslip.getContract();
+        int sinceYear = contract.getSince().getYear();
+        String sinceMonth = getMonthNameInSpanish(contract.getSince());
+        String since = sinceMonth + " " + String.valueOf(sinceYear);
+        String firstName = contract.getEmployee().getFirstName();
+        String lastName = contract.getEmployee().getLastName();
+
+        PayslipDetailsDto details = detailsMapper.toDto(payslip);
+        details.setEmployeeName(firstName + " " + lastName);
+        details.setSince(since);
+        return details;
+
     }
 
 }
