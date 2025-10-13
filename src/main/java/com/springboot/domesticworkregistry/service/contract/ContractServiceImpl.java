@@ -77,6 +77,7 @@ public class ContractServiceImpl implements ContractService {
         }
 
         Contract newContract = contractMapper.fromForm(form, employer, employee);
+        newContract.setWorkAddress(employer.getAddress());
 
         return contractRepository.save(newContract);
     }
