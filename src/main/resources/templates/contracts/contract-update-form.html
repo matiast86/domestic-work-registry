@@ -70,6 +70,16 @@
         </div>
 
         <div class="mb-3">
+          <label for="since" class="form-label">Fecha de inicio</label>
+          <input type="date" th:field="*{since}" class="form-control" />
+          <div
+            class="text-danger"
+            th:if="${#fields.hasErrors('since')}"
+            th:errors="*{since}"
+          ></div>
+        </div>
+
+        <div class="mb-3">
           <label for="jobType" class="form-label">Job Type</label>
           <select th:field="*{jobType}" class="form-select">
             <option
