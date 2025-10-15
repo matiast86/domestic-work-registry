@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}">
+<head>
+  <title>Seleccionar Período - Generar Recibo</title>
+</head>
+
+<body>
+<div layout:fragment="content" class="container mt-5">
+
+  <h2 class="mb-4">Generar Recibo de Sueldo</h2>
+
+  <form th:action="@{/payslips/create/{contractId}(contractId=${contractId})}"
+        method="get"
+        class="row g-3">
+
+    <div class="col-md-4">
+      <label for="year" class="form-label">Año</label>
+      <input type="number" id="year" name="year"
+             th:value="${#dates.createNow().getYear()}"
+             min="2020" max="2030"
+             class="form-control" required>
+    </div>
+
+    <div class="col-md-4">
+      <label for="month" class="form-label">Mes</label>
+      <select id="month" name="month" class="form-select" required>
+        <option value="">-- Seleccione un mes --</option>
+        <option th:each="m : ${T(java.time.Month).values()}"
+                th:value="${m.value}"
+                th:text="${m.getDisplayName(T(java.time.format.TextStyle).FULL, T(java.util.Locale).of('es'))}">
+        </option>
+      </select>
+    </div>
+
+    <div class="col-md-4 d-flex align-items-end">
+      <button type="submit" class="btn btn-primary">Generar Borrador</button>
+    </div>
+
+  </form>
+
+</div>
+</body>
+</html>

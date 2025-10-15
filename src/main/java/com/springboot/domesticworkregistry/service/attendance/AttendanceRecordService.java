@@ -14,6 +14,10 @@ public interface AttendanceRecordService {
 
     public List<AttendanceRecord> findByScheduleAndMonth(int scheduleId, int year, int month);
 
-    void updateStatus(int recordId, AttendanceStatus newStatus);
+    public void updateStatus(int recordId, AttendanceStatus newStatus);
+
+    public int getContractId(int scheduleId);
+
+
 
 }

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html
+  lang="es"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{fragments/layout}"
+>
+  <head>
+    <title>Vista Previa del Recibo</title>
+  </head>
+
+  <body>
+    <div layout:fragment="content" class="container mt-5">
+      <!-- Header -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>
+          Vista Previa del Recibo –
+          <span th:text="${form.month} + ' ' + ${form.year}"></span>
+        </h2>
+        <a
+          th:href="@{/payslips/list/{contractId}(contractId=${contractId})}"
+          class="btn btn-secondary"
+          >Volver a la lista</a
+        >
+      </div>
+
+      <!-- Info -->
+      <div class="card mb-3">
+        <div class="card-header bg-primary text-white">Datos del Empleado</div>
+        <div class="card-body">
+          <p>
+            <strong>Nombre:</strong>
+            <span
+              th:text="${payslip.contract.employee.firstName} + ' ' + ${payslip.contract.employee.lastName}"
+              >Empleado</span
+            >
+          </p>
+          <p>
+            <strong>Email:</strong>
+            <span th:text="${payslip.contract.employee.email}"
+              >email@example.com</span
+            >
+          </p>
+          <p>
+            <strong>Teléfono:</strong>
+            <span th:text="${payslip.contract.employee.phone}">+54...</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Salary Summary -->
+      <div class="card mb-3">
+        <div class="card-header bg-success text-white">Resumen Salarial</div>
+        <div class="card-body">
+          <table class="table table-bordered">
+            <thead class="table-light">
+              <tr>
+                <th>Concepto</th>
+                <th>Monto</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Salario Bruto</td>
+                <td
+                  th:text="${#numbers.formatDecimal(payslip.grossSalary, 1, 'COMMA', 2, 'POINT')}"
+                ></td>
+              </tr>
+              <tr>
+                <td>Horas Extras</td>
+                <td
+                  th:text="${#numbers.formatDecimal(payslip.extraHours, 1, 'COMMA', 2, 'POINT')}"
+                ></td>
+              </tr>
+              <tr>
+                <td>Adicional por Antigüedad</td>
+                <td
+                  th:text="${#numbers.formatDecimal(payslip.servicePlus, 1, 'COMMA', 2, 'POINT')}"
+                ></td>
+              </tr>
+              <tr>
+                <td>Transporte</td>
+                <td
+                  th:text="${#numbers.formatDecimal(payslip.transportation, 1, 'COMMA', 2, 'POINT')}"
+                ></td>
+              </tr>
+              <tr>
+                <td>Gratificaciones</td>
+                <td
+                  th:text="${#numbers.formatDecimal(payslip.gratuities, 1, 'COMMA', 2, 'POINT')}"
+                ></td>
+              </tr>
+              <tr class="table-danger">
+                <td>Deducciones de Nómina</td>
+                <td
+                  th:text="${#numbers.formatDecimal(payslip.payrollDeduction, 1, 'COMMA', 2, 'POINT')}"
+                ></td>
+              </tr>
+              <tr class="table-danger">
+                <td>Otras Deducciones</td>
+                <td
+                  th:text="${#numbers.formatDecimal(payslip.otherDeductions, 1, 'COMMA', 2, 'POINT')}"
+                ></td>
+              </tr>
+              <tr>
+                <td>Otros</td>
+                <td
+                  th:text="${#numbers.formatDecimal(payslip.other, 1, 'COMMA', 2, 'POINT')}"
+                ></td>
+              </tr>
+              <tr class="table-success fw-bold">
+                <td>Salario Neto</td>
+                <td
+                  th:text="${#numbers.formatDecimal(payslip.netSalary, 1, 'COMMA', 2, 'POINT')}"
+                ></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Comments -->
+      <div
+        th:if="${payslip.comments != null and !#strings.isEmpty(payslip.comments)}"
+        class="card mb-3"
+      >
+        <div class="card-header bg-info text-white">Comentarios</div>
+        <div class="card-body">
+          <p th:text="${payslip.comments}"></p>
+        </div>
+      </div>
+
+      <!-- Action buttons -->
+      <div class="d-flex justify-content-end gap-2 mt-4">
+        <form
+          th:action="@{/payslips/create/{contractId}(contractId=${contractId})}"
+          method="get"
+        >
+          <button type="submit" class="btn btn-outline-secondary">
+            ← Volver a Editar
+          </button>
+        </form>
+
+        <form
+          th:action="@{/payslips/save/{contractId}(contractId=${contractId})}"
+          method="post"
+        >
+          <!-- Hidden fields (preserve all values for saving) -->
+          <input type="hidden" name="year" th:value="${form.year}" />
+          <input type="hidden" name="month" th:value="${form.month}" />
+          <input
+            type="hidden"
+            name="baseSalary"
+            th:value="${form.baseSalary}"
+          />
+          <input
+            type="hidden"
+            name="transportation"
+            th:value="${form.transportation}"
+          />
+          <input
+            type="hidden"
+            name="extraWorkedHours"
+            th:value="${form.extraWorkedHours}"
+          />
+          <input
+            type="hidden"
+            name="extraHoursAmount"
+            th:value="${form.extraHoursAmount}"
+          />
+          <input
+            type="hidden"
+            name="servicePlus"
+            th:value="${form.servicePlus}"
+          />
+          <input
+            type="hidden"
+            name="payrollDeduction"
+            th:value="${form.payrollDeduction}"
+          />
+          <input
+            type="hidden"
+            name="otherDeductions"
+            th:value="${form.otherDeductions}"
+          />
+          <input type="hidden" name="other" th:value="${form.other}" />
+          <input
+            type="hidden"
+            name="gratuities"
+            th:value="${form.gratuities}"
+          />
+          <input type="hidden" name="comments" th:value="${form.comments}" />
+
+          <button type="submit" class="btn btn-primary">
+            Confirmar y Guardar
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

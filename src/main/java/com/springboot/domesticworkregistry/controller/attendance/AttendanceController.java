@@ -50,6 +50,8 @@ public class AttendanceController {
         List<AttendanceRecord> records = attendanceService.findByScheduleAndMonth(scheduleId, selectedYear,
                 selectedMonth);
 
+        int contractId = attendanceService.getContractId(scheduleId);
+
         // ✅ Sanitize invalid months (e.g. 0, 13, etc.)
         if (selectedMonth < 1) {
             selectedMonth = 12;
@@ -64,6 +66,7 @@ public class AttendanceController {
         model.addAttribute("year", selectedYear);
         model.addAttribute("scheduleId", scheduleId);
         model.addAttribute("month", selectedMonth);
+        model.addAttribute("contractId", contractId);
         return "attendance/attendance-table";
     }
 

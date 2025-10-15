@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html
+  lang="es"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{fragments/layout}"
+>
+  <head>
+    <title>Detalle de Recibo</title>
+  </head>
+  <body>
+    <div layout:fragment="content" class="container mt-5">
+      <!-- Header -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>
+          Recibo Mensual -
+          <span th:text="${payslip.MonthName} + ' ' + ${payslip.year}"></span>
+        </h2>
+        <a
+          th:href="@{/payslips/list/{contractId}(contractId=${payslip.contractId})}"
+          class="btn btn-secondary"
+          >Volver a la lista</a
+        >
+      </div>
+
+      <!-- Employee info -->
+      <div class="card mb-3">
+        <div class="card-header bg-primary text-white">Datos del Empleado</div>
+        <div class="card-body">
+          <p>
+            <strong>Nombre:</strong>
+            <span th:text="${payslip.employeeName}"></span>
+          </p>
+          <p>
+            <strong>CUIL:</strong>
+            <span th:text="${payslip.employeeIdentificationNumber}"></span>
+          </p>
+          <p>
+            <strong>Desde:</strong>
+            <span th:text="${payslip.since}"></span>
+          </p>
+          <p>
+            <strong>Antiguedad:</strong>
+            <span th:text="${payslip.service}">Años</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Salary Breakdown -->
+      <div class="card mb-3">
+        <div class="card-header bg-success text-white">Resumen Salarial</div>
+        <div class="card-body">
+          <table class="table table-bordered">
+            <thead class="table-light">
+              <tr>
+                <th>Concepto</th>
+                <th>Monto</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Salario Bruto</td>
+                <td
+                  th:text="${#numbers.formatDecimal(payslip.grossSalary, 1, 'COMMA', 2, 'POINT')}"
+                ></td>
+              </tr>
+              <tr>
+                <td>Horas Extras</td>
+                <td
+                  th:text="${#numbers.formatDecimal(payslip.extraHours, 1, 'COMMA', 2, 'POINT')}"
+                ></td>
+              </tr>
+              <tr>
+                <td>Adicional por Antigüedad</td>
+                <td
+                  th:text="${#numbers.formatDecimal(payslip.servicePlus, 1, 'COMMA', 2, 'POINT')}"
+                ></td>
+              </tr>
+              <tr>
+                <td>Transporte</td>
+                <td
+                  th:text="${#numbers.formatDecimal(payslip.transportation, 1, 'COMMA', 2, 'POINT')}"
+                ></td>
+              </tr>
+              <tr>
+                <td>Gratificaciones</td>
+                <td
+                  th:text="${#numbers.formatDecimal(payslip.gratuities, 1, 'COMMA', 2, 'POINT')}"
+                ></td>
+              </tr>
+              <tr class="table-danger">
+                <td>Aportes</td>
+                <td
+                  th:text="${#numbers.formatDecimal(payslip.payrollDeduction, 1, 'COMMA', 2, 'POINT')}"
+                ></td>
+              </tr>
+              <tr class="table-danger">
+                <td>Otras Deducciones</td>
+                <td
+                  th:text="${#numbers.formatDecimal(payslip.otherDeductions, 1, 'COMMA', 2, 'POINT')}"
+                ></td>
+              </tr>
+              <tr>
+                <td>Otros</td>
+                <td
+                  th:text="${#numbers.formatDecimal(payslip.other, 1, 'COMMA', 2, 'POINT')}"
+                ></td>
+              </tr>
+              <tr class="table-success fw-bold">
+                <td>Salario Neto</td>
+                <td
+                  th:text="${#numbers.formatDecimal(payslip.netSalary, 1, 'COMMA', 2, 'POINT')}"
+                ></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Comments -->
+      <div
+        th:if="${payslip.comments != null && !#strings.isEmpty(payslip.comments)}"
+        class="card mb-3"
+      >
+        <div class="card-header bg-info text-white">Comentarios</div>
+        <div class="card-body">
+          <p th:text="${payslip.comments}"></p>
+        </div>
+      </div>
+
+      <div class="text-end mt-3">
+        <p class="fs-5">
+          <strong>Total Neto:</strong>
+          <span
+            class="text-success fw-bold"
+            th:text="${#numbers.formatDecimal(payslip.netSalary, 1, 'COMMA', 2, 'POINT')}"
+          ></span>
+        </p>
+      </div>
+    </div>
+  </body>
+</html>
