@@ -53,7 +53,7 @@ public class PayslipController {
 
     @GetMapping("/list/{contractId}")
     public String getPayslips(@PathVariable("contractId") int contractId, Model model) {
-        List<Payslip> payslips = payslipService.findAllByContractId(contractId);
+        List<PayslipDetailsDto> payslips = payslipService.findAllByContractId(contractId);
         model.addAttribute("payslips", payslips);
         return "payslips/list-payslips";
     }

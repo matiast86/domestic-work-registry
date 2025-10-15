@@ -81,6 +81,14 @@
         Generar Recibo de Sueldo
       </a>
 
+      <!-- New payslip creation -->
+      <a
+        th:href="@{/payslips/list/{contractId}(contractId=${contractId})}"
+        class="btn btn-primary"
+      >
+        Ver recibos de sueldo
+      </a>
+
       <!-- Success message -->
       <div
         th:if="${successMessage}"

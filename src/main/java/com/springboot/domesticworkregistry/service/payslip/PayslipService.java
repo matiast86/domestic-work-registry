@@ -7,7 +7,7 @@ import com.springboot.domesticworkregistry.dto.payslip.PayslipDetailsDto;
 import com.springboot.domesticworkregistry.entities.Payslip;
 
 public interface PayslipService {
-    List<Payslip> findAllByContractId(int contractId);
+    List<PayslipDetailsDto> findAllByContractId(int contractId);
 
     Payslip findById(int id);
 

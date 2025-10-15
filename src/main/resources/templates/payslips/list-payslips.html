@@ -15,7 +15,7 @@
       <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Recibos del Empleado</h2>
         <a
-          th:href="@{/payslips/create/{contractId}(contractId=${contractId})}"
+          th:href="@{/payslips/select/{contractId}(contractId=${contractId})}"
           class="btn btn-primary"
         >
           + Nuevo Recibo
@@ -62,7 +62,7 @@
             <tr th:each="payslip : ${payslips}">
               <td
                 class="text-center"
-                th:text="${#temporals.monthName(payslip.monthName)} + ' ' + ${payslip.year}"
+                th:text="*{payslip.monthName} + ' ' + *{payslip.year}"
               ></td>
 
               <td
@@ -74,12 +74,9 @@
                 th:text="${#numbers.formatDecimal(payslip.netSalary, 1, 'COMMA', 2, 'POINT')}"
               ></td>
 
-              <td class="text-center">
+              <td>
                 <span
-                  class="badge"
-                  th:classappend="${payslip.status.name() == 'DRAFT'} ? 'bg-warning text-dark' :
-                                  ${payslip.status.name() == 'FINALIZED'} ? 'bg-success' :
-                                  ${payslip.status.name() == 'CANCELLED'} ? 'bg-danger' : 'bg-secondary'"
+                  class="badge fs-6 status-badge"
                   th:text="${payslip.status.label}"
                 ></span>
               </td>
@@ -92,19 +89,19 @@
               <td class="text-center">
                 <div class="btn-group">
                   <a
-                    th:href="@{/payslips/details/{id}(id=${payslip.id})}"
+                    th:href="@{/payslips/details/{id}(id=${payslip.payslipId})}"
                     class="btn btn-outline-primary btn-sm"
                     title="Ver Detalle"
                   >
-                    <i class="bi bi-eye"></i>
+                    <i class="bi bi-eye">Ver Detalle</i>
                   </a>
 
                   <a
-                    th:href="@{/payslips/pdf/{id}(id=${payslip.id})}"
+                    th:href="@{/payslips/pdf/{id}(id=${payslip.payslipId})}"
                     class="btn btn-outline-success btn-sm"
                     title="Descargar PDF"
                   >
-                    <i class="bi bi-file-earmark-pdf"></i>
+                    <i class="bi bi-file-earmark-pdf">Descargar PDF</i>
                   </a>
                 </div>
               </td>
@@ -114,6 +111,7 @@
       </div>
     </div>
 
+    <script th:src="@{/js/payslip.js}" layout:fragment="scripts"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>

@@ -1,9 +1,12 @@
 package com.springboot.domesticworkregistry.dto.payslip;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.TextStyle;
 import java.util.Locale;
+
+import com.springboot.domesticworkregistry.enums.PayslipStatus;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -34,6 +37,8 @@ public class PayslipDetailsDto {
     private BigDecimal otherDeductions;
     private BigDecimal other;
     private BigDecimal netSalary;
+    private PayslipStatus status;
+    private LocalDate generatedAt;
 
     private String comments;
 

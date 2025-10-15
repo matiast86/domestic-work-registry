@@ -5,6 +5,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -151,8 +152,25 @@ public class PayslipServiceImpl implements PayslipService {
     }
 
     @Override
-    public List<Payslip> findAllByContractId(int contractId) {
-        return payslipRepository.findByContractId(contractId);
+    public List<PayslipDetailsDto> findAllByContractId(int contractId) {
+        List<Payslip> payslips = payslipRepository.findByContractId(contractId);
+        List<PayslipDetailsDto> details = new ArrayList<>();
+
+        for (Payslip payslip : payslips) {
+            Contract contract = payslip.getContract();
+            int sinceYear = contract.getSince().getYear();
+            String sinceMonth = getMonthNameInSpanish(contract.getSince());
+            String since = sinceMonth + " " + String.valueOf(sinceYear);
+            String firstName = contract.getEmployee().getFirstName();
+            String lastName = contract.getEmployee().getLastName();
+            PayslipDetailsDto dto = detailsMapper.toDto(payslip);
+            dto.setEmployeeName(firstName + " " + lastName);
+            dto.setSince(since);
+            details.add(dto);
+
+        }
+
+        return details;
     }
 
     @Override
