@@ -48,6 +48,11 @@ public class PayslipServiceImpl implements PayslipService {
 
     }
 
+    private List<Job> getMonthlyJobs(Contract contract, int year, int month) {
+        return contract.getJobs().stream()
+                .filter(job -> job.getDate().getYear() == year && job.getDate().getMonthValue() == month).toList();
+    }
+
     private String getMonthNameInSpanish(LocalDate date) {
         Locale spanishArgentina = Locale.of("es", "AR");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM", spanishArgentina);
@@ -66,8 +71,7 @@ public class PayslipServiceImpl implements PayslipService {
     }
 
     private BigDecimal getTransportation(Contract contract, int year, int month) {
-        List<Job> monthlyJobs = contract.getJobs().stream()
-                .filter(job -> job.getDate().getYear() == year && job.getDate().getMonthValue() == month).toList();
+        List<Job> monthlyJobs = getMonthlyJobs(contract, year, month);
         if (contract.getEmploymentType() == EmploymentType.HOURLY) {
 
             return dataCollectionService.calculateSumByMonth(monthlyJobs, year, month, Job::getTransportationFee);
@@ -93,12 +97,11 @@ public class PayslipServiceImpl implements PayslipService {
         return weeklyHours.divide(BigDecimal.valueOf(7), SCALE, ROUNDING).multiply(BigDecimal.valueOf(30));
     }
 
-    private BigDecimal getgrossSalary(Contract contract, BigDecimal payrollDeduction, int month, int year) {
-        List<Job> monthlyJobs = contract.getJobs().stream()
-                .filter(job -> job.getDate().getYear() == year && job.getDate().getMonthValue() == month).toList();
+    private BigDecimal getgrossSalary(Contract contract, BigDecimal baseSalary, BigDecimal payrollDeduction, int year,
+            int month) {
 
         if (contract.getEmploymentType() == EmploymentType.HOURLY) {
-            return getPartial(monthlyJobs, year, month).add(payrollDeduction);
+            return baseSalary.add(payrollDeduction);
         } else {
             return contract.getSalary().add(payrollDeduction);
         }
@@ -110,19 +113,18 @@ public class PayslipServiceImpl implements PayslipService {
         return contract.getSalary().divide(monthlyHours, SCALE, ROUNDING);
     }
 
-    private BigDecimal getExtraWorkedHoursCount(Contract contract, int month, int year) {
-        List<Job> monthlyJobs = contract.getJobs().stream()
-                .filter(job -> job.getDate().getYear() == year && job.getDate().getMonthValue() == month).toList();
+    private BigDecimal getExtraWorkedHoursCount(Contract contract, int year, int month) {
+        List<Job> monthlyJobs = getMonthlyJobs(contract, year, month);
 
         return getWorkedHours(monthlyJobs, year, month);
     }
 
-    private BigDecimal getExtraHoursAmount(Contract contract, int month, int year) {
+    private BigDecimal getExtraHoursAmount(Contract contract, int year, int month) {
         if (contract.getEmploymentType() == EmploymentType.HOURLY) {
 
             return BigDecimal.ZERO;
         }
-        BigDecimal actualWorked = getExtraWorkedHoursCount(contract, month, year);
+        BigDecimal actualWorked = getExtraWorkedHoursCount(contract, year, month);
         BigDecimal expected = getTotalMonthlyHours(contract);
 
         BigDecimal extra = actualWorked.subtract(expected);
@@ -164,18 +166,20 @@ public class PayslipServiceImpl implements PayslipService {
     public Payslip buildPayslip(int contractId, CreatePayslipDto form) {
         Contract contract = contractService.findById(contractId);
 
-        int year = form.getPeriod().getYear();
-        int month = form.getPeriod().getMonthValue();
+        int year = form.getYear();
+        int month = form.getMonth();
         int service = contract.getService();
         BigDecimal payrollDeduction = form.getPayrollDeduction();
         BigDecimal otherDeductions = form.getOtherDeductions();
         BigDecimal other = form.getOther();
         BigDecimal gratuities = form.getGratuities();
         String comments = form.getComments();
-        BigDecimal grossSalary = getgrossSalary(contract, form.getPayrollDeduction(), month, year);
-        BigDecimal extraWorkedHours = getExtraWorkedHoursCount(contract, month, year);
-        BigDecimal extraHours = getExtraHoursAmount(contract, month, year);
-        BigDecimal transportation = getTransportation(contract, year, month);
+        BigDecimal grossSalary = getgrossSalary(contract,
+                safe(form.getBaseSalary()), safe(form.getPayrollDeduction()), year,
+                month);
+        BigDecimal extraWorkedHours = form.getExtraWorkedHours();
+        BigDecimal extraHours = form.getExtraHoursAmount();
+        BigDecimal transportation = form.getTransportation();
         BigDecimal servicePlus = grossSalary.multiply(BigDecimal.valueOf(service)).divide(BigDecimal.valueOf(100),
                 SCALE, ROUNDING);
         BigDecimal netSalary = claculateNetSalary(grossSalary, extraHours, payrollDeduction, otherDeductions, other,
@@ -223,6 +227,26 @@ public class PayslipServiceImpl implements PayslipService {
         details.setEmployeeName(firstName + " " + lastName);
         details.setSince(since);
         return details;
+
+    }
+
+    @Override
+    public CreatePayslipDto fillForm(int contractId, int year, int month) {
+        Contract contract = contractService.findById(contractId);
+
+        BigDecimal extraWorkedHours = getExtraWorkedHoursCount(contract, year, month);
+        BigDecimal extraHours = getExtraHoursAmount(contract, year, month);
+        BigDecimal transportation = getTransportation(contract, year, month);
+
+        CreatePayslipDto dto = new CreatePayslipDto();
+        dto.setBaseSalary(getPartial(getMonthlyJobs(contract, year, month), year, month));
+        dto.setYear(year);
+        dto.setMonth(month);
+        dto.setExtraWorkedHours(extraWorkedHours);
+        dto.setExtraHoursAmount(extraHours);
+        dto.setTransportation(transportation);
+
+        return dto;
 
     }
 

@@ -15,7 +15,7 @@
       <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>
           Vista Previa del Recibo –
-          <span th:text="${payslip.month} + ' ' + ${payslip.year}"></span>
+          <span th:text="${form.month} + ' ' + ${form.year}"></span>
         </h2>
         <a
           th:href="@{/payslips/list/{contractId}(contractId=${contractId})}"
@@ -145,8 +145,34 @@
           th:action="@{/payslips/save/{contractId}(contractId=${contractId})}"
           method="post"
         >
-          <input type="hidden" name="period" th:value="${form.period}" />
-
+          <!-- Hidden fields (preserve all values for saving) -->
+          <input type="hidden" name="year" th:value="${form.year}" />
+          <input type="hidden" name="month" th:value="${form.month}" />
+          <input
+            type="hidden"
+            name="baseSalary"
+            th:value="${form.baseSalary}"
+          />
+          <input
+            type="hidden"
+            name="transportation"
+            th:value="${form.transportation}"
+          />
+          <input
+            type="hidden"
+            name="extraWorkedHours"
+            th:value="${form.extraWorkedHours}"
+          />
+          <input
+            type="hidden"
+            name="extraHoursAmount"
+            th:value="${form.extraHoursAmount}"
+          />
+          <input
+            type="hidden"
+            name="servicePlus"
+            th:value="${form.servicePlus}"
+          />
           <input
             type="hidden"
             name="payrollDeduction"

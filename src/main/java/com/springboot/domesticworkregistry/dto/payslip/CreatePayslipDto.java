@@ -1,7 +1,9 @@
 package com.springboot.domesticworkregistry.dto.payslip;
 
 import java.math.BigDecimal;
-import java.time.YearMonth;
+import java.time.Month;
+import java.time.format.TextStyle;
+import java.util.Locale;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -15,8 +17,20 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CreatePayslipDto {
 
-    @NotNull(message = "is required")
-    private YearMonth period;
+    int year;
+
+    int month;
+
+    private BigDecimal baseSalary;
+
+    @PositiveOrZero
+    private BigDecimal extraWorkedHours;
+
+    @PositiveOrZero
+    private BigDecimal extraHoursAmount;
+
+    @PositiveOrZero
+    private BigDecimal transportation;
 
     @NotNull(message = "is required")
     private BigDecimal payrollDeduction;
@@ -30,15 +44,19 @@ public class CreatePayslipDto {
     @PositiveOrZero
     private BigDecimal gratuities;
 
+    @PositiveOrZero
+    private BigDecimal servicePlus;
+
     @Size(max = 255, message = "Comments must be at most 255 characters")
     private String comments;
 
-    public int getYear() {
-        return period != null ? period.getYear() : 0;
+    public String getMonthName() {
+        Month monthName = Month.of(month);
+        return monthName.getDisplayName(TextStyle.SHORT, Locale.of("es", "AR")).toUpperCase();
     }
 
-    public int getMonth() {
-        return period != null ? period.getMonthValue() : 0;
+    public String getPeriodString() {
+        return getMonthName() + "-" + String.valueOf(year);
     }
 
 }

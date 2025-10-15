@@ -17,5 +17,6 @@ public interface PayslipService {
 
     PayslipDetailsDto getDetails(int id);
 
+    CreatePayslipDto fillForm(int contractId, int year, int month);
 
 }

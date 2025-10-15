@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.springboot.domesticworkregistry.dto.payslip.CreatePayslipDto;
@@ -40,8 +41,10 @@ public class PayslipController {
     }
 
     @GetMapping("/create/{contractId}")
-    public String payslipForm(@PathVariable("contractId") int contractId, Model model) {
-        CreatePayslipDto form = new CreatePayslipDto();
+    public String payslipForm(@PathVariable("contractId") int contractId, @RequestParam("year") int year,
+            @RequestParam("month") int month,
+            Model model) {
+        CreatePayslipDto form = payslipService.fillForm(contractId, year, month);
         model.addAttribute("form", form);
         model.addAttribute("contractId", contractId);
 
@@ -92,6 +95,13 @@ public class PayslipController {
     @GetMapping("/pdf/{id}")
     public void downloadPayslipPdf(@PathVariable("id") int id, HttpServletResponse response) {
         // Generate PDF from PayslipDetailsDto
+    }
+
+    @GetMapping("/select/{contractId}")
+    public String selectPeriod(@PathVariable("contractId") int contractId, Model model) {
+        model.addAttribute("contractId", contractId);
+
+        return "payslips/select-period";
     }
 
 }

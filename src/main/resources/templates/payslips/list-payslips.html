@@ -62,7 +62,7 @@
             <tr th:each="payslip : ${payslips}">
               <td
                 class="text-center"
-                th:text="${#temporals.monthName(payslip.month)} + ' ' + ${payslip.year}"
+                th:text="${#temporals.monthName(payslip.monthName)} + ' ' + ${payslip.year}"
               ></td>
 
               <td

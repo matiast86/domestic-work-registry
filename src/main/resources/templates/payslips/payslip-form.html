@@ -6,129 +6,141 @@
   layout:decorate="~{fragments/layout}"
 >
   <head>
-    <title>Nuevo Recibo de Sueldo</title>
+    <title>Crear Recibo de Sueldo</title>
   </head>
 
   <body>
     <div layout:fragment="content" class="container mt-5">
-      <!-- Header -->
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Nuevo Recibo de Sueldo</h2>
-        <a
-          th:href="@{/payslips/list/{contractId}(contractId=${contractId})}"
-          class="btn btn-secondary"
-        >
-          Volver a la lista
-        </a>
-      </div>
-
-      <!-- Form -->
       <form
         th:action="@{/payslips/preview/{contractId}(contractId=${contractId})}"
         th:object="${form}"
         method="post"
         class="needs-validation"
-        novalidate
       >
-        <div class="row mb-3">
-          <!-- Period -->
-          <div class="col-md-6 mb-3">
-            <label for="period" class="form-label">Período</label>
-            <input
-              type="month"
-              id="period"
-              name="period"
-              class="form-control"
-              required
-            />
-            <div class="form-text">
-              Seleccioná el mes y año del recibo (por ejemplo, 2025-09).
-            </div>
-          </div>
+        <!-- 🔒 Hidden fields (so Spring gets all values back on submit) -->
+        <input type="hidden" th:field="*{year}" />
+        <input type="hidden" th:field="*{month}" />
+        <input type="hidden" th:field="*{baseSalary}" />
+        <input type="hidden" th:field="*{transportation}" />
+        <input type="hidden" th:field="*{extraWorkedHours}" />
+        <input type="hidden" th:field="*{extraHoursAmount}" />
+        <input type="hidden" th:field="*{servicePlus}" />
 
-          <!-- Payroll deduction -->
-          <div class="col-md-6 mb-3">
-            <label for="payrollDeduction" class="form-label"
-              >Deducciones de nómina</label
-            >
+        <h2 class="mb-4">
+          Crear Recibo de Sueldo
+          <small class="text-muted">
+            (<span th:text="${form.periodString}"></span>)
+          </small>
+        </h2>
+
+        <!-- Base / Gross salary -->
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label">Salario Base (Bruto)</label>
+            <input
+              type="text"
+              th:value="${#numbers.formatDecimal(form.baseSalary, 1, 'COMMA', 2, 'POINT')}"
+              class="form-control"
+              readonly
+            />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Viáticos</label>
+            <input
+              type="text"
+              th:value="${#numbers.formatDecimal(form.transportation, 1, 'COMMA', 2, 'POINT')}"
+              class="form-control"
+              readonly
+            />
+          </div>
+        </div>
+
+        <!-- Extra Hours -->
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label">Horas Extra (trabajadas)</label>
+            <input
+              type="text"
+              th:value="${form.extraWorkedHours}"
+              class="form-control"
+              readonly
+            />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Monto Horas Extra</label>
+            <input
+              type="text"
+              th:value="${#numbers.formatDecimal(form.extraHoursAmount, 1, 'COMMA', 2, 'POINT')}"
+              class="form-control"
+              readonly
+            />
+          </div>
+        </div>
+
+        <!-- Deductions and Additions -->
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label">Aportes y Contribuciones</label>
             <input
               type="number"
-              id="payrollDeduction"
+              step="0.01"
               th:field="*{payrollDeduction}"
               class="form-control"
-              step="0.01"
-              min="0"
-              placeholder="Ej. 25000.00"
-              required
+              placeholder="Ingrese el total de aportes"
             />
           </div>
-        </div>
-
-        <div class="row mb-3">
-          <!-- Other deductions -->
-          <div class="col-md-6 mb-3">
-            <label for="otherDeductions" class="form-label"
-              >Otras deducciones</label
-            >
+          <div class="col-md-6">
+            <label class="form-label">Otros Descuentos</label>
             <input
               type="number"
-              id="otherDeductions"
+              step="0.01"
               th:field="*{otherDeductions}"
               class="form-control"
-              step="0.01"
-              min="0"
-              placeholder="Ej. 5000.00"
-            />
-          </div>
-
-          <!-- Other additions -->
-          <div class="col-md-6 mb-3">
-            <label for="other" class="form-label">Otros conceptos</label>
-            <input
-              type="number"
-              id="other"
-              th:field="*{other}"
-              class="form-control"
-              step="0.01"
-              min="0"
-              placeholder="Ej. 12000.00"
             />
           </div>
         </div>
 
         <div class="row mb-3">
-          <!-- Gratuities -->
-          <div class="col-md-6 mb-3">
-            <label for="gratuities" class="form-label">Gratificaciones</label>
+          <div class="col-md-6">
+            <label class="form-label">Otros Conceptos</label>
             <input
               type="number"
-              id="gratuities"
-              th:field="*{gratuities}"
-              class="form-control"
               step="0.01"
-              min="0"
-              placeholder="Ej. 15000.00"
+              th:field="*{other}"
+              class="form-control"
             />
           </div>
-
-          <!-- Comments -->
-          <div class="col-md-6 mb-3">
-            <label for="comments" class="form-label">Comentarios</label>
-            <textarea
-              id="comments"
-              th:field="*{comments}"
+          <div class="col-md-6">
+            <label class="form-label">Gratificaciones</label>
+            <input
+              type="number"
+              step="0.01"
+              th:field="*{gratuities}"
               class="form-control"
-              rows="2"
-              placeholder="Notas u observaciones del recibo"
-            ></textarea>
+            />
           </div>
+        </div>
+
+        <!-- Comments -->
+        <div class="mb-3">
+          <label class="form-label">Comentarios</label>
+          <textarea
+            th:field="*{comments}"
+            class="form-control"
+            rows="3"
+            placeholder="Notas adicionales o aclaraciones..."
+          ></textarea>
         </div>
 
         <!-- Submit -->
-        <div class="text-end mt-4">
-          <button type="submit" class="btn btn-primary">
-            Generar Vista Previa
-          </button>
+        <div class="mt-4 d-flex gap-2">
+          <button type="submit" class="btn btn-success">Vista Previa</button>
+          <a
+            th:href="@{/payslips/list/{contractId}(contractId=${contractId})}"
+            class="btn btn-secondary"
+          >
+            Cancelar
+          </a>
         </div>
       </form>
     </div>
