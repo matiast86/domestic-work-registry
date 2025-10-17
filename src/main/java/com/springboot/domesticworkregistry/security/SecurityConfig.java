@@ -44,10 +44,11 @@ public class SecurityConfig {
         @Bean
         public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
                 http
+
                                 .authorizeHttpRequests(config -> config
                                                 // public
                                                 .requestMatchers("/css/**", "/js/**", "/images/**", "/", "/register/**",
-                                                                "/data/**")
+                                                                "/email/**", "/data/**")
                                                 .permitAll()
 
                                                 // employer-only
