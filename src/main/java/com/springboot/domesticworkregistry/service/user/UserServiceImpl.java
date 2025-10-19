@@ -120,6 +120,7 @@ public class UserServiceImpl implements UserService {
         newUser.setEmail(form.getEmail().toLowerCase());
         newUser.setRoles(Set.of(Role.EMPLOYER));
         newUser.setFirstLogin(false);
+        newUser.setPasswordChangeRequest(false);
         Address address = new Address(form.getStreet(), form.getNumber(), form.getApartment(), form.getCity(),
                 form.getPostalCode(),
                 form.getCountry());
@@ -148,6 +149,7 @@ public class UserServiceImpl implements UserService {
         newUser.setRoles(Set.of(Role.EMPLOYEE));
         newUser.setPassword(passwordEncoder.encode(form.getIdentificationNumber()));
         newUser.setFirstLogin(true);
+        newUser.setPasswordChangeRequest(false);
         newUser.setEmail(form.getEmail().toLowerCase());
         Address address = new Address(form.getStreet(), form.getNumber(), form.getApartment(), form.getCity(),
                 form.getPostalCode(),
@@ -170,6 +172,15 @@ public class UserServiceImpl implements UserService {
 
         user.setPassword(passwordEncoder.encode(form.getNewPassword()));
         userRepository.save(user);
+
+    }
+
+    @Override
+    public void resetPassword(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User with email " + email + " not found"));
+        user.setPasswordChangeRequest(true);
+        user.setPassword(passwordEncoder.encode(user.getIdentificationNumber()));
 
     }
 

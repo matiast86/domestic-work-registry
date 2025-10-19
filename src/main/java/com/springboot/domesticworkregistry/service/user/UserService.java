@@ -33,4 +33,6 @@ public interface UserService {
 
     void changePassword(User user, ChangePasswordDto form);
 
+    void resetPassword(String email);
+
 }

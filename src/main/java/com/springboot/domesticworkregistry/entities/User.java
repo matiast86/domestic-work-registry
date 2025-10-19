@@ -89,6 +89,9 @@ public class User implements UserDetails {
     @Column(name = "first_login")
     private boolean firstLogin = false;
 
+    @Column(name = "password_change_request")
+    private boolean passwordChangeRequest;
+
     public User(String firstName, String lastName, String email, LocalDate birthDate,
             String identificationNumber, String password, String phone) {
         this.firstName = firstName;

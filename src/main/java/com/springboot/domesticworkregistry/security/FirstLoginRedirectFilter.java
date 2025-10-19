@@ -24,7 +24,7 @@ public class FirstLoginRedirectFilter extends OncePerRequestFilter {
                 && authentication.getPrincipal() instanceof com.springboot.domesticworkregistry.entities.User user) {
 
             // Only force redirect if user is flagged as first login
-            if (user.isFirstLogin()) {
+            if (user.isFirstLogin() || user.isPasswordChangeRequest()) {
                 String path = request.getServletPath();
 
                 // Allow access to password change endpoints without redirect loop
