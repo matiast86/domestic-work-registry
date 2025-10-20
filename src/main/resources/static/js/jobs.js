@@ -5,9 +5,10 @@ document.addEventListener("DOMContentLoaded", () => {
   // JOB LIST - Filter functionality
   // ============================================
 
-  const searchInput = document.getElementById("searchInput");
-  if (searchInput) {
-    searchInput.addEventListener("input", function (e) {
+  // Simple filter functionality
+  document
+    .getElementById("searchInput")
+    ?.addEventListener("input", function (e) {
       const searchTerm = e.target.value.toLowerCase();
       const rows = document.querySelectorAll(".tasks-table tbody tr");
 
@@ -16,23 +17,20 @@ document.addEventListener("DOMContentLoaded", () => {
         row.style.display = text.includes(searchTerm) ? "" : "none";
       });
     });
-  }
 
-  const yearFilter = document.getElementById("yearFilter");
-  if (yearFilter) {
-    yearFilter.addEventListener("change", function (e) {
+  document
+    .getElementById("yearFilter")
+    ?.addEventListener("change", function (e) {
       const year = e.target.value;
       const rows = document.querySelectorAll(".tasks-table tbody tr");
 
       rows.forEach((row) => {
-        const monthBadge = row.querySelector(".month-badge span");
-        if (monthBadge) {
-          const rowYear = monthBadge.textContent.split(" ")[1];
-          row.style.display = !year || rowYear === year ? "" : "none";
-        }
+        const rowYear = row
+          .querySelector(".month-badge span")
+          .textContent.split(" ")[1];
+        row.style.display = !year || rowYear === year ? "" : "none";
       });
     });
-  }
 
   // ============================================
   // MONTHLY DETAILS - Delete confirmation
