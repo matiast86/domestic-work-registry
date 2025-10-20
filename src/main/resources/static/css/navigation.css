@@ -1,5 +1,4 @@
-/* ===== NAVIGATION.CSS ===== */
-/* Sidebar + Topbar styles for authenticated users */
+/* ===== NAVIGATION STYLES - navigation.css ===== */
 
 :root {
   --sidebar-width: 280px;
@@ -7,18 +6,12 @@
   --topbar-height: 70px;
 }
 
-/* ==========================================
-   LAYOUT STRUCTURE
-   ========================================== */
+/* === Layout Structure === */
 .app-wrapper {
   display: flex;
   min-height: 100vh;
-  background: var(--color-gray-50);
 }
 
-/* ==========================================
-   SIDEBAR
-   ========================================== */
 .sidebar {
   width: var(--sidebar-width);
   background: linear-gradient(
@@ -50,20 +43,26 @@
   border-radius: 3px;
 }
 
-.sidebar::-webkit-scrollbar-track {
-  background: transparent;
+.main-content {
+  margin-left: var(--sidebar-width);
+  width: calc(100% - var(--sidebar-width));
+  transition: all var(--transition-base);
+  background: var(--color-bg-secondary);
+  min-height: 100vh;
 }
 
-/* ==========================================
-   SIDEBAR HEADER
-   ========================================== */
+.sidebar.collapsed ~ .main-content {
+  margin-left: var(--sidebar-collapsed-width);
+  width: calc(100% - var(--sidebar-collapsed-width));
+}
+
+/* === Sidebar Header === */
 .sidebar-header {
   padding: 1.5rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  min-height: var(--topbar-height);
 }
 
 .sidebar-brand {
@@ -78,18 +77,10 @@
   transition: all var(--transition-base);
 }
 
-.sidebar-brand:hover {
-  color: var(--color-primary-light);
-}
-
 .sidebar-brand i {
   font-size: 1.75rem;
   color: var(--color-primary-light);
-  transition: all var(--transition-base);
-}
-
-.sidebar-brand-text {
-  transition: all var(--transition-base);
+  flex-shrink: 0;
 }
 
 .sidebar.collapsed .sidebar-brand-text {
@@ -115,16 +106,9 @@
 
 .sidebar-toggle:hover {
   background: rgba(255, 255, 255, 0.2);
-  transform: scale(1.05);
 }
 
-.sidebar-toggle i {
-  font-size: 1.25rem;
-}
-
-/* ==========================================
-   SIDEBAR NAVIGATION
-   ========================================== */
+/* === Sidebar Navigation === */
 .sidebar-nav {
   padding: 1rem 0;
 }
@@ -144,7 +128,6 @@
   opacity: 0;
   height: 0;
   padding: 0;
-  margin: 0;
   overflow: hidden;
 }
 
@@ -169,7 +152,7 @@
   font-size: 1.25rem;
   min-width: 24px;
   text-align: center;
-  transition: all var(--transition-base);
+  flex-shrink: 0;
 }
 
 .nav-link span {
@@ -179,11 +162,6 @@
 .nav-link:hover {
   background: rgba(255, 255, 255, 0.1);
   color: white;
-  transform: translateX(4px);
-}
-
-.nav-link:hover i {
-  transform: scale(1.1);
 }
 
 .nav-link.active {
@@ -219,56 +197,7 @@
   overflow: hidden;
 }
 
-.sidebar.collapsed .nav-link:hover {
-  transform: none;
-}
-
-/* Tooltip on hover when collapsed */
-.sidebar.collapsed .nav-link {
-  position: relative;
-}
-
-.sidebar.collapsed .nav-link::after {
-  content: attr(title);
-  position: absolute;
-  left: 100%;
-  top: 50%;
-  transform: translateY(-50%);
-  background: var(--color-gray-900);
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: all var(--transition-base);
-  margin-left: 0.5rem;
-  box-shadow: var(--shadow-lg);
-}
-
-.sidebar.collapsed .nav-link:hover::after {
-  opacity: 1;
-}
-
-/* ==========================================
-   MAIN CONTENT AREA
-   ========================================== */
-.main-content {
-  margin-left: var(--sidebar-width);
-  width: calc(100% - var(--sidebar-width));
-  transition: all var(--transition-base);
-  background: var(--color-gray-50);
-  min-height: 100vh;
-}
-
-.sidebar.collapsed ~ .main-content {
-  margin-left: var(--sidebar-collapsed-width);
-  width: calc(100% - var(--sidebar-collapsed-width));
-}
-
-/* ==========================================
-   TOPBAR
-   ========================================== */
+/* === Topbar === */
 .topbar {
   background: white;
   height: var(--topbar-height);
@@ -282,36 +211,21 @@
   gap: 1.5rem;
 }
 
-.mobile-menu-toggle {
-  display: none;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  background: var(--color-gray-50);
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all var(--transition-base);
-}
-
-.mobile-menu-toggle:hover {
-  background: var(--color-gray-100);
-}
-
-/* ==========================================
-   BREADCRUMB
-   ========================================== */
 .breadcrumb {
   margin: 0;
   background: transparent;
   padding: 0;
 }
 
+.breadcrumb-item {
+  color: var(--color-gray-600);
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
 .breadcrumb-item a {
   color: var(--color-gray-600);
   text-decoration: none;
-  font-weight: 500;
   transition: color var(--transition-fast);
 }
 
@@ -320,13 +234,9 @@
 }
 
 .breadcrumb-item.active {
-  color: var(--color-gray-900);
-  font-weight: 600;
+  color: var(--color-primary);
 }
 
-/* ==========================================
-   TOPBAR ACTIONS
-   ========================================== */
 .topbar-actions {
   margin-left: auto;
   display: flex;
@@ -334,9 +244,6 @@
   gap: 1rem;
 }
 
-/* ==========================================
-   USER MENU
-   ========================================== */
 .user-menu {
   position: relative;
 }
@@ -356,7 +263,6 @@
 .user-menu-toggle:hover {
   border-color: var(--color-primary);
   background: white;
-  box-shadow: var(--shadow-sm);
 }
 
 .user-avatar {
@@ -396,16 +302,34 @@
   line-height: 1.2;
 }
 
-/* ==========================================
-   CONTENT WRAPPER
-   ========================================== */
+/* === Content Area === */
 .content-wrapper {
   padding: 2rem;
+  min-height: calc(100vh - var(--topbar-height));
 }
 
-/* ==========================================
-   MOBILE RESPONSIVE
-   ========================================== */
+.page-header {
+  background: white;
+  padding: 2rem;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 2rem;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-gray-900);
+  margin: 0;
+}
+
+.page-subtitle {
+  color: var(--color-gray-600);
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+}
+
+/* === Mobile Responsive === */
 @media (max-width: 992px) {
   .sidebar {
     transform: translateX(-100%);
@@ -429,7 +353,7 @@
     background: rgba(0, 0, 0, 0.5);
     z-index: 999;
     display: none;
-    backdrop-filter: blur(2px);
+    backdrop-filter: blur(4px);
   }
 
   .mobile-overlay.show {
@@ -440,21 +364,61 @@
     padding: 0 1rem;
   }
 
-  .mobile-menu-toggle {
-    display: flex;
-  }
-
   .content-wrapper {
     padding: 1rem;
   }
+
+  .mobile-menu-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: var(--color-gray-50);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .mobile-menu-toggle:hover {
+    background: var(--color-gray-100);
+  }
 }
 
-@media (max-width: 576px) {
-  .user-info {
+@media (min-width: 993px) {
+  .mobile-menu-toggle {
     display: none;
   }
+}
 
-  .user-menu-toggle i.bi-chevron-down {
-    display: none;
-  }
+/* === Dropdown Menu Styles === */
+.dropdown-menu {
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-lg);
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.dropdown-item {
+  border-radius: var(--radius-md);
+  padding: 0.625rem 1rem;
+  transition: all var(--transition-fast);
+  font-weight: 500;
+}
+
+.dropdown-item:hover {
+  background: var(--color-gray-50);
+  color: var(--color-primary);
+}
+
+.dropdown-item i {
+  width: 20px;
+  text-align: center;
+}
+
+.dropdown-divider {
+  margin: 0.5rem 0;
+  border-color: var(--color-border);
 }

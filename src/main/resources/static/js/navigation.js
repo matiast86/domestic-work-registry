@@ -1,5 +1,4 @@
-// ===== NAVIGATION.JS =====
-// Handles sidebar collapse, mobile menu, and active states
+// ===== NAVIGATION LOGIC - navigation.js =====
 
 document.addEventListener("DOMContentLoaded", () => {
   const sidebar = document.getElementById("sidebar");
@@ -7,146 +6,102 @@ document.addEventListener("DOMContentLoaded", () => {
   const mobileMenuToggle = document.getElementById("mobileMenuToggle");
   const mobileOverlay = document.getElementById("mobileOverlay");
 
-  // ==========================================
-  // DESKTOP: Toggle sidebar collapsed state
-  // ==========================================
+  // ===== Desktop: Toggle Collapsed State =====
   if (sidebarToggle) {
     sidebarToggle.addEventListener("click", () => {
       sidebar.classList.toggle("collapsed");
-
       // Save state to localStorage
-      const isCollapsed = sidebar.classList.contains("collapsed");
-      localStorage.setItem("sidebarCollapsed", isCollapsed);
-
-      // Update icon
-      const icon = sidebarToggle.querySelector("i");
-      if (isCollapsed) {
-        icon.classList.remove("bi-list");
-        icon.classList.add("bi-arrow-bar-right");
-      } else {
-        icon.classList.remove("bi-arrow-bar-right");
-        icon.classList.add("bi-list");
-      }
+      localStorage.setItem(
+        "sidebarCollapsed",
+        sidebar.classList.contains("collapsed")
+      );
     });
   }
 
-  // ==========================================
-  // MOBILE: Toggle sidebar visibility
-  // ==========================================
+  // ===== Mobile: Toggle Sidebar Visibility =====
   if (mobileMenuToggle) {
     mobileMenuToggle.addEventListener("click", () => {
       sidebar.classList.add("show");
       mobileOverlay.classList.add("show");
-      document.body.style.overflow = "hidden";
+      document.body.style.overflow = "hidden"; // Prevent body scroll
     });
   }
 
+  // Close sidebar when clicking overlay
   if (mobileOverlay) {
-    mobileOverlay.addEventListener("click", closeMobileSidebar);
+    mobileOverlay.addEventListener("click", () => {
+      closeMobileSidebar();
+    });
   }
+
+  // Close sidebar on mobile when clicking a nav link
+  const navLinks = document.querySelectorAll(".sidebar .nav-link");
+  navLinks.forEach((link) => {
+    link.addEventListener("click", () => {
+      if (window.innerWidth <= 992) {
+        closeMobileSidebar();
+      }
+    });
+  });
 
   function closeMobileSidebar() {
     sidebar.classList.remove("show");
     mobileOverlay.classList.remove("show");
-    document.body.style.overflow = "";
+    document.body.style.overflow = ""; // Restore body scroll
   }
 
-  // Close mobile sidebar on navigation
-  document.querySelectorAll(".sidebar .nav-link").forEach((link) => {
-    link.addEventListener("click", () => {
-      if (window.innerWidth < 993) {
-        closeMobileSidebar();
-      }
-    });
-  });
-
-  // ==========================================
-  // RESTORE sidebar state from localStorage
-  // ==========================================
-  if (localStorage.getItem("sidebarCollapsed") === "true") {
+  // ===== Restore Sidebar State from LocalStorage =====
+  const savedState = localStorage.getItem("sidebarCollapsed");
+  if (savedState === "true" && window.innerWidth > 992) {
     sidebar.classList.add("collapsed");
-    const icon = sidebarToggle?.querySelector("i");
-    if (icon) {
-      icon.classList.remove("bi-list");
-      icon.classList.add("bi-arrow-bar-right");
-    }
   }
 
-  // ==========================================
-  // HIGHLIGHT active nav item based on current path
-  // ==========================================
+  // ===== Highlight Active Nav Item Based on Current Path =====
   const currentPath = window.location.pathname;
-
-  document.querySelectorAll(".sidebar .nav-link").forEach((link) => {
+  navLinks.forEach((link) => {
     const linkPath = link.getAttribute("href");
 
-    // Remove active from all
+    // Remove active class from all links first
     link.classList.remove("active");
 
-    // Add active to matching link
+    // Add active class to matching link
     if (linkPath === currentPath) {
       link.classList.add("active");
-    }
-
-    // Special case for dashboard-related paths
-    if (currentPath.startsWith("/dashboard") && linkPath === "/dashboard") {
-      link.classList.add("active");
-    }
-
-    // Special case for contracts
-    if (currentPath.includes("/contracts") && linkPath.includes("contracts")) {
+    } else if (currentPath.startsWith(linkPath) && linkPath !== "/dashboard") {
+      // Handle sub-routes (but not root dashboard)
       link.classList.add("active");
     }
   });
 
-  // ==========================================
-  // HANDLE window resize
-  // ==========================================
+  // ===== Handle Window Resize =====
   let resizeTimer;
   window.addEventListener("resize", () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
-      if (window.innerWidth >= 993) {
+      if (window.innerWidth > 992) {
+        // Desktop: restore collapsed state, hide mobile overlay
         closeMobileSidebar();
+        const savedState = localStorage.getItem("sidebarCollapsed");
+        if (savedState === "true") {
+          sidebar.classList.add("collapsed");
+        } else {
+          sidebar.classList.remove("collapsed");
+        }
+      } else {
+        // Mobile: remove collapsed state
+        sidebar.classList.remove("collapsed");
       }
     }, 250);
   });
 
-  // ==========================================
-  // SMOOTH SCROLL for anchor links
-  // ==========================================
-  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-    anchor.addEventListener("click", function (e) {
-      const target = document.querySelector(this.getAttribute("href"));
-      if (target) {
+  // ===== Smooth Scroll to Top on Navigation =====
+  navLinks.forEach((link) => {
+    link.addEventListener("click", (e) => {
+      // Only prevent default if it's an anchor link
+      if (link.getAttribute("href").startsWith("#")) {
         e.preventDefault();
-        target.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
+        window.scrollTo({ top: 0, behavior: "smooth" });
       }
     });
   });
-
-  // ==========================================
-  // ADD loading state to buttons on click
-  // ==========================================
-  document.querySelectorAll('button[type="submit"]').forEach((button) => {
-    button.addEventListener("click", function (e) {
-      if (this.form && this.form.checkValidity()) {
-        const originalText = this.innerHTML;
-        this.disabled = true;
-        this.innerHTML =
-          '<span class="spinner-border spinner-border-sm me-2"></span>Cargando...';
-
-        // Restore after 10 seconds as fallback
-        setTimeout(() => {
-          this.disabled = false;
-          this.innerHTML = originalText;
-        }, 10000);
-      }
-    });
-  });
-
-  console.log("✅ Navigation JS loaded successfully");
 });
