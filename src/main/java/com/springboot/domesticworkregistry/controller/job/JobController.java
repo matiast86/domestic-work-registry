@@ -76,6 +76,7 @@ public class JobController {
             @RequestParam("month") int month, Model model) {
         JobsMonthlyReportDto jobs = this.jobService.getMonthlyJobsByContract(contractId, year, month);
         model.addAttribute("jobs", jobs);
+        model.addAttribute("contractId", contractId);
 
         return "jobs/monthly-table";
     }
