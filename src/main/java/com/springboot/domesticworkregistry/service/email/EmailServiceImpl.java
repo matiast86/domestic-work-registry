@@ -66,4 +66,14 @@ public class EmailServiceImpl implements EmailService {
         sendTemplatedEmail(emailDto, "emails/welcome", Map.of("name", name, "loginUrl", loginUrl));
     }
 
+    @Override
+    public void changePasswordRequest(EmailDto emailDto, String name, String passwordUrl) {
+        sendTemplatedEmail(emailDto, "emails/change-password", Map.of("name", name, "passwordUrl", passwordUrl));
+    }
+
+    @Override
+    public void changePasswordConfirmation(EmailDto emailDto, String name) {
+        sendTemplatedEmail(emailDto, "emails/change-password-confirmation", Map.of("name", name));
+    }
+
 }

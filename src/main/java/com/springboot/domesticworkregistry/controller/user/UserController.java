@@ -62,12 +62,6 @@ public class UserController {
         return "employers/employer-form";
     }
 
-    @GetMapping("/changePassword")
-    public String passwordForm(Model model) {
-        model.addAttribute("passwordForm", new ChangePasswordDto());
-        return "auth/change-password"; // ✅ make sure your template is in `templates/auth/change-password.html`
-    }
-
     @PostMapping("/change-password")
     public String changePassword(
             @AuthenticationPrincipal User user,
@@ -89,4 +83,5 @@ public class UserController {
 
         return "redirect:/loginPage?passwordChanged";
     }
+
 }

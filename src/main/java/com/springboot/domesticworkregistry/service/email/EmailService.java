@@ -12,4 +12,8 @@ public interface EmailService {
 
     public void sendWelcomeEmail(EmailDto emailDto, String name, String loginUrl);
 
+    public void changePasswordRequest(EmailDto emailDto, String name, String passwordUrl);
+
+    public void changePasswordConfirmation(EmailDto emailDto, String name);
+
 }

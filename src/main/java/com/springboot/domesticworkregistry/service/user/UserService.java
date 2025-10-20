@@ -5,6 +5,7 @@ import java.util.List;
 import com.springboot.domesticworkregistry.dto.user.ChangePasswordDto;
 import com.springboot.domesticworkregistry.dto.user.RegisterUserDto;
 import com.springboot.domesticworkregistry.dto.user.RegisterUserEmployeeDto;
+import com.springboot.domesticworkregistry.dto.user.ResetPasswordDto;
 import com.springboot.domesticworkregistry.dto.user.UpdateUserDto;
 import com.springboot.domesticworkregistry.entities.Contract;
 import com.springboot.domesticworkregistry.entities.User;
@@ -33,6 +34,8 @@ public interface UserService {
 
     void changePassword(User user, ChangePasswordDto form);
 
-    void resetPassword(String email);
+    void resetPasswordConfirmation(String email);
+
+    void resetPassword(String token, ResetPasswordDto form);
 
 }
