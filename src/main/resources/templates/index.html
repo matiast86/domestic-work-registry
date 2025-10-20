@@ -7,85 +7,158 @@
 >
   <head>
     <title>Inicio | DomesticWork</title>
-    <th:block layout:fragment="home">
     <link rel="stylesheet" th:href="@{/css/home.css}" />
-  </th:block>
   </head>
+
   <body>
     <div layout:fragment="content">
       <!-- Hero Section -->
-      <section class="text-center py-5 bg-primary text-white">
-        <div class="container">
-          <h1 class="display-4 fw-bold">Registro de Trabajo Doméstico</h1>
-          <p class="lead mb-4">
-            Formalizá y gestioná tus relaciones laborales de manera simple,
-            justa y segura.
+      <section class="hero-section fade-in">
+        <div class="container hero-content">
+          <h1>Gestioná tu Trabajo Doméstico de Forma Simple y Segura</h1>
+          <p class="lead">
+            Formalizá y llevá un registro completo de tus relaciones laborales.
+            Protegé tanto a empleadores como empleados con herramientas
+            diseñadas para vos.
           </p>
-          <div>
-            <a
-              th:href="@{/register/registrationForm}"
-              class="btn btn-light btn-lg me-2"
-            >
-              Registrarse
+          <div class="hero-buttons">
+            <a th:href="@{/register/registrationForm}" class="btn btn-light">
+              <i class="bi bi-person-plus me-2"></i>Crear Cuenta Gratis
             </a>
-            <a th:href="@{/loginPage}" class="btn btn-outline-light btn-lg">
-              Iniciar Sesión
+            <a th:href="@{/loginPage}" class="btn btn-outline-light">
+              <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar Sesión
             </a>
           </div>
         </div>
       </section>
 
       <!-- How It Works -->
-      <section class="py-5">
+      <section class="features-section">
         <div class="container">
-          <h2 class="text-center mb-5">¿Cómo Funciona?</h2>
-          <div class="row text-center">
-            <div class="col-md-4 mb-4">
-              <i class="bi bi-person-add fs-1 text-primary mb-3"></i>
-              <h5>1. Crear Cuenta</h5>
-              <p>
-                Registrate como empleador y comenzá el proceso de formalización.
-              </p>
+          <h2 class="section-title">¿Cómo Funciona?</h2>
+          <p class="section-subtitle">
+            En tres simples pasos comenzás a gestionar tu trabajo doméstico de
+            manera profesional
+          </p>
+
+          <div class="row g-4">
+            <div class="col-md-4">
+              <div class="feature-card slide-in">
+                <div class="feature-icon">
+                  <i class="bi bi-person-plus-fill"></i>
+                </div>
+                <h5>1. Crear Cuenta</h5>
+                <p>
+                  Registrate como empleador en minutos. Completá tus datos
+                  básicos y comenzá el proceso de formalización de manera simple
+                  y rápida.
+                </p>
+              </div>
             </div>
-            <div class="col-md-4 mb-4">
-              <i class="bi bi-house-door fs-1 text-primary mb-3"></i>
-              <h5>2. Cargar Datos del Empleado</h5>
-              <p>Completá información como el rol, horario y remuneración.</p>
+
+            <div class="col-md-4">
+              <div class="feature-card slide-in" style="animation-delay: 0.1s">
+                <div class="feature-icon">
+                  <i class="bi bi-file-earmark-text-fill"></i>
+                </div>
+                <h5>2. Crear Contrato</h5>
+                <p>
+                  Generá contratos completos con datos del empleado, horarios,
+                  remuneración y toda la información necesaria en un solo lugar.
+                </p>
+              </div>
             </div>
-            <div class="col-md-4 mb-4">
-              <i class="bi bi-check-circle fs-1 text-primary mb-3"></i>
-              <h5>3. Mantenete en Régimen</h5>
-              <p>
-                Tené todo registrado y actualizado para auditorías o tu
-                tranquilidad.
-              </p>
+
+            <div class="col-md-4">
+              <div class="feature-card slide-in" style="animation-delay: 0.2s">
+                <div class="feature-icon">
+                  <i class="bi bi-check-circle-fill"></i>
+                </div>
+                <h5>3. Registrar y Controlar</h5>
+                <p>
+                  Llevá el control de tareas, asistencias y generá recibos de
+                  sueldo. Todo organizado y siempre disponible cuando lo
+                  necesites.
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       <!-- Why Register -->
-      <section class="bg-light py-5">
-        <div class="container text-center">
-          <h2 class="mb-4">¿Por Qué Registrar?</h2>
-          <p class="lead mx-auto" style="max-width: 700px">
-            El trabajo doméstico merece ser formal, justo y respetado.
-            Registrando tu relación laboral contribuís a un entorno laboral
-            transparente y seguro, tanto para empleadores como empleados.
-          </p>
+      <section class="why-section">
+        <div class="container">
+          <h2 class="section-title">¿Por Qué Formalizar?</h2>
+          <div class="why-content">
+            <p>
+              El trabajo doméstico merece ser formal, justo y respetado.
+              Registrando tu relación laboral contribuís a un entorno
+              transparente y seguro, protegiendo tanto al empleador como al
+              empleado.
+            </p>
+          </div>
+
+          <div class="benefit-list">
+            <div class="benefit-item">
+              <div class="benefit-icon">
+                <i class="bi bi-shield-check"></i>
+              </div>
+              <div>
+                <h6>Protección Legal</h6>
+                <p>Respaldo ante cualquier eventualidad o conflicto laboral</p>
+              </div>
+            </div>
+
+            <div class="benefit-item">
+              <div class="benefit-icon">
+                <i class="bi bi-graph-up"></i>
+              </div>
+              <div>
+                <h6>Organización Total</h6>
+                <p>
+                  Todos los datos centralizados y accesibles cuando los
+                  necesites
+                </p>
+              </div>
+            </div>
+
+            <div class="benefit-item">
+              <div class="benefit-icon">
+                <i class="bi bi-heart"></i>
+              </div>
+              <div>
+                <h6>Trato Justo</h6>
+                <p>Garantizá condiciones dignas y transparentes para todos</p>
+              </div>
+            </div>
+
+            <div class="benefit-item">
+              <div class="benefit-icon">
+                <i class="bi bi-clock-history"></i>
+              </div>
+              <div>
+                <h6>Ahorro de Tiempo</h6>
+                <p>Automatizá cálculos y generación de recibos de sueldo</p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
       <!-- Call to Action -->
-      <section class="py-5 text-center">
+      <section class="cta-section">
         <div class="container">
-          <h3 class="fw-bold mb-3">¿Listo para comenzar?</h3>
-          <a
-            th:href="@{/register/registrationForm}"
-            class="btn btn-primary btn-lg"
-          >
-            Crear una Cuenta Gratis
-          </a>
+          <div class="cta-box">
+            <h3>¿Listo para Comenzar?</h3>
+            <p>
+              Creá tu cuenta gratuita hoy y empezá a gestionar tu trabajo
+              doméstico de manera profesional y organizada.
+            </p>
+            <a th:href="@{/register/registrationForm}" class="btn">
+              <i class="bi bi-rocket-takeoff me-2"></i>Crear Cuenta Ahora
+            </a>
+          </div>
         </div>
       </section>
     </div>
