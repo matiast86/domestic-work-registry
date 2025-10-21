@@ -1,0 +1,30 @@
+<!-- templates/emails/welcome.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <th:block th:replace="emails/fragments/header :: header(~{::body})">
+      <div>
+        <h3>¡Bienvenido, <span th:text="${name}">Usuario</span>!</h3>
+        <p>
+          Gracias por registrarte en <strong>Domestic Work Registry</strong>.
+        </p>
+        <p>Puedes acceder a tu cuenta aquí:</p>
+        <a
+          th:href="${loginUrl}"
+          style="
+            display: inline-block;
+            background: #0069d9;
+            color: white;
+            padding: 10px 16px;
+            text-decoration: none;
+            border-radius: 4px;
+          "
+        >
+          Iniciar sesión
+        </a>
+      </div>
+    </th:block>
+
+    <th:block th:replace="emails/fragments/footer :: footer" />
+  </body>
+</html>

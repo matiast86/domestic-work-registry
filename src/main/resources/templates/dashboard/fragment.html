@@ -1,94 +1,235 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
   <body>
-    <!-- Employer Contracts -->
+    <!-- ================================ -->
+    <!-- EMPLOYER CONTRACTS -->
+    <!-- ================================ -->
     <div th:fragment="employerContracts">
-      <h4>Contratos como Empleador</h4>
-
-      <!-- Empty state -->
-      <div
-        th:if="${#lists.isEmpty(contracts)}"
-        class="alert alert-info d-flex justify-content-between align-items-center"
-      >
-        <span>No tienes contratos activos como empleador.</span>
-        <a th:href="@{/contracts/contractForm}" class="btn btn-sm btn-primary">
-          Crear contrato
+      <!-- Section Header -->
+      <div class="section-header">
+        <h2 class="section-title">
+          <i class="bi bi-file-earmark-text-fill"></i>
+          Mis Contratos como Empleador
+        </h2>
+        <a th:href="@{/contracts/contractForm}" class="btn btn-primary">
+          <i class="bi bi-plus-circle-fill me-2"></i>
+          Nuevo Contrato
         </a>
       </div>
 
-      <!-- Table only if contracts exist -->
-      <table class="table table-striped" th:if="${!#lists.isEmpty(contracts)}">
-        <thead>
-          <tr>
-            <th>Empleado</th>
-            <th>Tipo de Empleo</th>
-            <th>Salario</th>
-            <th>Detalles</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr th:each="contract : ${contracts}">
-            <td
-              th:text="${contract.employee.firstName + ' ' + contract.employee.lastName}"
-            ></td>
-            <td th:text="${contract.employmentType}"></td>
-            <td
-              th:text="${#numbers.formatDecimal(contract.salary, 1, 'COMMA', 2, 'POINT')}"
-            ></td>
-            <td>
-              <a
-                th:href="@{/contracts/details/{id}(id=${contract.id})}"
-                class="btn btn-sm btn-primary"
+      <!-- Empty State -->
+      <div th:if="${#lists.isEmpty(contracts)}" class="empty-state">
+        <div class="empty-state-icon">
+          <i class="bi bi-file-earmark-plus"></i>
+        </div>
+        <h3>No tenés contratos activos</h3>
+        <p>
+          Creá tu primer contrato para comenzar a gestionar tu personal
+          doméstico de manera organizada y profesional.
+        </p>
+        <a th:href="@{/contracts/contractForm}" class="btn btn-primary btn-lg">
+          <i class="bi bi-plus-circle-fill me-2"></i>
+          Crear Primer Contrato
+        </a>
+      </div>
+
+      <!-- Contracts Grid -->
+      <div th:if="${!#lists.isEmpty(contracts)}" class="contracts-grid">
+        <div th:each="contract : ${contracts}" class="contract-card">
+          <!-- Contract Header -->
+          <div class="contract-header">
+            <div
+              class="contract-avatar"
+              th:text="${contract.employee.firstName.substring(0,1) + contract.employee.lastName.substring(0,1)}"
+            >
+              JD
+            </div>
+            <div class="contract-info">
+              <h4
+                class="contract-name"
+                th:text="${contract.employee.firstName + ' ' + contract.employee.lastName}"
               >
-                Ver detalles
-              </a>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+                Nombre del Empleado
+              </h4>
+              <div class="contract-meta">
+                <span class="badge bg-success">
+                  <i class="bi bi-check-circle-fill me-1"></i>
+                  Activo
+                </span>
+              </div>
+            </div>
+          </div>
 
-      <!-- Secondary CTA below table -->
-      <div th:if="${!#lists.isEmpty(contracts)}" class="mt-2">
-        <a
-          th:href="@{/contracts/contractForm}"
-          class="btn btn-sm btn-outline-primary"
-        >
-          Crear nuevo contrato
-        </a>
+          <!-- Contract Details -->
+          <div class="contract-details">
+            <div class="contract-detail-item">
+              <span class="contract-detail-label">Puesto</span>
+              <span
+                class="contract-detail-value"
+                th:text="${contract.employmentType.label}"
+              >
+                Tipo de Empleo
+              </span>
+            </div>
+            <div class="contract-detail-item">
+              <span class="contract-detail-label">Salario</span>
+              <span class="contract-detail-value">
+                $<span
+                  th:text="${#numbers.formatDecimal(contract.salary, 1, 'COMMA', 2, 'POINT')}"
+                >
+                  0.00
+                </span>
+              </span>
+            </div>
+          </div>
+
+          <!-- Contract Actions -->
+          <div class="contract-actions">
+            <a
+              th:href="@{/contracts/details/{id}(id=${contract.id})}"
+              class="btn btn-primary"
+            >
+              <i class="bi bi-eye-fill me-1"></i>
+              Ver Detalles
+            </a>
+            <div class="btn-group">
+              <button
+                type="button"
+                class="btn btn-outline-secondary dropdown-toggle"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <i class="bi bi-three-dots-vertical"></i>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li>
+                  <a
+                    class="dropdown-item"
+                    th:href="@{/jobs/jobList/{id}(id=${contract.id})}"
+                  >
+                    <i class="bi bi-clock-history me-2"></i>Tareas
+                  </a>
+                </li>
+                <li>
+                  <a
+                    class="dropdown-item"
+                    th:href="@{/attendance/view/{scheduleId}(scheduleId=${contract.schedule.id})}"
+                  >
+                    <i class="bi bi-calendar-check me-2"></i>Asistencias
+                  </a>
+                </li>
+                <li>
+                  <a
+                    class="dropdown-item"
+                    th:href="@{/payslips/list/{contractId}(contractId=${contract.id})}"
+                  >
+                    <i class="bi bi-file-earmark-text me-2"></i>Recibos
+                  </a>
+                </li>
+                <li><hr class="dropdown-divider" /></li>
+                <li>
+                  <a
+                    class="dropdown-item"
+                    th:href="@{/contracts/updateForm/{id}(id=${contract.id})}"
+                  >
+                    <i class="bi bi-pencil-square me-2"></i>Editar
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Employee Contracts -->
+    <!-- ================================ -->
+    <!-- EMPLOYEE CONTRACTS -->
+    <!-- ================================ -->
     <div th:fragment="employeeContracts">
-      <h4>Contratos como Empleado</h4>
-
-      <!-- Empty state -->
-      <div th:if="${#lists.isEmpty(contracts)}" class="alert alert-info">
-        No tienes contratos activos como empleado.
+      <!-- Section Header -->
+      <div class="section-header">
+        <h2 class="section-title">
+          <i class="bi bi-person-badge-fill"></i>
+          Mis Contratos como Empleado
+        </h2>
       </div>
 
-      <!-- Table only if contracts exist -->
-      <table class="table table-striped" th:if="${!#lists.isEmpty(contracts)}">
-        <thead>
-          <tr>
-            <th>Empleador</th>
-            <th>Tipo de Empleo</th>
-            <th>Salario</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr th:each="contract : ${contracts}">
-            <td
-              th:text="${contract.employer.firstName + ' ' + contract.employer.lastName}"
-            ></td>
-            <td th:text="${contract.employmentType}"></td>
-            <td
-              th:text="${#numbers.formatDecimal(contract.salary, 1, 'COMMA', 2, 'POINT')}"
-            ></td>
-          </tr>
-        </tbody>
-      </table>
+      <!-- Empty State -->
+      <div th:if="${#lists.isEmpty(contracts)}" class="empty-state">
+        <div class="empty-state-icon">
+          <i class="bi bi-file-earmark-x"></i>
+        </div>
+        <h3>No tenés contratos activos</h3>
+        <p>
+          Cuando un empleador te registre, tus contratos aparecerán aquí. Podrás
+          ver toda la información relacionada con tu trabajo.
+        </p>
+      </div>
+
+      <!-- Contracts Grid -->
+      <div th:if="${!#lists.isEmpty(contracts)}" class="contracts-grid">
+        <div th:each="contract : ${contracts}" class="contract-card">
+          <!-- Contract Header -->
+          <div class="contract-header">
+            <div
+              class="contract-avatar"
+              th:text="${contract.employer.firstName.substring(0,1) + contract.employer.lastName.substring(0,1)}"
+            >
+              JD
+            </div>
+            <div class="contract-info">
+              <h4
+                class="contract-name"
+                th:text="${contract.employer.firstName + ' ' + contract.employer.lastName}"
+              >
+                Nombre del Empleador
+              </h4>
+              <div class="contract-meta">
+                <span class="badge bg-success">
+                  <i class="bi bi-check-circle-fill me-1"></i>
+                  Activo
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contract Details -->
+          <div class="contract-details">
+            <div class="contract-detail-item">
+              <span class="contract-detail-label">Mi Puesto</span>
+              <span
+                class="contract-detail-value"
+                th:text="${contract.employmentType.label}"
+              >
+                Tipo de Empleo
+              </span>
+            </div>
+            <div class="contract-detail-item">
+              <span class="contract-detail-label">Mi Salario</span>
+              <span class="contract-detail-value">
+                $<span
+                  th:text="${#numbers.formatDecimal(contract.salary, 1, 'COMMA', 2, 'POINT')}"
+                >
+                  0.00
+                </span>
+              </span>
+            </div>
+          </div>
+
+          <!-- Contract Actions -->
+          <div class="contract-actions">
+            <a
+              th:href="@{/contracts/details/{id}(id=${contract.id})}"
+              class="btn btn-primary"
+            >
+              <i class="bi bi-eye-fill me-1"></i>
+              Ver Detalles
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
+
     <script th:src="@{/js/dashboard.js}" layout:fragment="scripts"></script>
   </body>
 </html>

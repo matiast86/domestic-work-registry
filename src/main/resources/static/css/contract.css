@@ -1,0 +1,374 @@
+/* Contract Header */
+.contract-header-section {
+  background: linear-gradient(
+    135deg,
+    var(--color-primary),
+    var(--color-primary-light)
+  );
+  color: white;
+  padding: 2rem;
+  border-radius: var(--radius-xl);
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+.contract-header-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.1) 0%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  transform: translate(30%, -30%);
+}
+
+.contract-header-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.contract-avatar-large {
+  width: 100px;
+  height: 100px;
+  border-radius: var(--radius-xl);
+  background: white;
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  font-weight: 800;
+  flex-shrink: 0;
+  box-shadow: var(--shadow-xl);
+}
+
+.contract-header-info {
+  flex: 1;
+}
+
+.contract-header-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.contract-header-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.contract-badge {
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-full);
+  font-size: 0.875rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.contract-header-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+}
+
+.contract-header-actions .btn {
+  background: white;
+  color: var(--color-primary);
+  font-weight: 600;
+  box-shadow: var(--shadow-md);
+}
+
+.contract-header-actions .btn:hover {
+  background: var(--color-gray-100);
+}
+
+/* Modern Tabs */
+.modern-tabs {
+  background: white;
+  border-radius: var(--radius-xl);
+  padding: 0.5rem;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 2rem;
+  border: 2px solid var(--color-border);
+}
+
+.modern-tabs .nav {
+  gap: 0.5rem;
+}
+
+.modern-tabs .nav-link {
+  padding: 1rem 1.5rem;
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-lg);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  transition: all var(--transition-base);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  position: relative;
+}
+
+.modern-tabs .nav-link i {
+  font-size: 1.25rem;
+}
+
+.modern-tabs .nav-link:hover {
+  background: var(--color-gray-50);
+  color: var(--color-primary);
+}
+
+.modern-tabs .nav-link.active {
+  background: linear-gradient(
+    135deg,
+    var(--color-primary),
+    var(--color-primary-light)
+  );
+  color: white;
+  box-shadow: var(--shadow-md);
+}
+
+/* Info Grid */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.info-card {
+  background: white;
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  border: 2px solid var(--color-border);
+  transition: all var(--transition-base);
+}
+
+.info-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-primary);
+}
+
+.info-card-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--color-border);
+}
+
+.info-card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.info-card-icon.primary {
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-50),
+    var(--color-primary-100)
+  );
+  color: var(--color-primary);
+}
+
+.info-card-icon.success {
+  background: linear-gradient(
+    135deg,
+    rgba(34, 197, 94, 0.1),
+    rgba(34, 197, 94, 0.2)
+  );
+  color: var(--color-success);
+}
+
+.info-card-icon.info {
+  background: linear-gradient(
+    135deg,
+    rgba(139, 92, 246, 0.1),
+    rgba(139, 92, 246, 0.2)
+  );
+  color: var(--color-info);
+}
+
+.info-card-icon.warning {
+  background: linear-gradient(
+    135deg,
+    rgba(251, 191, 36, 0.1),
+    rgba(251, 191, 36, 0.2)
+  );
+  color: var(--color-warning);
+}
+
+.info-card-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--color-gray-100);
+}
+
+.info-item:last-child {
+  border-bottom: none;
+}
+
+.info-label {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  font-weight: 600;
+}
+
+.info-value {
+  font-size: 0.875rem;
+  color: var(--color-text-primary);
+  font-weight: 700;
+  text-align: right;
+}
+
+/* Schedule Table */
+.schedule-table {
+  background: white;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.schedule-table table {
+  width: 100%;
+  margin: 0;
+}
+
+.schedule-table thead {
+  background: linear-gradient(
+    135deg,
+    var(--color-warning-light),
+    var(--color-warning)
+  );
+  color: white;
+}
+
+.schedule-table thead th {
+  padding: 1rem;
+  font-weight: 700;
+  text-align: left;
+  border: none;
+}
+
+.schedule-table tbody td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.schedule-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.schedule-table tbody tr:hover {
+  background: var(--color-gray-50);
+}
+
+.day-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.375rem 0.75rem;
+  background: var(--color-primary-50);
+  color: var(--color-primary);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.time-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.75rem;
+  background: var(--color-gray-100);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+/* Empty Schedule */
+.empty-schedule {
+  text-align: center;
+  padding: 3rem 2rem;
+  background: white;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+}
+
+.empty-schedule i {
+  font-size: 4rem;
+  color: var(--color-gray-300);
+  margin-bottom: 1rem;
+}
+
+.empty-schedule p {
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .contract-header-content {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .contract-header-title {
+    font-size: 1.5rem;
+  }
+
+  .contract-header-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .contract-header-actions .btn {
+    width: 100%;
+  }
+
+  .modern-tabs .nav {
+    flex-direction: column;
+  }
+
+  .modern-tabs .nav-link {
+    width: 100%;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+}

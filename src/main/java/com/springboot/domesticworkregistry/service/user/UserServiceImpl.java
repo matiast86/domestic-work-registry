@@ -1,17 +1,22 @@
 package com.springboot.domesticworkregistry.service.user;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.springboot.domesticworkregistry.dao.UserRepository;
+import com.springboot.domesticworkregistry.dto.email.EmailDto;
 import com.springboot.domesticworkregistry.dto.user.ChangePasswordDto;
 import com.springboot.domesticworkregistry.dto.user.RegisterUserDto;
 import com.springboot.domesticworkregistry.dto.user.RegisterUserEmployeeDto;
+import com.springboot.domesticworkregistry.dto.user.ResetPasswordDto;
 import com.springboot.domesticworkregistry.dto.user.UpdateUserDto;
 import com.springboot.domesticworkregistry.entities.Address;
 import com.springboot.domesticworkregistry.entities.Contract;
@@ -20,6 +25,7 @@ import com.springboot.domesticworkregistry.enums.Role;
 import com.springboot.domesticworkregistry.exceptions.EmailAlreadyExistsException;
 import com.springboot.domesticworkregistry.exceptions.EntityNotFoundException;
 import com.springboot.domesticworkregistry.mapper.UserMapper;
+import com.springboot.domesticworkregistry.service.email.EmailService;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -27,15 +33,18 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper mapper;
-    private final CustomUserDetailsService userDetails;
+    private final EmailService emailService;
+
+    @Value("${APP_BASE_URL}")
+    private String baseUrl;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, UserMapper mapper,
-            CustomUserDetailsService userDetails) {
+            EmailService emailService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.mapper = mapper;
-        this.userDetails = userDetails;
+        this.emailService = emailService;
     }
 
     @Override
@@ -171,6 +180,47 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(form.getNewPassword()));
         userRepository.save(user);
 
+    }
+
+    @Override
+    public void resetPasswordConfirmation(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User with email " + email + " not found"));
+
+        String token = UUID.randomUUID().toString();
+
+        user.setResetToken(token);
+        user.setResetTokenExpiry(LocalDateTime.now().plusMinutes(30));
+        userRepository.save(user);
+
+        String changePasswordUrl = baseUrl + "/register/reset-password?token=" + token;
+
+        EmailDto emailDto = new EmailDto();
+        emailDto.setTo(List.of(email));
+        emailDto.setSubject("Solicitud de cambio de contraseña");
+
+        System.out.println("Reset Password link: " + changePasswordUrl);
+
+        // emailService.changePasswordRequest(emailDto, user.getFirstName(),
+        // changePasswordUrl);
+    }
+
+    @Override
+    public void resetPassword(String token, ResetPasswordDto form) {
+        User user = userRepository.findByResetToken(token)
+                .filter(u -> u.getResetTokenExpiry().isAfter(LocalDateTime.now()))
+                .orElseThrow(() -> new EntityNotFoundException("Token inválido o expirado"));
+        user.setPassword(passwordEncoder.encode(form.getNewPassword()));
+        user.setResetToken(null);
+        user.setResetTokenExpiry(null);
+        userRepository.save(user);
+        EmailDto dto = new EmailDto();
+        dto.setTo(List.of(user.getEmail()));
+        dto.setSubject("Cambio de contraseña");
+
+        System.out.println("Contraseña cambiada con exito");
+
+        // emailService.changePasswordConfirmation(dto, user.getFirstName());
     }
 
 }
