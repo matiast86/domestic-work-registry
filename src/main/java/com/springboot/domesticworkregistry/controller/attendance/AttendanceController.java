@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.springboot.domesticworkregistry.entities.AttendanceRecord;
+import com.springboot.domesticworkregistry.dto.attendance.AttendanceRecordDto;
 import com.springboot.domesticworkregistry.enums.AttendanceStatus;
 import com.springboot.domesticworkregistry.service.attendance.AttendanceRecordService;
 
@@ -47,19 +47,10 @@ public class AttendanceController {
         int selectedYear = (year != null) ? year : now.getYear();
         int selectedMonth = (month != null) ? month : now.getMonthValue();
 
-        List<AttendanceRecord> records = attendanceService.findByScheduleAndMonth(scheduleId, selectedYear,
+        List<AttendanceRecordDto> records = attendanceService.findByScheduleAndMonth(scheduleId, selectedYear,
                 selectedMonth);
 
         int contractId = attendanceService.getContractId(scheduleId);
-
-        // ✅ Sanitize invalid months (e.g. 0, 13, etc.)
-        if (selectedMonth < 1) {
-            selectedMonth = 12;
-            selectedYear -= 1;
-        } else if (selectedMonth > 12) {
-            selectedMonth = 1;
-            selectedYear += 1;
-        }
 
         model.addAttribute("attendanceRecords", records);
         model.addAttribute("monthName", Month.of(selectedMonth).getDisplayName(TextStyle.FULL, Locale.of("es")));
