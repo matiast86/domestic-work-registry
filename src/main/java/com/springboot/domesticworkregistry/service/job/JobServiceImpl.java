@@ -208,8 +208,6 @@ public class JobServiceImpl implements JobService {
 
         for (Job job : jobs) {
             JobsMonthlyTableDto tableDto = tableMapper.toDo(job);
-            tableDto.setYear(year);
-            tableDto.setMonth(jobMonth);
             tables.add(tableDto);
 
         }
@@ -226,7 +224,7 @@ public class JobServiceImpl implements JobService {
         JobsTotalsDto totalsDto = new JobsTotalsDto(year, workedHoursTotal, hourlyFeeTotal, subtotalTotal,
                 transportationFeeTotal, totalTotal);
 
-        return new JobsMonthlyReportDto(tables, totalsDto);
+        return new JobsMonthlyReportDto(year, month, jobMonth, tables, totalsDto);
 
     }
 

@@ -6,31 +6,27 @@ document.addEventListener("DOMContentLoaded", () => {
   // ============================================
 
   // Simple filter functionality
-  document
-    .getElementById("searchInput")
-    ?.addEventListener("input", function (e) {
-      const searchTerm = e.target.value.toLowerCase();
-      const rows = document.querySelectorAll(".tasks-table tbody tr");
+  document.getElementById("searchInput")?.addEventListener("input", (e) => {
+    const searchTerm = e.target.value.toLowerCase();
+    const rows = document.querySelectorAll(".tasks-table tbody tr");
 
-      rows.forEach((row) => {
-        const text = row.textContent.toLowerCase();
-        row.style.display = text.includes(searchTerm) ? "" : "none";
-      });
+    rows.forEach((row) => {
+      const text = row.textContent.toLowerCase();
+      row.style.display = text.includes(searchTerm) ? "" : "none";
     });
+  });
 
-  document
-    .getElementById("yearFilter")
-    ?.addEventListener("change", function (e) {
-      const year = e.target.value;
-      const rows = document.querySelectorAll(".tasks-table tbody tr");
+  document.getElementById("yearFilter")?.addEventListener("change", (e) => {
+    const year = e.target.value;
+    const rows = document.querySelectorAll(".tasks-table tbody tr");
 
-      rows.forEach((row) => {
-        const rowYear = row
-          .querySelector(".month-badge span")
-          .textContent.split(" ")[1];
-        row.style.display = !year || rowYear === year ? "" : "none";
-      });
+    rows.forEach((row) => {
+      const rowYear = row
+        .querySelector(".month-badge span")
+        .textContent.split(" ")[1];
+      row.style.display = !year || rowYear === year ? "" : "none";
     });
+  });
 
   // ============================================
   // MONTHLY DETAILS - Delete confirmation
@@ -50,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Monthly details search
   const monthlySearchInput = document.querySelector("#searchInput");
   if (monthlySearchInput && document.querySelector(".tasks-detail-table")) {
-    monthlySearchInput.addEventListener("input", function (e) {
+    monthlySearchInput.addEventListener("input", (e) => {
       const searchTerm = e.target.value.toLowerCase();
       const rows = document.querySelectorAll(".tasks-detail-table tbody tr");
 

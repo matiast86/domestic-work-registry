@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.springboot.domesticworkregistry.dao.AttendanceRecordRepository;
+import com.springboot.domesticworkregistry.dto.attendance.AttendanceRecordDto;
 import com.springboot.domesticworkregistry.entities.AttendanceRecord;
 import com.springboot.domesticworkregistry.entities.Contract;
 import com.springboot.domesticworkregistry.entities.Schedule;
@@ -74,8 +75,28 @@ public class AttendanceRecordServiceImpl implements AttendanceRecordService {
     }
 
     @Override
-    public List<AttendanceRecord> findByScheduleAndMonth(int scheduleId, int year, int month) {
-        return attendanceRepository.findByScheduleAndMonth(scheduleId, year, month);
+    public List<AttendanceRecordDto> findByScheduleAndMonth(int scheduleId, int year, int month) {
+        List<AttendanceRecord> records = attendanceRepository.findByScheduleAndMonth(scheduleId, year, month);
+        List<AttendanceRecordDto> dtoList = new ArrayList<>();
+
+        // ✅ Sanitize invalid months (e.g. 0, 13, etc.)
+        if (month < 1) {
+            month = 12;
+            year -= 1;
+        } else if (month > 12) {
+            month = 1;
+            year += 1;
+        }
+
+        for (AttendanceRecord record : records) {
+            AttendanceRecordDto recordDto = new AttendanceRecordDto();
+            recordDto.setAttendanceId(record.getId());
+            recordDto.setDate(record.getDate());
+            recordDto.setAttendanceStatus(record.getAttendanceStatus());
+            dtoList.add(recordDto);
+        }
+
+        return dtoList;
 
     }
 

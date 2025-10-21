@@ -249,66 +249,6 @@
       </div>
     </div>
 
-    <script>
-      // Real-time calculation
-      function calculateTotal() {
-        const startTime = document.getElementById("startTime").value;
-        const endTime = document.getElementById("endTime").value;
-        const hourlyRate =
-          parseFloat(document.getElementById("hourlyRate").value) || 0;
-        const transportation =
-          parseFloat(document.getElementById("transportationFee").value) || 0;
-
-        let hoursWorked = 0;
-        if (startTime && endTime) {
-          const [startHour, startMin] = startTime.split(":").map(Number);
-          const [endHour, endMin] = endTime.split(":").map(Number);
-
-          const startMinutes = startHour * 60 + startMin;
-          const endMinutes = endHour * 60 + endMin;
-
-          hoursWorked = (endMinutes - startMinutes) / 60;
-          hoursWorked = Math.max(0, hoursWorked);
-        }
-
-        const subtotal = hoursWorked * hourlyRate;
-        const total = subtotal + transportation;
-
-        document.getElementById("hoursWorked").textContent =
-          hoursWorked.toFixed(1) + " hs";
-        document.getElementById("rateDisplay").textContent =
-          "$" + hourlyRate.toFixed(2);
-        document.getElementById("subtotal").textContent =
-          "$" + subtotal.toFixed(2);
-        document.getElementById("transportDisplay").textContent =
-          "$" + transportation.toFixed(2);
-        document.getElementById("totalAmount").textContent =
-          "$" + total.toFixed(2);
-      }
-
-      // Add event listeners
-      document
-        .getElementById("startTime")
-        ?.addEventListener("change", calculateTotal);
-      document
-        .getElementById("endTime")
-        ?.addEventListener("change", calculateTotal);
-      document
-        .getElementById("hourlyRate")
-        ?.addEventListener("input", calculateTotal);
-      document
-        .getElementById("transportationFee")
-        ?.addEventListener("input", calculateTotal);
-
-      // Initial calculation
-      calculateTotal();
-
-      // Set today's date by default
-      const dateInput = document.querySelector('input[type="date"]');
-      if (dateInput && !dateInput.value) {
-        dateInput.valueAsDate = new Date();
-        calculateTotal();
-      }
-    </script>
+    <script th:src="@{/js/jobs.js}" layout:fragment="scripts"></script>
   </body>
 </html>
