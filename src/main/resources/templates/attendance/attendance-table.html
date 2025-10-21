@@ -7,94 +7,20 @@
 >
   <head>
     <title>Registro de Asistencia</title>
+    <th:block layout:fragment="styles">
+      <link rel="stylesheet" th:href="@{/css/attendance.css}" />
+    </th:block>
   </head>
 
   <body>
-    <div layout:fragment="content" class="container mt-5">
-      <!-- Header + controls -->
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-          <h2 class="mb-0">Registro de Asistencia</h2>
-          <small class="text-muted"
-            >(Mes: <span th:text="${monthName}"></span>
-            <span th:text="${year}"></span>)</small
-          >
-        </div>
-
-        <!-- Month/year selector -->
-        <form
-          id="filterForm"
-          th:action="@{/attendance/view/{scheduleId}(scheduleId=${scheduleId})}"
-          method="get"
-          class="d-flex align-items-center gap-2"
-        >
-          <select
-            id="month"
-            name="month"
-            class="form-select form-select-sm"
-            style="width: auto"
-          >
-            <option
-              th:each="m : ${#numbers.sequence(1,12)}"
-              th:value="${m}"
-              th:text="${#temporals.create(2000,m,1).month.getDisplayName(T(java.time.format.TextStyle).FULL, T(java.util.Locale).of('es'))}"
-              th:selected="${m == month}"
-            ></option>
-          </select>
-
-          <input
-            type="number"
-            id="year"
-            name="year"
-            th:value="${year}"
-            class="form-control form-control-sm"
-            style="width: 90px"
-          />
-
-          <button type="submit" class="btn btn-outline-primary btn-sm">
-            Ver
-          </button>
-        </form>
-      </div>
-
-      <!-- Generate attendance -->
-      <form
-        id="generateForm"
-        th:action="@{/attendance/create/{scheduleId}(scheduleId=${scheduleId})}"
-        method="post"
-        class="d-inline mb-3"
-      >
-        <input type="hidden" name="year" th:value="${year}" />
-        <input type="hidden" name="month" th:value="${month}" />
-        <input type="hidden" name="scheduleId" th:value="${scheduleId}" />
-
-        <button type="submit" class="btn btn-success btn-sm">
-          <i class="bi bi-plus-circle"></i> Generar asistencia
-        </button>
-      </form>
-
-      <!-- New payslip creation -->
-      <a
-        th:href="@{/payslips/select/{contractId}(contractId=${contractId})}"
-        class="btn btn-primary"
-      >
-        Generar Recibo de Sueldo
-      </a>
-
-      <!-- New payslip creation -->
-      <a
-        th:href="@{/payslips/list/{contractId}(contractId=${contractId})}"
-        class="btn btn-primary"
-      >
-        Ver recibos de sueldo
-      </a>
-
-      <!-- Success message -->
+    <div layout:fragment="content">
+      <!-- Success Message -->
       <div
         th:if="${successMessage}"
-        class="alert alert-success alert-dismissible fade show mt-3"
+        class="alert alert-success alert-dismissible fade show"
         role="alert"
       >
+        <i class="bi bi-check-circle-fill me-2"></i>
         <span th:text="${successMessage}"></span>
         <button
           type="button"
@@ -104,97 +30,344 @@
         ></button>
       </div>
 
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <a
-          th:href="@{/attendance/view/{scheduleId}(scheduleId=${scheduleId}, year=${year}, month=${month - 1})}"
-          th:if="${month > 1}"
-          class="btn btn-outline-secondary btn-sm"
-        >
-          ← Mes anterior
-        </a>
+      <!-- Attendance Header -->
+      <div class="attendance-header fade-in">
+        <div class="attendance-header-content">
+          <h1 class="attendance-title">
+            <i class="bi bi-calendar-check me-2"></i>
+            Registro de Asistencia
+          </h1>
+          <p class="attendance-subtitle">
+            Control mensual de asistencias y ausencias
+          </p>
+          <div class="attendance-actions">
+            <form
+              id="generateForm"
+              th:action="@{/attendance/create/{scheduleId}(scheduleId=${scheduleId})}"
+              method="post"
+              style="display: inline"
+            >
+              <input type="hidden" name="year" th:value="${year}" />
+              <input type="hidden" name="month" th:value="${month}" />
+              <input type="hidden" name="scheduleId" th:value="${scheduleId}" />
+              <button type="submit" class="btn">
+                <i class="bi bi-plus-circle-fill me-2"></i>
+                Generar Asistencia
+              </button>
+            </form>
+            <a
+              th:href="@{/payslips/select/{contractId}(contractId=${contractId})}"
+              class="btn"
+            >
+              <i class="bi bi-file-earmark-text me-2"></i>
+              Generar Recibo
+            </a>
+            <a
+              th:href="@{/payslips/list/{contractId}(contractId=${contractId})}"
+              class="btn"
+            >
+              <i class="bi bi-list-ul me-2"></i>
+              Ver Recibos
+            </a>
+          </div>
+        </div>
+      </div>
 
-        <a
-          th:href="@{/attendance/view/{scheduleId}(scheduleId=${scheduleId})}"
-          class="btn btn-outline-primary btn-sm"
-        >
-          Volver al mes actual
-        </a>
+      <!-- Month Selector & Navigation -->
+      <div class="month-selector-card">
+        <div class="month-selector-header">
+          <h3 class="month-selector-title">
+            <i class="bi bi-calendar3 me-2"></i>
+            Seleccionar Período
+          </h3>
+        </div>
 
-        <a
-          th:href="@{/attendance/view/{scheduleId}(scheduleId=${scheduleId}, year=${year}, month=${month + 1})}"
-          th:if="${month < 12}"
-          class="btn btn-outline-secondary btn-sm"
-        >
-          Mes siguiente →
-        </a>
+        <div class="month-selector-content">
+          <form
+            id="filterForm"
+            th:action="@{/attendance/view/{scheduleId}(scheduleId=${scheduleId})}"
+            method="get"
+            class="selector-form"
+          >
+            <div class="form-group">
+              <label for="month" class="form-label">Mes</label>
+              <select
+                id="month"
+                name="month"
+                class="form-select"
+                th:onchange="'document.getElementById(\'filterForm\').submit();'"
+              >
+                <option
+                  th:each="m : ${#numbers.sequence(1,12)}"
+                  th:value="${m}"
+                  th:text="${T(java.time.Month).of(m).getDisplayName(T(java.time.format.TextStyle).FULL, T(java.util.Locale).of('es'))}"
+                  th:selected="${m == month}"
+                ></option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="year" class="form-label">Año</label>
+              <input
+                type="number"
+                id="year"
+                name="year"
+                th:value="${year}"
+                class="form-control"
+                min="2020"
+                max="2030"
+              />
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-search me-2"></i>
+              Buscar
+            </button>
+          </form>
+
+          <div class="month-navigation">
+            <a
+              th:href="@{/attendance/view/{scheduleId}(scheduleId=${scheduleId}, year=${month == 1 ? year - 1 : year}, month=${month == 1 ? 12 : month - 1})}"
+              class="btn btn-outline-secondary"
+            >
+              <i class="bi bi-chevron-left me-2"></i>
+              Mes Anterior
+            </a>
+
+            <div class="current-month-display">
+              <i class="bi bi-calendar-event me-2"></i>
+              <strong th:text="${monthName} + ' ' + ${year}">Mes Año</strong>
+            </div>
+
+            <a
+              th:href="@{/attendance/view/{scheduleId}(scheduleId=${scheduleId}, year=${month == 12 ? year + 1 : year}, month=${month == 12 ? 1 : month + 1})}"
+              class="btn btn-outline-secondary"
+            >
+              Mes Siguiente
+              <i class="bi bi-chevron-right ms-2"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Summary -->
+      <div
+        class="attendance-stats"
+        th:if="${!#lists.isEmpty(attendanceRecords)}"
+      >
+        <div class="stat-card present">
+          <div class="stat-icon">
+            <i class="bi bi-check-circle-fill"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-label">Presentes</div>
+            <div
+              class="stat-value"
+              th:text="${#lists.size(attendanceRecords.?[attendanceStatus.name() == 'PRESENT'])}"
+            >
+              0
+            </div>
+          </div>
+        </div>
+
+        <div class="stat-card absent">
+          <div class="stat-icon">
+            <i class="bi bi-x-circle-fill"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-label">Ausencias</div>
+            <div
+              class="stat-value"
+              th:text="${#lists.size(attendanceRecords.?[attendanceStatus.name() == 'UNJUSTIFIED_ABSCENCE' or attendanceStatus.name() == 'JUSTIFIED_ABSCENCE'])}"
+            >
+              0
+            </div>
+          </div>
+        </div>
+
+        <div class="stat-card holiday">
+          <div class="stat-icon">
+            <i class="bi bi-calendar-event-fill"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-label">Feriados</div>
+            <div
+              class="stat-value"
+              th:text="${#lists.size(attendanceRecords.?[attendanceStatus.name() == 'NATIONAL_HOLIDAY'])}"
+            >
+              0
+            </div>
+          </div>
+        </div>
+
+        <div class="stat-card total">
+          <div class="stat-icon">
+            <i class="bi bi-calendar3"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-label">Total Días</div>
+            <div class="stat-value" th:text="${#lists.size(attendanceRecords)}">
+              0
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Attendance Table -->
-      <table class="table table-bordered align-middle mt-3">
-        <thead class="table-light">
-          <tr>
-            <th>Fecha</th>
-            <th>Día</th>
-            <th>Estado</th>
-            <th>Acción</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr th:each="record : ${attendanceRecords}">
-            <td th:text="${#temporals.format(record.date, 'dd/MM/yyyy')}"></td>
-            <td th:text="${record.date.dayOfWeek}"></td>
-
-            <!-- Color-coded badge -->
-            <td>
-              <span
-                class="badge fs-6 status-badge"
-                th:text="${record.attendanceStatus.label}"
-              ></span>
-            </td>
-
-            <!-- Update status -->
-            <td>
-              <form
-                th:action="@{/attendance/updateStatus}"
-                method="post"
-                class="d-flex flex-column flex-sm-row gap-1 align-items-start align-items-sm-center"
-              >
-                <input type="hidden" name="recordId" th:value="${record.id}" />
-                <input
-                  type="hidden"
-                  name="scheduleId"
-                  th:value="${scheduleId}"
-                />
-                <select
-                  name="attendanceStatus"
-                  class="form-select form-select-sm"
+      <div
+        th:if="${!#lists.isEmpty(attendanceRecords)}"
+        class="attendance-table-wrapper"
+      >
+        <table class="attendance-table">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Día</th>
+              <th>Estado</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="record : ${attendanceRecords}">
+              <td>
+                <div class="date-display">
+                  <span
+                    class="date-number"
+                    th:text="${#temporals.format(record.date, 'dd')}"
+                  >
+                    01
+                  </span>
+                  <span
+                    class="date-month"
+                    th:text="${#temporals.format(record.date, 'MMM')}"
+                  >
+                    Ene
+                  </span>
+                </div>
+              </td>
+              <td>
+                <span
+                  class="day-badge"
+                  th:text="${#temporals.dayOfWeekName(record.date)}"
                 >
-                  <option
-                    th:each="s : ${T(com.springboot.domesticworkregistry.enums.AttendanceStatus).values()}"
-                    th:value="${s}"
-                    th:text="${s.label}"
-                    th:selected="${s == record.attendanceStatus}"
-                  ></option>
-                </select>
-                <button type="submit" class="btn btn-primary btn-sm">
-                  Guardar
-                </button>
-              </form>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+                  Lunes
+                </span>
+              </td>
+              <td>
+                <span
+                  class="status-badge"
+                  th:classappend="${record.attendanceStatus.name()}"
+                  th:text="${record.attendanceStatus.label}"
+                >
+                  Estado
+                </span>
+              </td>
+              <td>
+                <form
+                  th:action="@{/attendance/updateStatus}"
+                  method="post"
+                  class="status-update-form"
+                >
+                  <input
+                    type="hidden"
+                    name="recordId"
+                    th:value="${record.id}"
+                  />
+                  <input
+                    type="hidden"
+                    name="scheduleId"
+                    th:value="${scheduleId}"
+                  />
 
-      <!-- Empty message -->
+                  <div class="status-select-group">
+                    <select
+                      name="attendanceStatus"
+                      class="form-select form-select-sm"
+                    >
+                      <option
+                        th:each="s : ${T(com.springboot.domesticworkregistry.enums.AttendanceStatus).values()}"
+                        th:value="${s}"
+                        th:text="${s.label}"
+                        th:selected="${s == record.attendanceStatus}"
+                      ></option>
+                    </select>
+                    <button type="submit" class="btn btn-sm btn-primary">
+                      <i class="bi bi-check-lg"></i>
+                    </button>
+                  </div>
+                </form>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Empty State -->
       <div
         th:if="${#lists.isEmpty(attendanceRecords)}"
-        class="alert alert-info mt-3"
+        class="empty-attendance"
       >
-        No hay registros de asistencia para este mes.
+        <div class="empty-attendance-icon">
+          <i class="bi bi-calendar-x"></i>
+        </div>
+        <h3>No hay registros de asistencia</h3>
+        <p>
+          Generá los registros de asistencia para este mes para comenzar a
+          llevar el control.
+        </p>
+        <form
+          th:action="@{/attendance/create/{scheduleId}(scheduleId=${scheduleId})}"
+          method="post"
+          style="display: inline"
+        >
+          <input type="hidden" name="year" th:value="${year}" />
+          <input type="hidden" name="month" th:value="${month}" />
+          <input type="hidden" name="scheduleId" th:value="${scheduleId}" />
+          <button type="submit" class="btn btn-primary btn-lg">
+            <i class="bi bi-plus-circle-fill me-2"></i>
+            Generar Asistencia del Mes
+          </button>
+        </form>
+      </div>
+
+      <!-- Legend -->
+      <div
+        class="attendance-legend"
+        th:if="${!#lists.isEmpty(attendanceRecords)}"
+      >
+        <h4 class="legend-title">
+          <i class="bi bi-info-circle me-2"></i>
+          Referencias
+        </h4>
+        <div class="legend-items">
+          <div class="legend-item">
+            <span class="status-badge PRESENT">Presente</span>
+            <span class="legend-desc">Asistió normalmente</span>
+          </div>
+          <div class="legend-item">
+            <span class="status-badge JUSTIFIED_ABSCENCE"
+              >Ausencia Justificada</span
+            >
+            <span class="legend-desc">No asistió con justificación</span>
+          </div>
+          <div class="legend-item">
+            <span class="status-badge UNJUSTIFIED_ABSCENCE"
+              >Ausencia Injustificada</span
+            >
+            <span class="legend-desc">No asistió sin justificación</span>
+          </div>
+          <div class="legend-item">
+            <span class="status-badge NATIONAL_HOLIDAY">Feriado Nacional</span>
+            <span class="legend-desc">Día feriado</span>
+          </div>
+          <div class="legend-item">
+            <span class="status-badge LATE">Llegada Tarde</span>
+            <span class="legend-desc">Llegó tarde al trabajo</span>
+          </div>
+        </div>
       </div>
     </div>
 
     <script th:src="@{/js/attendance.js}" layout:fragment="scripts"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
