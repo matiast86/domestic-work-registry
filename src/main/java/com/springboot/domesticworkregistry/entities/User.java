@@ -87,9 +87,6 @@ public class User implements UserDetails {
     @Column(name = "created_at")
     private Date createdAt;
 
-    @Column(name = "first_login")
-    private boolean firstLogin = false;
-
     @Column(name = "reset_token")
     private String resetToken;
 

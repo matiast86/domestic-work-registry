@@ -123,16 +123,28 @@ public class UserServiceImpl implements UserService {
         if (userRepository.findByEmail(form.getEmail()).isPresent()) {
             throw new EmailAlreadyExistsException("Email already registered.");
         }
+        String token = UUID.randomUUID().toString();
+        LocalDateTime expiration = LocalDateTime.now().plusHours(24);
 
         User newUser = mapper.toEmployer(form);
         newUser.setPassword(passwordEncoder.encode(form.getPassword()));
         newUser.setEmail(form.getEmail().toLowerCase());
         newUser.setRoles(Set.of(Role.EMPLOYER));
-        newUser.setFirstLogin(false);
+        newUser.setActive(false);
+        newUser.setResetToken(token);
+        newUser.setResetTokenExpiry(expiration);
         Address address = new Address(form.getStreet(), form.getNumber(), form.getApartment(), form.getCity(),
                 form.getPostalCode(),
                 form.getCountry());
         newUser.setAddress(address);
+
+        String activationUrl = baseUrl + "/register/activate-account?token=" + token;
+
+        EmailDto emailDto = new EmailDto();
+        emailDto.setTo(List.of(form.getEmail().toLowerCase()));
+        emailDto.setSubject("...");
+
+        System.out.println("Activation link: " + activationUrl);
 
         return userRepository.save(newUser);
     }
@@ -153,15 +165,28 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User registerEmployee(RegisterUserEmployeeDto form) {
+        String token = UUID.randomUUID().toString();
+        LocalDateTime expiration = LocalDateTime.now().plusHours(24);
         User newUser = mapper.toEmployee(form);
         newUser.setRoles(Set.of(Role.EMPLOYEE));
-        newUser.setPassword(passwordEncoder.encode(form.getIdentificationNumber()));
-        newUser.setFirstLogin(true);
+        newUser.setPassword(passwordEncoder.encode(UUID.randomUUID().toString().substring(0, 15)));
         newUser.setEmail(form.getEmail().toLowerCase());
+        newUser.setActive(false);
+        newUser.setResetToken(token);
+        newUser.setResetTokenExpiry(expiration);
         Address address = new Address(form.getStreet(), form.getNumber(), form.getApartment(), form.getCity(),
                 form.getPostalCode(),
                 form.getCountry());
         newUser.setAddress(address);
+
+        String activationUrl = baseUrl + "/register/set-employee-password?token=" + token;
+
+        EmailDto emailDto = new EmailDto();
+        emailDto.setTo(List.of(form.getEmail().toLowerCase()));
+        emailDto.setSubject("...");
+
+        System.out.println("Activation link: " + activationUrl);
+
         return userRepository.save(newUser);
     }
 
@@ -172,11 +197,6 @@ public class UserServiceImpl implements UserService {
             throw new BadCredentialsException("Incorrect current password");
         }
 
-        if (user.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_EMPLOYEE"))) {
-            user.setFirstLogin(false);
-        }
-
         user.setPassword(passwordEncoder.encode(form.getNewPassword()));
         userRepository.save(user);
 
@@ -184,7 +204,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void resetPasswordConfirmation(String email) {
-        User user = userRepository.findByEmail(email)
+        User user = userRepository.findByEmail(email.toLowerCase())
                 .orElseThrow(() -> new EntityNotFoundException("User with email " + email + " not found"));
 
         String token = UUID.randomUUID().toString();
@@ -196,7 +216,7 @@ public class UserServiceImpl implements UserService {
         String changePasswordUrl = baseUrl + "/register/reset-password?token=" + token;
 
         EmailDto emailDto = new EmailDto();
-        emailDto.setTo(List.of(email));
+        emailDto.setTo(List.of(email.toLowerCase()));
         emailDto.setSubject("Solicitud de cambio de contraseña");
 
         System.out.println("Reset Password link: " + changePasswordUrl);
@@ -221,6 +241,30 @@ public class UserServiceImpl implements UserService {
         System.out.println("Contraseña cambiada con exito");
 
         // emailService.changePasswordConfirmation(dto, user.getFirstName());
+    }
+
+    @Override
+    public void activateEmployerAccount(String token) {
+        User user = userRepository.findByResetToken(token)
+                .filter(u -> u.getResetTokenExpiry().isAfter(LocalDateTime.now()))
+                .orElseThrow(() -> new EntityNotFoundException("Token inválido o expirado"));
+        user.setResetToken(null);
+        user.setResetTokenExpiry(null);
+        user.setActive(true);
+        userRepository.save(user);
+
+    }
+
+    @Override
+    public void activateEmployeeAccount(String token, ResetPasswordDto form) {
+        User user = userRepository.findByResetToken(token)
+                .filter(u -> u.getResetTokenExpiry().isAfter(LocalDateTime.now()))
+                .orElseThrow(() -> new EntityNotFoundException("Token inválido o expirado"));
+        user.setPassword(passwordEncoder.encode(form.getNewPassword()));
+        user.setResetToken(null);
+        user.setResetTokenExpiry(null);
+        user.setActive(true);
+        userRepository.save(user);
     }
 
 }
