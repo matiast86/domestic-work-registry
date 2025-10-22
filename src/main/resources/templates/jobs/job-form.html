@@ -25,7 +25,7 @@
         <!-- Form Card -->
         <div class="form-card slide-in">
           <form
-            th:action="@{/jobs/create/{id}(id=${contractId})}"
+            th:action="${jobId != null ? '/jobs/update' : '/jobs/create/' + contractId}"
             th:object="${jobForm}"
             method="post"
             id="jobForm"
@@ -34,8 +34,14 @@
               type="hidden"
               th:name="contractId"
               th:value="${contractId}"
+              th:if="${jobId == null}"
             />
-            <input type="hidden" th:name="jobId" th:value="${jobId}" />
+            <input
+              type="hidden"
+              th:name="jobId"
+              th:value="${jobId}"
+              th:if="${jobId != null}"
+            />
 
             <!-- Date & Time Section -->
             <div class="form-section">

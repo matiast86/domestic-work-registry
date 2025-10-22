@@ -87,7 +87,7 @@ public class JobController {
         model.addAttribute("jobForm", dto);
         model.addAttribute("jobId", jobId);
 
-        return "jobs/job-update-form";
+        return "jobs/job-form";
     }
 
     @PostMapping("/update")
