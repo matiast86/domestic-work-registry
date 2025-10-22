@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.springboot.domesticworkregistry.dto.user.ChangePasswordDto;
 import com.springboot.domesticworkregistry.dto.user.RegisterUserDto;
 import com.springboot.domesticworkregistry.dto.user.ResetPasswordDto;
 import com.springboot.domesticworkregistry.dto.user.ResetPasswordEmailDto;
@@ -121,7 +120,7 @@ public class RegistrationController {
 
     @GetMapping("/reset-password")
     public String passwordForm(@RequestParam("token") String token, Model model) {
-        model.addAttribute("passwordForm", new ChangePasswordDto());
+        model.addAttribute("passwordForm", new ResetPasswordDto());
         model.addAttribute("token", token);
         return "auth/reset-password"; // ✅ make sure your template is in `templates/auth/change-password.html`
     }
@@ -137,6 +136,30 @@ public class RegistrationController {
         redirectAttributes.addFlashAttribute("successMessage", "Contraseña guardada con éxito");
         return "redirect:/loginPage";
 
+    }
+
+    @PostMapping("/activate-account")
+    public String activateEmployerAccount(@RequestParam("token") String token, RedirectAttributes redirectAttributes) {
+        userService.activateEmployerAccount(token);
+        redirectAttributes.addFlashAttribute("successMesssage", "Su cuenta ha sido activada con éxito");
+        return "redirect:/loginPage";
+    }
+
+    @GetMapping("/set-employee-password")
+    public String setEmployeePassword(@RequestParam("token") String token, Model model) {
+        model.addAttribute("passwordForm", new ResetPasswordDto());
+        model.addAttribute("token", token);
+        return "auth/reset-password";
+    }
+
+    @PostMapping("/activate-employee-account")
+    public String activateEmployeeAccount(@RequestParam("token") String token,
+            @Valid @ModelAttribute("form") ResetPasswordDto form,
+            Model model, RedirectAttributes redirectAttributes) {
+        model.addAttribute("token", token);
+        model.addAttribute("form", form);
+        redirectAttributes.addFlashAttribute("successMesssage", "Su cuenta ha sido activada con éxito");
+        return "redirect:/loginPage";
     }
 
 }
