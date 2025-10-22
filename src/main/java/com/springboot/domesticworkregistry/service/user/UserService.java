@@ -38,4 +38,8 @@ public interface UserService {
 
     void resetPassword(String token, ResetPasswordDto form);
 
+    void activateEmployerAccount(String token);
+
+    void activateEmployeeAccount(String token, ResetPasswordDto form);
+
 }
