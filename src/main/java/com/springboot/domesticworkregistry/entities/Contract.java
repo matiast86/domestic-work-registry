@@ -66,6 +66,9 @@ public class Contract {
         @Column(name = "active")
         private boolean active;
 
+        @Column(name = "expected_monthly_hours")
+        BigDecimal expectedMonthlyHours;
+
         @ManyToOne
         @JoinColumn(name = "employer_id")
         private User employer;

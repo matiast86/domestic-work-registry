@@ -1,6 +1,7 @@
 package com.springboot.domesticworkregistry.entities;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -86,8 +87,11 @@ public class User implements UserDetails {
     @Column(name = "created_at")
     private Date createdAt;
 
-    @Column(name = "first_login")
-    private boolean firstLogin = false;
+    @Column(name = "reset_token")
+    private String resetToken;
+
+    @Column(name = "reset_token_expiry")
+    private LocalDateTime resetTokenExpiry;
 
     public User(String firstName, String lastName, String email, LocalDate birthDate,
             String identificationNumber, String password, String phone) {
@@ -145,6 +149,10 @@ public class User implements UserDetails {
     public void addEmployeeContract(Contract contract) {
         employeeContracts.add(contract);
         contract.setEmployee(this);
+    }
+
+    public boolean isResetTokenValid() {
+        return resetToken != null && resetTokenExpiry != null && resetTokenExpiry.isAfter(LocalDateTime.now());
     }
 
 }
