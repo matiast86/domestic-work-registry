@@ -26,6 +26,7 @@ import com.springboot.domesticworkregistry.dto.job.JobsTableDto;
 import com.springboot.domesticworkregistry.dto.job.JobsTotalsDto;
 import com.springboot.domesticworkregistry.entities.Contract;
 import com.springboot.domesticworkregistry.entities.Job;
+import com.springboot.domesticworkregistry.enums.EmploymentType;
 import com.springboot.domesticworkregistry.exceptions.EntityNotFoundException;
 import com.springboot.domesticworkregistry.mapper.JobMapper;
 import com.springboot.domesticworkregistry.mapper.JobsMonthlyTableMapper;
@@ -121,10 +122,25 @@ public class JobServiceImpl implements JobService {
         LocalTime startTime = job.getStartTime();
         LocalTime endTime = job.getEndTime();
         BigDecimal workedHours = calculateHoursWorked(startTime, endTime);
-        BigDecimal transportationFee = job.getTransportationFee();
-        BigDecimal hourlyFee = job.getHourlyRate();
-        BigDecimal partialFee = calculatePartialFee(workedHours, hourlyFee);
-        BigDecimal totalFee = calculateTotalFee(partialFee, transportationFee);
+
+        BigDecimal hourlyRate;
+        BigDecimal partialFee;
+        BigDecimal totalFee;
+
+        if (contract.getEmploymentType().equals(EmploymentType.MONTHLY) && form.isExtraHours()) {
+            BigDecimal monthlySalary = contract.getSalary();
+            BigDecimal expectedMonthlyHours = contract.getExpectedMonthlyHours();
+            hourlyRate = monthlySalary.divide(expectedMonthlyHours, 2, RoundingMode.HALF_UP);
+            partialFee = workedHours.multiply(hourlyRate);
+            totalFee = partialFee;
+        } else {
+            BigDecimal transportationFee = job.getTransportationFee();
+            hourlyRate = job.getHourlyRate();
+            partialFee = calculatePartialFee(workedHours, hourlyRate);
+            totalFee = calculateTotalFee(partialFee, transportationFee);
+        }
+
+        job.setHourlyRate(hourlyRate);
         job.setTotalFee(totalFee);
         job.setWorkedHours(workedHours);
         job.setPartialFee(partialFee);
@@ -234,7 +250,7 @@ public class JobServiceImpl implements JobService {
                 .orElseThrow(() -> new EntityNotFoundException("Job with id " + jobId + " not found"));
 
         return new CreateJobDto(job.getId(), job.getDate(), job.getStartTime(), job.getEndTime(), job.getHourlyRate(),
-                job.getTransportationFee());
+                job.getTransportationFee(), job.isExtraHours());
 
     }
 
