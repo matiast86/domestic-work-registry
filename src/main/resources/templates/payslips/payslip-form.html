@@ -7,144 +7,276 @@
 >
   <head>
     <title>Crear Recibo de Sueldo</title>
+    <th:block layout:fragment="styles">
+      <link rel="stylesheet" th:href="@{/css/payslips.css}" />
+    </th:block>
   </head>
 
   <body>
-    <div layout:fragment="content" class="container mt-5">
-      <form
-        th:action="@{/payslips/preview/{contractId}(contractId=${contractId})}"
-        th:object="${form}"
-        method="post"
-        class="needs-validation"
-      >
-        <!-- 🔒 Hidden fields (so Spring gets all values back on submit) -->
-        <input type="hidden" th:field="*{year}" />
-        <input type="hidden" th:field="*{month}" />
-        <input type="hidden" th:field="*{baseSalary}" />
-        <input type="hidden" th:field="*{transportation}" />
-        <input type="hidden" th:field="*{extraWorkedHours}" />
-        <input type="hidden" th:field="*{extraHoursAmount}" />
-        <input type="hidden" th:field="*{servicePlus}" />
-
-        <h2 class="mb-4">
-          Crear Recibo de Sueldo
-          <small class="text-muted">
-            (<span th:text="${form.periodString}"></span>)
-          </small>
-        </h2>
-
-        <!-- Base / Gross salary -->
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <label class="form-label">Salario Base (Bruto)</label>
-            <input
-              type="text"
-              th:value="${#numbers.formatDecimal(form.baseSalary, 1, 'COMMA', 2, 'POINT')}"
-              class="form-control"
-              readonly
-            />
+    <div layout:fragment="content">
+      <div class="payslip-form-container">
+        <!-- Header -->
+        <div class="payslip-header fade-in">
+          <div class="payslip-icon">
+            <i class="bi bi-file-earmark-text-fill"></i>
           </div>
-          <div class="col-md-6">
-            <label class="form-label">Viáticos</label>
-            <input
-              type="text"
-              th:value="${#numbers.formatDecimal(form.transportation, 1, 'COMMA', 2, 'POINT')}"
-              class="form-control"
-              readonly
-            />
-          </div>
+          <h1>Crear Recibo de Sueldo</h1>
+          <p>
+            Período: <strong th:text="${form.periodString}">MES-AÑO</strong>
+          </p>
         </div>
 
-        <!-- Extra Hours -->
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <label class="form-label">Horas Extra (trabajadas)</label>
-            <input
-              type="text"
-              th:value="${form.extraWorkedHours}"
-              class="form-control"
-              readonly
-            />
-          </div>
-          <div class="col-md-6">
-            <label class="form-label">Monto Horas Extra</label>
-            <input
-              type="text"
-              th:value="${#numbers.formatDecimal(form.extraHoursAmount, 1, 'COMMA', 2, 'POINT')}"
-              class="form-control"
-              readonly
-            />
-          </div>
-        </div>
-
-        <!-- Deductions and Additions -->
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <label class="form-label">Aportes y Contribuciones</label>
-            <input
-              type="number"
-              step="0.01"
-              th:field="*{payrollDeduction}"
-              class="form-control"
-              placeholder="Ingrese el total de aportes"
-            />
-          </div>
-          <div class="col-md-6">
-            <label class="form-label">Otros Descuentos</label>
-            <input
-              type="number"
-              step="0.01"
-              th:field="*{otherDeductions}"
-              class="form-control"
-            />
-          </div>
-        </div>
-
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <label class="form-label">Otros Conceptos</label>
-            <input
-              type="number"
-              step="0.01"
-              th:field="*{other}"
-              class="form-control"
-            />
-          </div>
-          <div class="col-md-6">
-            <label class="form-label">Gratificaciones</label>
-            <input
-              type="number"
-              step="0.01"
-              th:field="*{gratuities}"
-              class="form-control"
-            />
-          </div>
-        </div>
-
-        <!-- Comments -->
-        <div class="mb-3">
-          <label class="form-label">Comentarios</label>
-          <textarea
-            th:field="*{comments}"
-            class="form-control"
-            rows="3"
-            placeholder="Notas adicionales o aclaraciones..."
-          ></textarea>
-        </div>
-
-        <!-- Submit -->
-        <div class="mt-4 d-flex gap-2">
-          <button type="submit" class="btn btn-success">Vista Previa</button>
-          <a
-            th:href="@{/payslips/list/{contractId}(contractId=${contractId})}"
-            class="btn btn-secondary"
+        <!-- Form Card -->
+        <div class="payslip-form-card slide-in">
+          <form
+            th:action="@{/payslips/preview/{contractId}(contractId=${contractId})}"
+            th:object="${form}"
+            method="post"
           >
-            Cancelar
-          </a>
-        </div>
-      </form>
-    </div>
+            <!-- Hidden fields -->
+            <input type="hidden" th:field="*{year}" />
+            <input type="hidden" th:field="*{month}" />
+            <input type="hidden" th:field="*{baseSalary}" />
+            <input type="hidden" th:field="*{transportation}" />
+            <input type="hidden" th:field="*{extraWorkedHours}" />
+            <input type="hidden" th:field="*{extraHoursAmount}" />
+            <input type="hidden" th:field="*{servicePlus}" />
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+            <!-- Automatic Section -->
+            <div class="payslip-section">
+              <div class="payslip-section-header">
+                <div class="payslip-section-icon">
+                  <i class="bi bi-calculator-fill"></i>
+                </div>
+                <h3 class="payslip-section-title">
+                  Datos Calculados Automáticamente
+                </h3>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="form-label">
+                      <i class="bi bi-cash-stack me-2"></i>
+                      Salario Base (Bruto)
+                    </label>
+                    <input
+                      type="text"
+                      th:value="${#numbers.formatDecimal(form.baseSalary, 1, 'COMMA', 2, 'POINT')}"
+                      class="form-control readonly-field"
+                      readonly
+                    />
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="form-label">
+                      <i class="bi bi-bus-front me-2"></i>
+                      Viáticos / Transporte
+                    </label>
+                    <input
+                      type="text"
+                      th:value="${#numbers.formatDecimal(form.transportation, 1, 'COMMA', 2, 'POINT')}"
+                      class="form-control readonly-field"
+                      readonly
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="form-label">
+                      <i class="bi bi-clock-history me-2"></i>
+                      Horas Extra (trabajadas)
+                    </label>
+                    <input
+                      type="text"
+                      th:value="${form.extraWorkedHours}"
+                      class="form-control readonly-field"
+                      readonly
+                    />
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="form-label">
+                      <i class="bi bi-currency-dollar me-2"></i>
+                      Monto Horas Extra
+                    </label>
+                    <input
+                      type="text"
+                      th:value="${#numbers.formatDecimal(form.extraHoursAmount, 1, 'COMMA', 2, 'POINT')}"
+                      class="form-control readonly-field"
+                      readonly
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="bi bi-award me-2"></i>
+                  Adicional por Antigüedad
+                </label>
+                <input
+                  type="text"
+                  th:value="${#numbers.formatDecimal(form.servicePlus, 1, 'COMMA', 2, 'POINT')}"
+                  class="form-control readonly-field"
+                  readonly
+                />
+              </div>
+            </div>
+
+            <!-- Manual Section -->
+            <div class="payslip-section">
+              <div class="payslip-section-header">
+                <div class="payslip-section-icon">
+                  <i class="bi bi-pencil-fill"></i>
+                </div>
+                <h3 class="payslip-section-title">Datos a Completar</h3>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="payrollDeduction" class="form-label">
+                      <i class="bi bi-dash-circle me-2"></i>
+                      Aportes y Contribuciones
+                      <span class="text-danger">*</span>
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      th:field="*{payrollDeduction}"
+                      class="form-control"
+                      placeholder="0.00"
+                      required
+                    />
+                    <small class="form-text text-muted">
+                      Aportes jubilatorios, obra social, etc.
+                    </small>
+                    <div
+                      th:if="${#fields.hasErrors('payrollDeduction')}"
+                      class="invalid-feedback d-block"
+                    >
+                      <i class="bi bi-exclamation-circle-fill me-2"></i>
+                      <span th:errors="*{payrollDeduction}"></span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="otherDeductions" class="form-label">
+                      <i class="bi bi-dash-circle me-2"></i>
+                      Otros Descuentos
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      th:field="*{otherDeductions}"
+                      class="form-control"
+                      placeholder="0.00"
+                    />
+                    <small class="form-text text-muted">
+                      Préstamos, adelantos, etc.
+                    </small>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="other" class="form-label">
+                      <i class="bi bi-plus-circle me-2"></i>
+                      Otros Conceptos
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      th:field="*{other}"
+                      class="form-control"
+                      placeholder="0.00"
+                    />
+                    <small class="form-text text-muted">
+                      Bonificaciones adicionales
+                    </small>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="gratuities" class="form-label">
+                      <i class="bi bi-gift me-2"></i>
+                      Gratificaciones
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      th:field="*{gratuities}"
+                      class="form-control"
+                      placeholder="0.00"
+                    />
+                    <small class="form-text text-muted">
+                      Premios, bonos especiales
+                    </small>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="comments" class="form-label">
+                  <i class="bi bi-chat-left-text me-2"></i>
+                  Comentarios
+                </label>
+                <textarea
+                  th:field="*{comments}"
+                  class="form-control"
+                  rows="3"
+                  placeholder="Notas adicionales o aclaraciones sobre el recibo..."
+                  maxlength="255"
+                ></textarea>
+                <small class="form-text text-muted">
+                  Máximo 255 caracteres
+                </small>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="form-actions">
+              <a
+                th:href="@{/payslips/list/{contractId}(contractId=${contractId})}"
+                class="btn btn-outline-secondary btn-lg"
+              >
+                <i class="bi bi-x-circle me-2"></i>
+                Cancelar
+              </a>
+              <button type="submit" class="btn btn-success btn-lg">
+                <i class="bi bi-eye-fill me-2"></i>
+                Vista Previa
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Info Box -->
+        <div class="info-box">
+          <i class="bi bi-lightbulb-fill"></i>
+          <div>
+            <strong>Consejo:</strong>
+            <p class="mb-0">
+              Verificá bien los montos de aportes y deducciones antes de
+              continuar. Podés revisar todo en la vista previa antes de guardar
+              el recibo.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
