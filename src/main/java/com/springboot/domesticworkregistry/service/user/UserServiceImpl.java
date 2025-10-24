@@ -233,10 +233,14 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(form.getNewPassword()));
         user.setResetToken(null);
         user.setResetTokenExpiry(null);
+        String subject = user.isActive() ? "Cambio de contraseña" : "Activación de cuenta completada";
+        if (!user.isActive()) {
+            user.setActive(true);
+        }
         userRepository.save(user);
         EmailDto dto = new EmailDto();
         dto.setTo(List.of(user.getEmail()));
-        dto.setSubject("Cambio de contraseña");
+        dto.setSubject(subject);
 
         System.out.println("Contraseña cambiada con exito");
 
@@ -253,18 +257,6 @@ public class UserServiceImpl implements UserService {
         user.setActive(true);
         userRepository.save(user);
 
-    }
-
-    @Override
-    public void activateEmployeeAccount(String token, ResetPasswordDto form) {
-        User user = userRepository.findByResetToken(token)
-                .filter(u -> u.getResetTokenExpiry().isAfter(LocalDateTime.now()))
-                .orElseThrow(() -> new EntityNotFoundException("Token inválido o expirado"));
-        user.setPassword(passwordEncoder.encode(form.getNewPassword()));
-        user.setResetToken(null);
-        user.setResetTokenExpiry(null);
-        user.setActive(true);
-        userRepository.save(user);
     }
 
 }

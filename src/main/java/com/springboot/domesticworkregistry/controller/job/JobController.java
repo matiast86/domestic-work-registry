@@ -123,7 +123,7 @@ public class JobController {
             Model model, RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("jobForm", form);
-            return "jobs/job-update-form";
+            return "jobs/job-form";
         }
 
         model.addAttribute("jobForm", form);

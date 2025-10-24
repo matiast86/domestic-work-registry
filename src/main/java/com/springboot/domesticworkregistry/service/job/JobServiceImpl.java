@@ -183,7 +183,7 @@ public class JobServiceImpl implements JobService {
                 int month = monthEntry.getKey();
                 List<Job> monthlyJobs = monthEntry.getValue();
                 BigDecimal hourlyFee = dataCollectionService.calculateAverage(monthlyJobs, Job::getHourlyRate);
-                BigDecimal workedHours = dataCollectionService.calculateTotalHours(monthlyJobs);
+                BigDecimal workedHours = dataCollectionService.calculateTotalHours(monthlyJobs).setScale(1);
                 BigDecimal subtotal = dataCollectionService.calculateSum(monthlyJobs,
                         Job::getPartialFee);
                 BigDecimal transportationFee = dataCollectionService.calculateSum(monthlyJobs,
@@ -198,7 +198,8 @@ public class JobServiceImpl implements JobService {
             // yearly totals row
             List<Job> yearlyJobs = yearEntry.getValue().values().stream().flatMap(List::stream).toList();
 
-            JobsTotalsDto yearTotals = new JobsTotalsDto(year, dataCollectionService.calculateTotalHours(yearlyJobs),
+            JobsTotalsDto yearTotals = new JobsTotalsDto(year,
+                    dataCollectionService.calculateTotalHours(yearlyJobs).setScale(1),
                     dataCollectionService.calculateAverage(yearlyJobs, Job::getHourlyRate),
                     dataCollectionService.calculateSum(yearlyJobs, Job::getPartialFee),
                     dataCollectionService.calculateSum(yearlyJobs, Job::getTransportationFee),
@@ -218,7 +219,8 @@ public class JobServiceImpl implements JobService {
     public JobsMonthlyReportDto getMonthlyJobsByContract(int contractId, int year, int month) {
         Contract contract = contractService.findById(contractId);
         List<Job> jobs = contract.getJobs().stream()
-                .filter(job -> job.getDate().getYear() == year && job.getDate().getMonthValue() == month).toList();
+                .filter(job -> job.getDate().getYear() == year && job.getDate().getMonthValue() == month)
+                .sorted(Comparator.comparing(Job::getDate)).toList();
         List<JobsMonthlyTableDto> tables = new ArrayList<>();
         String jobMonth = StringUtils.capitalize(getMonthNameInSpanish(LocalDate.of(year, month, 1)));
 
@@ -229,7 +231,7 @@ public class JobServiceImpl implements JobService {
         }
 
         BigDecimal hourlyFeeTotal = dataCollectionService.calculateAverage(jobs, Job::getHourlyRate);
-        BigDecimal workedHoursTotal = dataCollectionService.calculateTotalHours(jobs);
+        BigDecimal workedHoursTotal = dataCollectionService.calculateTotalHours(jobs).setScale(1);
         BigDecimal subtotalTotal = dataCollectionService.calculateSum(jobs,
                 Job::getPartialFee);
         BigDecimal transportationFeeTotal = dataCollectionService.calculateSum(jobs,
