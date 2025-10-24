@@ -25,7 +25,7 @@
         <!-- Form Card -->
         <div class="form-card slide-in">
           <form
-            th:action="@{/jobs/create/{id}(id=${contractId})}"
+            th:action="${jobId != null} ? @{/jobs/update} : @{/jobs/create/{id}(id=${contractId})}"
             th:object="${jobForm}"
             method="post"
             id="jobForm"
