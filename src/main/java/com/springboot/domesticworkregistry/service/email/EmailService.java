@@ -16,4 +16,16 @@ public interface EmailService {
 
     public void changePasswordConfirmation(EmailDto emailDto, String name);
 
+    public void sendWelcomeEmployerEmail(EmailDto emailDto, String name, String activationUrl);
+
+    public void sendWelcomeEmployeeEmail(EmailDto emailDto, String employeeName, String employerName,
+            String setupPasswordUrl);
+
+    public void sendPasswordResetEmail(EmailDto emailDto, String name, String resetPasswordUrl);
+
+    public void sendPasswordChangedConfirmation(EmailDto emailDto, String name);
+
+    public void sendContractCreatedEmail(EmailDto emailDto, String employeeName, String employerName, String jobType,
+            String startDate);
+
 }

@@ -1,5 +1,6 @@
 package com.springboot.domesticworkregistry.service.email;
 
+import java.time.LocalDate;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -74,6 +75,67 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void changePasswordConfirmation(EmailDto emailDto, String name) {
         sendTemplatedEmail(emailDto, "emails/change-password-confirmation", Map.of("name", name));
+    }
+
+    @Override
+    public void sendWelcomeEmployerEmail(EmailDto emailDto, String name, String activationUrl) {
+        sendTemplatedEmail(
+                emailDto,
+                "emails/welcome-employer",
+                Map.of(
+                        "name", name,
+                        "activationUrl", activationUrl,
+                        "year", String.valueOf(LocalDate.now().getYear())));
+    }
+
+    @Override
+    public void sendWelcomeEmployeeEmail(EmailDto emailDto, String employeeName, String employerName,
+            String setupPasswordUrl) {
+        sendTemplatedEmail(
+                emailDto,
+                "emails/welcome-employee",
+                Map.of(
+                        "employeeName", employeeName,
+                        "employerName", employerName,
+                        "setupPasswordUrl", setupPasswordUrl,
+                        "year", String.valueOf(LocalDate.now().getYear())));
+    }
+
+    @Override
+    public void sendPasswordResetEmail(EmailDto emailDto, String name, String resetPasswordUrl) {
+        sendTemplatedEmail(
+                emailDto,
+                "emails/password-reset",
+                Map.of(
+                        "name", name,
+                        "resetPasswordUrl", resetPasswordUrl,
+                        "year", String.valueOf(LocalDate.now().getYear())));
+    }
+
+    @Override
+    public void sendPasswordChangedConfirmation(EmailDto emailDto, String name) {
+        sendTemplatedEmail(
+                emailDto,
+                "emails/password-changed-confirmation",
+                Map.of(
+                        "name", name,
+                        "year", String.valueOf(LocalDate.now().getYear())));
+    }
+
+    @Override
+    public void sendContractCreatedEmail(EmailDto emailDto, String employeeName, String employerName, String jobType,
+            String startDate) {
+        sendTemplatedEmail(
+        emailDto, 
+        "emails/contract-created", 
+        Map.of(
+            "employeeName", employeeName,
+            "employerName", employerName,
+            "jobType", jobType,
+            "startDate", startDate,
+            "year", String.valueOf(LocalDate.now().getYear())
+        )
+    );
     }
 
 }
