@@ -1,56 +1,96 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
   <body>
-    <footer class="bg-dark text-white pt-4 pb-2" th:fragment="footer">
-      <div class="container-fluid container-xl">
-        <div class="row">
-          <div class="col-md-4 text-center text-md-start mb-3 mb-md-0">
-            <h5 class="fw-bold mb-0">
-              <i class="fas fa-hand-holding-heart me-2 text-secondary"></i
-              >Registro Doméstico
-            </h5>
-            <small class="text-muted">Gestión simple y legal.</small>
+    <footer class="modern-footer" th:fragment="footer">
+      <div class="footer-content">
+        <div class="container">
+          <div class="row g-4">
+            <!-- Brand Section -->
+            <div class="col-lg-4 col-md-6">
+              <div class="footer-brand">
+                <div class="footer-logo">
+                  <i class="bi bi-house-heart-fill"></i>
+                  <span>DomesticWork</span>
+                </div>
+                <p class="footer-description">
+                  Gestioná tu trabajo doméstico de forma simple, segura y legal.
+                  Formalizá y protegé tanto a empleadores como empleados.
+                </p>
+                <div class="footer-badge">
+                  <i class="bi bi-shield-check me-2"></i>
+                  Hecho en Argentina
+                </div>
+              </div>
+            </div>
+
+            <!-- Resources Section -->
+            <div class="col-lg-4 col-md-6">
+              <div class="footer-section">
+                <h6 class="footer-title">
+                  <i class="bi bi-link-45deg me-2"></i>
+                  Recursos Oficiales
+                </h6>
+                <ul class="footer-links">
+                  <li>
+                    <a
+                      href="https://www.afip.gob.ar/casasparticulares/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <i class="bi bi-arrow-right-circle me-2"></i>
+                      ARCA - Casas Particulares
+                      <i class="bi bi-box-arrow-up-right ms-1"></i>
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://www.argentina.gob.ar/trabajo/casasparticulares"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <i class="bi bi-arrow-right-circle me-2"></i>
+                      Ministerio de Trabajo
+                      <i class="bi bi-box-arrow-up-right ms-1"></i>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Info Section -->
+            <div class="col-lg-4 col-md-12">
+              <div class="footer-section">
+                <h6 class="footer-title">
+                  <i class="bi bi-info-circle me-2"></i>
+                  Información Importante
+                </h6>
+                <div class="footer-disclaimer">
+                  <i class="bi bi-exclamation-triangle-fill"></i>
+                  <p>
+                    Este es un simulador de registro de uso privado y no
+                    reemplaza los trámites oficiales ante los organismos
+                    competentes (ARCA).
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div class="col-md-4 text-center mb-3 mb-md-0">
-            <h6 class="text-uppercase fw-bold mb-2">Recursos Oficiales</h6>
-            <ul class="list-unstyled">
-              <li>
-                <a
-                  href="https://www.afip.gob.ar/casasparticulares/"
-                  target="_blank"
-                  class="text-white-50 text-decoration-none"
-                  >AFIP - Casas Particulares</a
-                >
-              </li>
-              <li>
-                <a
-                  href="https://www.argentina.gob.ar/trabajo/casasparticulares"
-                  target="_blank"
-                  class="text-white-50 text-decoration-none"
-                  >Ministerio de Trabajo</a
-                >
-              </li>
-            </ul>
+          <!-- Footer Bottom -->
+          <div class="footer-bottom">
+            <div class="footer-copyright">
+              <i class="bi bi-c-circle me-1"></i>
+              <span>2025 DomesticWork</span>
+              <span class="footer-separator">•</span>
+              <span>Todos los derechos reservados</span>
+            </div>
+            <div class="footer-credits">
+              <span>Desarrollado con</span>
+              <i class="bi bi-heart-fill text-danger mx-1"></i>
+              <span>por</span>
+              <strong class="ms-1">Matias Tailler</strong>
+            </div>
           </div>
-
-          <div class="col-md-4 text-center text-md-end">
-            <p class="mb-1 fw-light">
-              &copy; 2025 Registro de Trabajo Doméstico
-            </p>
-            <small class="text-white-50"
-              >Hecho con <i class="fas fa-laptop-code"></i> en Argentina.</small
-            >
-          </div>
-        </div>
-
-        <hr class="my-2 border-white opacity-25 d-none d-md-block" />
-
-        <div class="text-center">
-          <small class="text-white-50">
-            Este es un simulador de registro de uso privado y no reemplaza los
-            trámites oficiales ante los organismos competentes (AFIP, MTEySS).
-          </small>
         </div>
       </div>
     </footer>
