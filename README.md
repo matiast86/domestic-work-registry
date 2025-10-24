@@ -1,3 +1,5 @@
+# 🧾 Domestic Work Registry
+
 ### 🏠 Overview
 
 **Domestic Work Registry** is a web application built with **Spring Boot**, **Thymeleaf**, and **MySQL**, designed to register, manage, and formalize domestic employment relationships between employers and employees.
@@ -13,41 +15,43 @@ The project follows a **layered architecture** ensuring scalability, maintainabi
 
 ---
 
-### ⚙️ Tech Stack
+## ⚙️ Tech Stack
 
-| Layer      | Technology                                                            |
-| ---------- | --------------------------------------------------------------------- |
-| Backend    | Java 24, Spring Boot 3, Spring Data JPA, Spring Security, Spring Mail |
-| View       | Thymeleaf, Bootstrap 5                                                |
-| Database   | MySQL                                                                 |
-| Build Tool | Maven                                                                 |
-| Mapping    | MapStruct                                                             |
-| Auth       | Custom login + activation + password reset via email                  |
-| Other      | Lombok, Jakarta Validation, EntityGraph optimization                  |
+| Layer          | Technology                                                            |
+| -------------- | --------------------------------------------------------------------- |
+| **Backend**    | Java 24, Spring Boot 3, Spring Data JPA, Spring Security, Spring Mail |
+| **View**       | Thymeleaf, Bootstrap 5                                                |
+| **Database**   | MySQL                                                                 |
+| **Build Tool** | Maven                                                                 |
+| **Mapping**    | MapStruct                                                             |
+| **Auth**       | Custom login + activation + password reset via email                  |
+| **Other**      | Lombok, Jakarta Validation, EntityGraph optimization                  |
 
 ---
 
-### 🧩 Architecture
+## 🧩 Architecture
 
 The system follows a **three-layer architecture**:
 
 ```
+
 ┌────────────────────────────────────┐
 │           Presentation Layer        │
 │  (Controllers + Thymeleaf Views)    │
 └────────────────────────────────────┘
-               │
-               ▼
+│
+▼
 ┌────────────────────────────────────┐
 │            Service Layer            │
 │   (Business logic, transactions)   │
 └────────────────────────────────────┘
-               │
-               ▼
+│
+▼
 ┌────────────────────────────────────┐
 │           Data Access Layer         │
 │ (JPA Repositories, EntityGraphs)   │
 └────────────────────────────────────┘
+
 ```
 
 - **Controllers** handle routes and form submissions.
@@ -57,7 +61,7 @@ The system follows a **three-layer architecture**:
 
 ---
 
-### 🧱 Domain Model
+## 🧱 Domain Model
 
 | Entity                       | Description                                                                                                                           |
 | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
@@ -72,7 +76,7 @@ The system follows a **three-layer architecture**:
 
 ---
 
-### 🔐 Security Overview
+## 🔐 Security Overview
 
 - **Spring Security** with role-based access (`EMPLOYER`, `EMPLOYEE`, `ADMIN`).
 - **Custom authentication** using `UserDetailsService` and `DaoAuthenticationProvider`.
@@ -82,18 +86,20 @@ The system follows a **three-layer architecture**:
 
 ---
 
-### 💾 Database Schema
+## 💾 Database Schema
 
 Main relationships:
 
 ```
+
 Employer ──< Contract >── Employee
-                    │
-                    ├─< Schedule
-                    │     └─< ScheduleEntry
-                    │
-                    ├─< Job
-                    └─< AttendanceRecord
+│
+├─< Schedule
+│     └─< ScheduleEntry
+│
+├─< Job
+└─< AttendanceRecord
+
 ```
 
 - One **Contract** binds a single Employer and Employee.
@@ -102,7 +108,7 @@ Employer ──< Contract >── Employee
 
 ---
 
-### 🧮 Business Logic Highlights
+## 🧮 Business Logic Highlights
 
 | Feature                 | Description                                                       |
 | ----------------------- | ----------------------------------------------------------------- |
@@ -114,20 +120,20 @@ Employer ──< Contract >── Employee
 
 ---
 
-### 🚀 Getting Started
+## 🚀 Getting Started
 
-#### Prerequisites
+### Prerequisites
 
 - Java 21+ (Java 24 recommended)
 - Maven 3.9+
 - MySQL 8+
 - Environment variables configured
 
-#### Environment Variables
+### Environment Variables
 
-Create a `.env` or system variables with:
+Create a `.env` file or set system variables with:
 
-```
+```bash
 DB_PORT=3306
 DB_NAME=domestic-work-registry
 DB_USERNAME=root
@@ -136,17 +142,17 @@ MAIL_USERNAME=your_email@gmail.com
 MAIL_PASSWORD=your_app_password
 ```
 
-#### Run the app
+### Run the app
 
 ```bash
 mvn spring-boot:run
 ```
 
-Visit [http://localhost:8080](http://localhost:8080)
+Then open [http://localhost:8080](http://localhost:8080)
 
 ---
 
-### 🧠 Testing Notes
+## 🧠 Testing Notes
 
 - Use sample data in `data.sql` or insert test entities manually.
 - Spring profiles available for `dev` and `prod`.
@@ -154,7 +160,7 @@ Visit [http://localhost:8080](http://localhost:8080)
 
 ---
 
-### 🧰 Useful Commands
+## 🧰 Useful Commands
 
 | Command                                     | Description                  |
 | ------------------------------------------- | ---------------------------- |
@@ -165,21 +171,19 @@ Visit [http://localhost:8080](http://localhost:8080)
 
 ---
 
-### 🌱 Future Improvements
+## 🌱 Future Improvements
 
 - REST API endpoints (for React/PWA integration)
 - Admin dashboard
-- Multi-language support
+- Multi-language support (i18n)
 - Payroll generation (PDF payslips)
 - Integration with government registry or tax APIs
 
 ---
 
-### 👨‍💻 Author
+## 👨‍💻 Author
 
-**Matías Tailler**
-Full Stack Developer — Java · Spring Boot · React · Node · Nest.js
-📧 [matiastailler@gmail.com](mailto:matiastailler@gmail.com)
+**Matías Tailler**  
+Full Stack Developer — Java · Spring Boot · React · Node · Nest.js  
+📧 [matiastailler@gmail.com](mailto:matiastailler@gmail.com)  
 🌐 [GitHub](https://github.com/matiast86)
-
----
