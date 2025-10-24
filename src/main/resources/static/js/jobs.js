@@ -61,19 +61,16 @@ document.addEventListener("DOMContentLoaded", () => {
   // JOB FORM - Real-time calculation
   // ============================================
 
-  const startTimeInput = document.getElementById("startTime");
-  const endTimeInput = document.getElementById("endTime");
-  const hourlyRateInput = document.getElementById("hourlyRate");
-  const transportationInput = document.getElementById("transportationFee");
-
+  // Real-time calculation
   function calculateTotal() {
-    const startTime = startTimeInput?.value;
-    const endTime = endTimeInput?.value;
-    const hourlyRate = parseFloat(hourlyRateInput?.value) || 0;
-    const transportation = parseFloat(transportationInput?.value) || 0;
+    const startTime = document.getElementById("startTime").value;
+    const endTime = document.getElementById("endTime").value;
+    const hourlyRate =
+      parseFloat(document.getElementById("hourlyRate").value) || 0;
+    const transportation =
+      parseFloat(document.getElementById("transportationFee").value) || 0;
 
     let hoursWorked = 0;
-
     if (startTime && endTime) {
       const [startHour, startMin] = startTime.split(":").map(Number);
       const [endHour, endMin] = endTime.split(":").map(Number);
@@ -82,54 +79,43 @@ document.addEventListener("DOMContentLoaded", () => {
       const endMinutes = endHour * 60 + endMin;
 
       hoursWorked = (endMinutes - startMinutes) / 60;
-      hoursWorked = Math.max(0, hoursWorked); // No negative hours
+      hoursWorked = Math.max(0, hoursWorked);
     }
 
     const subtotal = hoursWorked * hourlyRate;
     const total = subtotal + transportation;
 
-    // Update display elements
-    const hoursWorkedEl = document.getElementById("hoursWorked");
-    const rateDisplayEl = document.getElementById("rateDisplay");
-    const subtotalEl = document.getElementById("subtotal");
-    const transportDisplayEl = document.getElementById("transportDisplay");
-    const totalAmountEl = document.getElementById("totalAmount");
-
-    if (hoursWorkedEl)
-      hoursWorkedEl.textContent = hoursWorked.toFixed(1) + " hs";
-    if (rateDisplayEl) rateDisplayEl.textContent = "$" + hourlyRate.toFixed(2);
-    if (subtotalEl) subtotalEl.textContent = "$" + subtotal.toFixed(2);
-    if (transportDisplayEl)
-      transportDisplayEl.textContent = "$" + transportation.toFixed(2);
-    if (totalAmountEl) totalAmountEl.textContent = "$" + total.toFixed(2);
+    document.getElementById("hoursWorked").textContent =
+      hoursWorked.toFixed(1) + " hs";
+    document.getElementById("rateDisplay").textContent =
+      "$" + hourlyRate.toFixed(2);
+    document.getElementById("subtotal").textContent = "$" + subtotal.toFixed(2);
+    document.getElementById("transportDisplay").textContent =
+      "$" + transportation.toFixed(2);
+    document.getElementById("totalAmount").textContent = "$" + total.toFixed(2);
   }
 
-  // Add event listeners for calculation
-  if (startTimeInput) startTimeInput.addEventListener("change", calculateTotal);
-  if (endTimeInput) endTimeInput.addEventListener("change", calculateTotal);
-  if (hourlyRateInput)
-    hourlyRateInput.addEventListener("input", calculateTotal);
-  if (transportationInput)
-    transportationInput.addEventListener("input", calculateTotal);
+  // Add event listeners
+  document
+    .getElementById("startTime")
+    ?.addEventListener("change", calculateTotal);
+  document
+    .getElementById("endTime")
+    ?.addEventListener("change", calculateTotal);
+  document
+    .getElementById("hourlyRate")
+    ?.addEventListener("input", calculateTotal);
+  document
+    .getElementById("transportationFee")
+    ?.addEventListener("input", calculateTotal);
 
-  // Initial calculation on page load
-  if (
-    startTimeInput ||
-    endTimeInput ||
-    hourlyRateInput ||
-    transportationInput
-  ) {
-    calculateTotal();
-  }
+  // Initial calculation
+  calculateTotal();
 
-  // Set today's date by default in job form
+  // Set today's date by default
   const dateInput = document.querySelector('input[type="date"]');
-  if (dateInput && !dateInput.value && document.getElementById("jobForm")) {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, "0");
-    const day = String(today.getDate()).padStart(2, "0");
-    dateInput.value = `${year}-${month}-${day}`;
+  if (dateInput && !dateInput.value) {
+    dateInput.valueAsDate = new Date();
     calculateTotal();
   }
 

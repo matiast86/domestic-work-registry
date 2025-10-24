@@ -138,7 +138,7 @@ public class RegistrationController {
 
     }
 
-    @PostMapping("/activate-account")
+    @GetMapping("/activate-account")
     public String activateEmployerAccount(@RequestParam("token") String token, RedirectAttributes redirectAttributes) {
         userService.activateEmployerAccount(token);
         redirectAttributes.addFlashAttribute("successMesssage", "Su cuenta ha sido activada con éxito");
@@ -150,16 +150,6 @@ public class RegistrationController {
         model.addAttribute("passwordForm", new ResetPasswordDto());
         model.addAttribute("token", token);
         return "auth/reset-password";
-    }
-
-    @PostMapping("/activate-employee-account")
-    public String activateEmployeeAccount(@RequestParam("token") String token,
-            @Valid @ModelAttribute("form") ResetPasswordDto form,
-            Model model, RedirectAttributes redirectAttributes) {
-        model.addAttribute("token", token);
-        model.addAttribute("form", form);
-        redirectAttributes.addFlashAttribute("successMesssage", "Su cuenta ha sido activada con éxito");
-        return "redirect:/loginPage";
     }
 
 }

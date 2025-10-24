@@ -40,6 +40,5 @@ public interface UserService {
 
     void activateEmployerAccount(String token);
 
-    void activateEmployeeAccount(String token, ResetPasswordDto form);
 
 }

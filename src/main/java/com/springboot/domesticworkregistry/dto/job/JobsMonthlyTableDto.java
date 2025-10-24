@@ -14,7 +14,7 @@ public class JobsMonthlyTableDto {
     private int jobId;
     private LocalDate date;
     private int year;
-    private Double workedHours;
+    private BigDecimal workedHours;
     private BigDecimal hourlyRate;
     private BigDecimal partialFee;
     private BigDecimal transportationFee;

@@ -6,15 +6,20 @@
   layout:decorate="~{fragments/layout}"
 >
   <head>
-    <title>Registrar Tarea</title>
-    <link rel="stylesheet" th:href="@{/css/jobs.css}" />
+    <title th:text="${jobId != null} ? 'Actualizar Tarea' : 'Registrar Tarea'">
+      Registrar Tarea
+    </title>
+    <th:block layout:fragment="styles">
+      <link rel="stylesheet" th:href="@{/css/jobs.css}" />
+      <link rel="stylesheet" th:href="@{/css/forms.css}" />
+    </th:block>
   </head>
 
   <body>
     <div layout:fragment="content">
       <div class="job-form-container">
-        <!-- Form Header -->
-        <div class="form-header fade-in">
+        <!-- Form Header - CREATE (Verde/Success) -->
+        <div th:if="${jobId == null}" class="form-header-create fade-in">
           <h1>
             <i class="bi bi-clock-fill me-2"></i>
             Registrar Tarea
@@ -22,10 +27,19 @@
           <p>Completá los datos de la tarea realizada</p>
         </div>
 
+        <!-- Form Header - UPDATE (Naranja/Warning) -->
+        <div th:if="${jobId != null}" class="form-header-update fade-in">
+          <h1>
+            <i class="bi bi-pencil-square me-2"></i>
+            Actualizar Tarea
+          </h1>
+          <p>Modificá los datos de la tarea</p>
+        </div>
+
         <!-- Form Card -->
         <div class="form-card slide-in">
           <form
-            th:action="@{/jobs/create/{id}(id=${contractId})}"
+            th:action="${jobId != null} ? @{/jobs/update} : @{/jobs/create/{id}(id=${contractId})}"
             th:object="${jobForm}"
             method="post"
             id="jobForm"
@@ -34,8 +48,14 @@
               type="hidden"
               th:name="contractId"
               th:value="${contractId}"
+              th:if="${jobId == null}"
             />
-            <input type="hidden" th:name="jobId" th:value="${jobId}" />
+            <input
+              type="hidden"
+              th:name="jobId"
+              th:value="${jobId}"
+              th:if="${jobId != null}"
+            />
 
             <!-- Date & Time Section -->
             <div class="form-section">
@@ -239,9 +259,16 @@
                 <i class="bi bi-x-circle me-2"></i>
                 Cancelar
               </a>
-              <button type="submit" class="btn btn-success">
+              <button
+                type="submit"
+                th:classappend="${jobId != null} ? 'btn-warning' : 'btn-success'"
+                class="btn"
+              >
                 <i class="bi bi-check-circle-fill me-2"></i>
-                Guardar Tarea
+                <span
+                  th:text="${jobId != null} ? 'Guardar Cambios' : 'Guardar Tarea'"
+                  >Guardar Tarea</span
+                >
               </button>
             </div>
           </form>

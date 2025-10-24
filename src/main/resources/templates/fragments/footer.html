@@ -1,15 +1,98 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
   <body>
-    <!-- Footer -->
-    <footer class="bg-dark text-white text-center py-4 mt-5"  th:fragment="footer">
-      <div class="container">
-        <p class="mb-1">&copy; 2025 Registro de Trabajo Doméstico</p>
-        <small class="text-muted"
-          >Hecho con 💼 para apoyar el empleo doméstico justo.</small
-        >
+    <footer class="modern-footer" th:fragment="footer">
+      <div class="footer-content">
+        <div class="container">
+          <div class="row g-4">
+            <!-- Brand Section -->
+            <div class="col-lg-4 col-md-6">
+              <div class="footer-brand">
+                <div class="footer-logo">
+                  <i class="bi bi-house-heart-fill"></i>
+                  <span>DomesticWork</span>
+                </div>
+                <p class="footer-description">
+                  Gestioná tu trabajo doméstico de forma simple, segura y legal.
+                  Formalizá y protegé tanto a empleadores como empleados.
+                </p>
+                <div class="footer-badge">
+                  <i class="bi bi-shield-check me-2"></i>
+                  Hecho en Argentina
+                </div>
+              </div>
+            </div>
+
+            <!-- Resources Section -->
+            <div class="col-lg-4 col-md-6">
+              <div class="footer-section">
+                <h6 class="footer-title">
+                  <i class="bi bi-link-45deg me-2"></i>
+                  Recursos Oficiales
+                </h6>
+                <ul class="footer-links">
+                  <li>
+                    <a
+                      href="https://www.afip.gob.ar/casasparticulares/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <i class="bi bi-arrow-right-circle me-2"></i>
+                      ARCA - Casas Particulares
+                      <i class="bi bi-box-arrow-up-right ms-1"></i>
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://www.argentina.gob.ar/trabajo/casasparticulares"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <i class="bi bi-arrow-right-circle me-2"></i>
+                      Ministerio de Trabajo
+                      <i class="bi bi-box-arrow-up-right ms-1"></i>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Info Section -->
+            <div class="col-lg-4 col-md-12">
+              <div class="footer-section">
+                <h6 class="footer-title">
+                  <i class="bi bi-info-circle me-2"></i>
+                  Información Importante
+                </h6>
+                <div class="footer-disclaimer">
+                  <i class="bi bi-exclamation-triangle-fill"></i>
+                  <p>
+                    Este es un simulador de registro de uso privado y no
+                    reemplaza los trámites oficiales ante los organismos
+                    competentes (ARCA).
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer Bottom -->
+          <div class="footer-bottom">
+            <div class="footer-copyright">
+              <i class="bi bi-c-circle me-1"></i>
+              <span>2025 DomesticWork</span>
+              <span class="footer-separator">•</span>
+              <span>Todos los derechos reservados</span>
+            </div>
+            <div class="footer-credits">
+              <span>Desarrollado con</span>
+              <i class="bi bi-heart-fill text-danger mx-1"></i>
+              <span>por</span>
+              <strong class="ms-1">Matias Tailler</strong>
+            </div>
+          </div>
+        </div>
       </div>
     </footer>
   </body>
 </html>
-

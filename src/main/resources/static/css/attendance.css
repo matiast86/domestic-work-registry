@@ -1,4 +1,4 @@
-/* ===== ATTENDANCE.CSS - Attendance View Styles ===== */
+/* ===== ATTENDANCE.CSS - Attendance View with Calendar ===== */
 
 /* Attendance Header */
 .attendance-header {
@@ -64,66 +64,32 @@
   background: var(--color-gray-100);
 }
 
-/* Month Selector Card */
-.month-selector-card {
+/* Calendar Navigation */
+.calendar-navigation {
   background: white;
   border-radius: var(--radius-xl);
+  padding: 1.5rem;
   box-shadow: var(--shadow-sm);
   margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
   border: 2px solid var(--color-border);
-  overflow: hidden;
 }
 
-.month-selector-header {
+.current-month-header {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
   background: linear-gradient(
     135deg,
     var(--color-primary-50),
     var(--color-primary-100)
   );
-  padding: 1.25rem 1.5rem;
-  border-bottom: 2px solid var(--color-primary-100);
-}
-
-.month-selector-title {
-  font-size: 1.125rem;
-  font-weight: 700;
-  color: var(--color-text-primary);
-  margin: 0;
-}
-
-.month-selector-content {
-  padding: 1.5rem;
-}
-
-.selector-form {
-  display: grid;
-  grid-template-columns: 1fr 1fr auto;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 2px solid var(--color-border);
-}
-
-.selector-form .form-group {
-  margin: 0;
-}
-
-/* Month Navigation */
-.month-navigation {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.current-month-display {
-  display: flex;
-  align-items: center;
-  padding: 0.75rem 1.5rem;
-  background: var(--color-primary-50);
   border-radius: var(--radius-lg);
   color: var(--color-primary);
-  font-size: 1.125rem;
+  font-size: 1.25rem;
   font-weight: 700;
 }
 
@@ -232,149 +198,242 @@
   line-height: 1;
 }
 
-/* Attendance Table */
-.attendance-table-wrapper {
+/* ============================================ */
+/* CALENDAR VIEW */
+/* ============================================ */
+
+.calendar-container {
   background: white;
   border-radius: var(--radius-xl);
+  padding: 2rem;
   box-shadow: var(--shadow-sm);
-  overflow: hidden;
   border: 2px solid var(--color-border);
   margin-bottom: 2rem;
 }
 
-.attendance-table {
-  width: 100%;
-  margin: 0;
+.calendar-wrapper {
+  max-width: 100%;
 }
 
-.attendance-table thead {
-  background: linear-gradient(
-    135deg,
-    var(--color-info-light),
-    var(--color-info)
-  );
-  color: white;
+/* Calendar Header (Days of Week) */
+.calendar-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--color-border);
 }
 
-.attendance-table thead th {
-  padding: 1.25rem 1rem;
+.calendar-day-name {
+  text-align: center;
   font-weight: 700;
-  text-align: left;
-  border: none;
   font-size: 0.875rem;
+  color: var(--color-text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
-.attendance-table tbody tr {
-  transition: all var(--transition-fast);
-  border-bottom: 1px solid var(--color-border);
+/* Calendar Grid */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.75rem;
 }
 
-.attendance-table tbody tr:last-child {
-  border-bottom: none;
-}
-
-.attendance-table tbody tr:hover {
-  background: var(--color-info-light);
-}
-
-.attendance-table tbody td {
-  padding: 1rem;
-  vertical-align: middle;
-}
-
-/* Date Display */
-.date-display {
-  display: inline-flex;
+/* Calendar Day Cell */
+.calendar-day {
+  aspect-ratio: 1;
+  border-radius: var(--radius-lg);
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  background: var(--color-primary-50);
-  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  position: relative;
+  border: 2px solid var(--color-border);
+  background: white;
 }
 
-.date-number {
+.calendar-day:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  z-index: 10;
+}
+
+.calendar-day-number {
   font-size: 1.5rem;
   font-weight: 800;
-  color: var(--color-primary);
   line-height: 1;
 }
 
-.date-month {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--color-primary);
-  text-transform: uppercase;
+.calendar-day-status {
+  font-size: 1.5rem;
 }
 
-/* Day Badge */
-.day-badge {
-  display: inline-flex;
-  padding: 0.5rem 1rem;
-  background: var(--color-gray-100);
-  color: var(--color-text-primary);
-  border-radius: var(--radius-full);
-  font-weight: 600;
-  font-size: 0.875rem;
-}
-
-/* Status Badge */
-.status-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  border-radius: var(--radius-full);
+.calendar-day-label {
+  font-size: 0.625rem;
   font-weight: 700;
-  font-size: 0.875rem;
-  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-align: center;
 }
 
-.status-badge.PRESENT {
-  background: var(--color-success);
-  color: white;
+/* Calendar Day States */
+.calendar-day.PRESENT {
+  background: linear-gradient(
+    135deg,
+    rgba(34, 197, 94, 0.1),
+    rgba(34, 197, 94, 0.05)
+  );
+  border-color: var(--color-success);
 }
 
-.status-badge.JUSTIFIED_ABSCENCE {
-  background: var(--color-warning);
-  color: var(--color-gray-900);
+.calendar-day.PRESENT .calendar-day-number {
+  color: var(--color-success-dark);
 }
 
-.status-badge.UNJUSTIFIED_ABSCENCE {
-  background: var(--color-danger);
-  color: white;
+.calendar-day.PRESENT .calendar-day-status {
+  color: var(--color-success);
 }
 
-.status-badge.NATIONAL_HOLIDAY {
-  background: var(--color-info);
-  color: white;
+.calendar-day.PRESENT .calendar-day-label {
+  color: var(--color-success-dark);
 }
 
-.status-badge.LATE {
-  background: var(--color-secondary);
-  color: white;
+.calendar-day.JUSTIFIED_ABSCENCE {
+  background: linear-gradient(
+    135deg,
+    rgba(251, 191, 36, 0.1),
+    rgba(251, 191, 36, 0.05)
+  );
+  border-color: var(--color-warning);
 }
 
-.status-badge.EXTRA_JOB,
-.status-badge.OTHER {
-  background: var(--color-gray-500);
-  color: white;
+.calendar-day.JUSTIFIED_ABSCENCE .calendar-day-number {
+  color: var(--color-warning-dark);
 }
 
-/* Status Update Form */
-.status-update-form {
-  margin: 0;
+.calendar-day.JUSTIFIED_ABSCENCE .calendar-day-status {
+  color: var(--color-warning);
 }
 
-.status-select-group {
+.calendar-day.JUSTIFIED_ABSCENCE .calendar-day-label {
+  color: var(--color-warning-dark);
+}
+
+.calendar-day.UNJUSTIFIED_ABSCENCE {
+  background: linear-gradient(
+    135deg,
+    rgba(239, 68, 68, 0.1),
+    rgba(239, 68, 68, 0.05)
+  );
+  border-color: var(--color-danger);
+}
+
+.calendar-day.UNJUSTIFIED_ABSCENCE .calendar-day-number {
+  color: var(--color-danger-dark);
+}
+
+.calendar-day.UNJUSTIFIED_ABSCENCE .calendar-day-status {
+  color: var(--color-danger);
+}
+
+.calendar-day.UNJUSTIFIED_ABSCENCE .calendar-day-label {
+  color: var(--color-danger-dark);
+}
+
+.calendar-day.NATIONAL_HOLIDAY {
+  background: linear-gradient(
+    135deg,
+    rgba(139, 92, 246, 0.1),
+    rgba(139, 92, 246, 0.05)
+  );
+  border-color: var(--color-info);
+}
+
+.calendar-day.NATIONAL_HOLIDAY .calendar-day-number {
+  color: var(--color-info-dark);
+}
+
+.calendar-day.NATIONAL_HOLIDAY .calendar-day-status {
+  color: var(--color-info);
+}
+
+.calendar-day.NATIONAL_HOLIDAY .calendar-day-label {
+  color: var(--color-info-dark);
+}
+
+.calendar-day.LATE {
+  background: linear-gradient(
+    135deg,
+    rgba(251, 146, 60, 0.1),
+    rgba(251, 146, 60, 0.05)
+  );
+  border-color: var(--color-secondary);
+}
+
+.calendar-day.LATE .calendar-day-number {
+  color: var(--color-secondary-dark);
+}
+
+.calendar-day.LATE .calendar-day-status {
+  color: var(--color-secondary);
+}
+
+.calendar-day.LATE .calendar-day-label {
+  color: var(--color-secondary-dark);
+}
+
+/* Status Dropdown */
+.status-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 0.5rem;
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 1rem;
+  box-shadow: var(--shadow-xl);
+  border: 2px solid var(--color-primary);
+  z-index: 100;
+  min-width: 220px;
+  display: none;
+}
+
+.calendar-day.active .status-dropdown {
+  display: block;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.dropdown-header {
   display: flex;
-  gap: 0.5rem;
+  justify-content: space-between;
   align-items: center;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--color-border);
+  color: var(--color-text-primary);
+  font-size: 0.875rem;
 }
 
-.status-select-group .form-select {
-  max-width: 200px;
+.status-dropdown .form-select {
+  margin-bottom: 0.75rem;
 }
 
 /* Empty State */
@@ -426,26 +485,104 @@
   font-weight: 700;
   color: var(--color-text-primary);
   margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
 }
 
 .legend-items {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1rem;
 }
 
 .legend-item {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
-.legend-desc {
+.legend-color {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  border: 2px solid;
+  flex-shrink: 0;
+}
+
+.legend-color.present {
+  background: linear-gradient(
+    135deg,
+    rgba(34, 197, 94, 0.2),
+    rgba(34, 197, 94, 0.1)
+  );
+  border-color: var(--color-success);
+}
+
+.legend-color.JUSTIFIED_ABSCENCE {
+  background: linear-gradient(
+    135deg,
+    rgba(251, 191, 36, 0.2),
+    rgba(251, 191, 36, 0.1)
+  );
+  border-color: var(--color-warning);
+}
+
+.legend-color.UNJUSTIFIED_ABSCENCE {
+  background: linear-gradient(
+    135deg,
+    rgba(239, 68, 68, 0.2),
+    rgba(239, 68, 68, 0.1)
+  );
+  border-color: var(--color-danger);
+}
+
+.legend-color.NATIONAL_HOLIDAY {
+  background: linear-gradient(
+    135deg,
+    rgba(139, 92, 246, 0.2),
+    rgba(139, 92, 246, 0.1)
+  );
+  border-color: var(--color-info);
+}
+
+.legend-color.LATE {
+  background: linear-gradient(
+    135deg,
+    rgba(251, 146, 60, 0.2),
+    rgba(251, 146, 60, 0.1)
+  );
+  border-color: var(--color-secondary);
+}
+
+.legend-text {
   font-size: 0.875rem;
   color: var(--color-text-secondary);
+  font-weight: 600;
 }
 
 /* Responsive */
+@media (max-width: 1024px) {
+  .calendar-grid {
+    gap: 0.5rem;
+  }
+
+  .calendar-day {
+    padding: 0.5rem;
+  }
+
+  .calendar-day-number {
+    font-size: 1.25rem;
+  }
+
+  .calendar-day-status {
+    font-size: 1.25rem;
+  }
+
+  .calendar-day-label {
+    font-size: 0.5rem;
+  }
+}
+
 @media (max-width: 768px) {
   .attendance-title {
     font-size: 1.5rem;
@@ -460,15 +597,11 @@
     width: 100%;
   }
 
-  .selector-form {
-    grid-template-columns: 1fr;
-  }
-
-  .month-navigation {
+  .calendar-navigation {
     flex-direction: column;
   }
 
-  .month-navigation .btn {
+  .calendar-navigation .btn {
     width: 100%;
   }
 
@@ -476,15 +609,57 @@
     grid-template-columns: 1fr;
   }
 
-  .attendance-table-wrapper {
-    overflow-x: auto;
+  .calendar-container {
+    padding: 1rem;
   }
 
-  .attendance-table {
-    min-width: 700px;
+  .calendar-grid {
+    gap: 0.375rem;
+  }
+
+  .calendar-day {
+    padding: 0.375rem;
+  }
+
+  .calendar-day-number {
+    font-size: 1rem;
+  }
+
+  .calendar-day-status {
+    font-size: 1rem;
+  }
+
+  .calendar-day-label {
+    display: none;
   }
 
   .legend-items {
     grid-template-columns: 1fr;
+  }
+
+  .status-dropdown {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) !important;
+    max-width: 90vw;
+  }
+}
+
+@media (max-width: 480px) {
+  .calendar-day-name {
+    font-size: 0.625rem;
+  }
+
+  .calendar-day-number {
+    font-size: 0.875rem;
+  }
+
+  .calendar-day-status {
+    font-size: 0.875rem;
+  }
+
+  .stat-value {
+    font-size: 1.5rem;
   }
 }

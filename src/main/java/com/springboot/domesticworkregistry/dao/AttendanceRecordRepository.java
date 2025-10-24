@@ -11,14 +11,14 @@ import com.springboot.domesticworkregistry.entities.AttendanceRecord;
 import com.springboot.domesticworkregistry.entities.ScheduleEntry;
 
 public interface AttendanceRecordRepository extends JpaRepository<AttendanceRecord, Integer> {
-    boolean existsByScheduleEntryAndDate(ScheduleEntry entry, LocalDate date);
+        boolean existsByScheduleEntryAndDate(ScheduleEntry entry, LocalDate date);
 
-    @Query("SELECT a FROM AttendanceRecord a " +
-            "WHERE a.scheduleEntry.schedule.id = :scheduleId " +
-            "AND FUNCTION('YEAR', a.date) = :year " +
-            "AND FUNCTION('MONTH', a.date) = :month")
-    List<AttendanceRecord> findByScheduleAndMonth(@Param("scheduleId") int scheduleId,
-            @Param("year") int year,
-            @Param("month") int month);
+        @Query("SELECT a FROM AttendanceRecord a " +
+                        "WHERE a.scheduleEntry.schedule.id = :scheduleId " +
+                        "AND FUNCTION('YEAR', a.date) = :year " +
+                        "AND FUNCTION('MONTH', a.date) = :month ORDER BY a.date ASC")
+        List<AttendanceRecord> findByScheduleAndMonth(@Param("scheduleId") int scheduleId,
+                        @Param("year") int year,
+                        @Param("month") int month);
 
 }
