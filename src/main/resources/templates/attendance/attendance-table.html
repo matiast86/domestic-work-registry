@@ -73,81 +73,28 @@
         </div>
       </div>
 
-      <!-- Month Selector & Navigation -->
-      <div class="month-selector-card">
-        <div class="month-selector-header">
-          <h3 class="month-selector-title">
-            <i class="bi bi-calendar3 me-2"></i>
-            Seleccionar Período
-          </h3>
+      <!-- Month Navigation -->
+      <div class="calendar-navigation slide-in">
+        <a
+          th:href="@{/attendance/view/{scheduleId}(scheduleId=${scheduleId}, year=${month == 1 ? year - 1 : year}, month=${month == 1 ? 12 : month - 1})}"
+          class="btn btn-outline-secondary"
+        >
+          <i class="bi bi-chevron-left me-2"></i>
+          Mes Anterior
+        </a>
+
+        <div class="current-month-header">
+          <i class="bi bi-calendar-event me-2"></i>
+          <strong th:text="${monthName} + ' ' + ${year}">Mes Año</strong>
         </div>
 
-        <div class="month-selector-content">
-          <form
-            id="filterForm"
-            th:action="@{/attendance/view/{scheduleId}(scheduleId=${scheduleId})}"
-            method="get"
-            class="selector-form"
-          >
-            <div class="form-group">
-              <label for="month" class="form-label">Mes</label>
-              <select
-                id="month"
-                name="month"
-                class="form-select"
-                th:onchange="'document.getElementById(\'filterForm\').submit();'"
-              >
-                <option
-                  th:each="m : ${#numbers.sequence(1,12)}"
-                  th:value="${m}"
-                  th:text="${T(java.time.Month).of(m).getDisplayName(T(java.time.format.TextStyle).FULL, T(java.util.Locale).of('es'))}"
-                  th:selected="${m == month}"
-                ></option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label for="year" class="form-label">Año</label>
-              <input
-                type="number"
-                id="year"
-                name="year"
-                th:value="${year}"
-                class="form-control"
-                min="2020"
-                max="2030"
-              />
-            </div>
-
-            <button type="submit" class="btn btn-primary">
-              <i class="bi bi-search me-2"></i>
-              Buscar
-            </button>
-          </form>
-
-          <div class="month-navigation">
-            <a
-              th:href="@{/attendance/view/{scheduleId}(scheduleId=${scheduleId}, year=${month == 1 ? year - 1 : year}, month=${month == 1 ? 12 : month - 1})}"
-              class="btn btn-outline-secondary"
-            >
-              <i class="bi bi-chevron-left me-2"></i>
-              Mes Anterior
-            </a>
-
-            <div class="current-month-display">
-              <i class="bi bi-calendar-event me-2"></i>
-              <strong th:text="${monthName} + ' ' + ${year}">Mes Año</strong>
-            </div>
-
-            <a
-              th:href="@{/attendance/view/{scheduleId}(scheduleId=${scheduleId}, year=${month == 12 ? year + 1 : year}, month=${month == 12 ? 1 : month + 1})}"
-              class="btn btn-outline-secondary"
-            >
-              Mes Siguiente
-              <i class="bi bi-chevron-right ms-2"></i>
-            </a>
-          </div>
-        </div>
+        <a
+          th:href="@{/attendance/view/{scheduleId}(scheduleId=${scheduleId}, year=${month == 12 ? year + 1 : year}, month=${month == 12 ? 1 : month + 1})}"
+          class="btn btn-outline-secondary"
+        >
+          Mes Siguiente
+          <i class="bi bi-chevron-right ms-2"></i>
+        </a>
       </div>
 
       <!-- Stats Summary -->
@@ -213,77 +160,79 @@
         </div>
       </div>
 
-      <!-- Attendance Table -->
+      <!-- Calendar View -->
       <div
         th:if="${!#lists.isEmpty(attendanceRecords)}"
-        class="attendance-table-wrapper"
+        class="calendar-container"
       >
-        <table class="attendance-table">
-          <thead>
-            <tr>
-              <th>Fecha</th>
-              <th>Día</th>
-              <th>Estado</th>
-              <th>Acción</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr th:each="record : ${attendanceRecords}">
-              <td>
-                <div class="date-display">
-                  <span
-                    class="date-number"
-                    th:text="${#temporals.format(record.date, 'dd')}"
-                  >
-                    01
-                  </span>
-                  <span
-                    class="date-month"
-                    th:text="${#temporals.format(record.date, 'MMM')}"
-                  >
-                    Ene
-                  </span>
-                </div>
-              </td>
-              <td>
-                <span
-                  class="day-badge"
-                  th:text="${#temporals.dayOfWeekName(record.date)}"
-                >
-                  Lunes
-                </span>
-              </td>
-              <td>
-                <span
-                  class="status-badge"
-                  th:classappend="${record.attendanceStatus.name()}"
-                  th:text="${record.attendanceStatus.label}"
-                >
-                  Estado
-                </span>
-              </td>
-              <td>
-                <form
-                  th:action="@{/attendance/updateStatus}"
-                  method="post"
-                  class="status-update-form"
-                >
-                  <input
-                    type="hidden"
-                    name="recordId"
-                    th:value="${record.attendanceId}"
-                  />
-                  <input
-                    type="hidden"
-                    name="scheduleId"
-                    th:value="${scheduleId}"
-                  />
+        <div class="calendar-wrapper">
+          <!-- Calendar Header (Days of Week) -->
+          <div class="calendar-header">
+            <div class="calendar-day-name">LUN</div>
+            <div class="calendar-day-name">MAR</div>
+            <div class="calendar-day-name">MIÉ</div>
+            <div class="calendar-day-name">JUE</div>
+            <div class="calendar-day-name">VIE</div>
+            <div class="calendar-day-name">SÁB</div>
+            <div class="calendar-day-name">DOM</div>
+          </div>
 
-                  <div class="status-select-group">
-                    <select
-                      name="attendanceStatus"
-                      class="form-select form-select-sm"
-                    >
+          <!-- Calendar Grid -->
+          <div class="calendar-grid" id="calendarGrid">
+            <!-- Los días se insertarán con JavaScript para mantener la alineación correcta -->
+            <th:block th:each="record : ${attendanceRecords}">
+              <div
+                class="calendar-day"
+                th:classappend="${record.attendanceStatus.name()}"
+                th:data-record-id="${record.attendanceId}"
+                th:data-status="${record.attendanceStatus.name()}"
+                th:data-day-of-month="${#temporals.format(record.date, 'd')}"
+                th:data-day-of-week="${#temporals.format(record.date, 'e')}"
+                th:data-date="${#temporals.format(record.date, 'yyyy-MM-dd')}"
+                onclick="toggleDropdown(this)"
+                style="display: none;"
+              >
+                <div class="calendar-day-number">
+                  <span th:text="${#temporals.format(record.date, 'd')}">1</span>
+                </div>
+                <div class="calendar-day-status">
+                  <i
+                    class="bi"
+                    th:classappend="${record.attendanceStatus.name() == 'PRESENT' ? 'bi-check-circle-fill' : 
+                                     record.attendanceStatus.name() == 'JUSTIFIED_ABSCENCE' ? 'bi-exclamation-circle-fill' :
+                                     record.attendanceStatus.name() == 'UNJUSTIFIED_ABSCENCE' ? 'bi-x-circle-fill' :
+                                     record.attendanceStatus.name() == 'NATIONAL_HOLIDAY' ? 'bi-calendar-event-fill' :
+                                     record.attendanceStatus.name() == 'LATE' ? 'bi-clock-fill' : 'bi-circle-fill'}"
+                  ></i>
+                </div>
+                <div class="calendar-day-label" th:text="${record.attendanceStatus.label}">
+                  Estado
+                </div>
+
+                <!-- Dropdown para cambiar estado -->
+                <div class="status-dropdown">
+                  <form
+                    th:action="@{/attendance/updateStatus}"
+                    method="post"
+                    onclick="event.stopPropagation()"
+                  >
+                    <input
+                      type="hidden"
+                      name="recordId"
+                      th:value="${record.attendanceId}"
+                    />
+                    <input
+                      type="hidden"
+                      name="scheduleId"
+                      th:value="${scheduleId}"
+                    />
+                    
+                    <div class="dropdown-header">
+                      <strong th:text="${#temporals.dayOfWeekName(record.date)}">Día</strong>
+                      <span th:text="${#temporals.format(record.date, 'dd/MM')}">01/01</span>
+                    </div>
+
+                    <select name="attendanceStatus" class="form-select">
                       <option
                         th:each="s : ${T(com.springboot.domesticworkregistry.enums.AttendanceStatus).values()}"
                         th:value="${s}"
@@ -291,15 +240,17 @@
                         th:selected="${s == record.attendanceStatus}"
                       ></option>
                     </select>
-                    <button type="submit" class="btn btn-sm btn-primary">
-                      <i class="bi bi-check-lg"></i>
+                    
+                    <button type="submit" class="btn btn-primary btn-sm w-100">
+                      <i class="bi bi-check-lg me-1"></i>
+                      Actualizar
                     </button>
-                  </div>
-                </form>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                  </form>
+                </div>
+              </div>
+            </th:block>
+          </div>
+        </div>
       </div>
 
       <!-- Empty State -->
@@ -341,28 +292,24 @@
         </h4>
         <div class="legend-items">
           <div class="legend-item">
-            <span class="status-badge PRESENT">Presente</span>
-            <span class="legend-desc">Asistió normalmente</span>
+            <div class="legend-color present"></div>
+            <span class="legend-text">Presente</span>
           </div>
           <div class="legend-item">
-            <span class="status-badge JUSTIFIED_ABSCENCE"
-              >Ausencia Justificada</span
-            >
-            <span class="legend-desc">No asistió con justificación</span>
+            <div class="legend-color JUSTIFIED_ABSCENCE"></div>
+            <span class="legend-text">Ausencia Justificada</span>
           </div>
           <div class="legend-item">
-            <span class="status-badge UNJUSTIFIED_ABSCENCE"
-              >Ausencia Injustificada</span
-            >
-            <span class="legend-desc">No asistió sin justificación</span>
+            <div class="legend-color UNJUSTIFIED_ABSCENCE"></div>
+            <span class="legend-text">Ausencia Injustificada</span>
           </div>
           <div class="legend-item">
-            <span class="status-badge NATIONAL_HOLIDAY">Feriado Nacional</span>
-            <span class="legend-desc">Día feriado</span>
+            <div class="legend-color NATIONAL_HOLIDAY"></div>
+            <span class="legend-text">Feriado Nacional</span>
           </div>
           <div class="legend-item">
-            <span class="status-badge LATE">Llegada Tarde</span>
-            <span class="legend-desc">Llegó tarde al trabajo</span>
+            <div class="legend-color LATE"></div>
+            <span class="legend-text">Llegada Tarde</span>
           </div>
         </div>
       </div>

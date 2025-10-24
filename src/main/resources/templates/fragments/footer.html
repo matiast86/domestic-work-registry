@@ -1,15 +1,58 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
   <body>
-    <!-- Footer -->
-    <footer class="bg-dark text-white text-center py-4 mt-5"  th:fragment="footer">
-      <div class="container">
-        <p class="mb-1">&copy; 2025 Registro de Trabajo Doméstico</p>
-        <small class="text-muted"
-          >Hecho con 💼 para apoyar el empleo doméstico justo.</small
-        >
+    <footer class="bg-dark text-white pt-4 pb-2" th:fragment="footer">
+      <div class="container-fluid container-xl">
+        <div class="row">
+          <div class="col-md-4 text-center text-md-start mb-3 mb-md-0">
+            <h5 class="fw-bold mb-0">
+              <i class="fas fa-hand-holding-heart me-2 text-secondary"></i
+              >Registro Doméstico
+            </h5>
+            <small class="text-muted">Gestión simple y legal.</small>
+          </div>
+
+          <div class="col-md-4 text-center mb-3 mb-md-0">
+            <h6 class="text-uppercase fw-bold mb-2">Recursos Oficiales</h6>
+            <ul class="list-unstyled">
+              <li>
+                <a
+                  href="https://www.afip.gob.ar/casasparticulares/"
+                  target="_blank"
+                  class="text-white-50 text-decoration-none"
+                  >AFIP - Casas Particulares</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://www.argentina.gob.ar/trabajo/casasparticulares"
+                  target="_blank"
+                  class="text-white-50 text-decoration-none"
+                  >Ministerio de Trabajo</a
+                >
+              </li>
+            </ul>
+          </div>
+
+          <div class="col-md-4 text-center text-md-end">
+            <p class="mb-1 fw-light">
+              &copy; 2025 Registro de Trabajo Doméstico
+            </p>
+            <small class="text-white-50"
+              >Hecho con <i class="fas fa-laptop-code"></i> en Argentina.</small
+            >
+          </div>
+        </div>
+
+        <hr class="my-2 border-white opacity-25 d-none d-md-block" />
+
+        <div class="text-center">
+          <small class="text-white-50">
+            Este es un simulador de registro de uso privado y no reemplaza los
+            trámites oficiales ante los organismos competentes (AFIP, MTEySS).
+          </small>
+        </div>
       </div>
     </footer>
   </body>
 </html>
-
