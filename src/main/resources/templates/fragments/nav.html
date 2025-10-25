@@ -93,7 +93,7 @@
             class="nav-item"
             th:if="${#authorization.expression('hasRole(''EMPLOYER'')')}"
           >
-            <a th:href="@{/dashboard/employer-contracts}" class="nav-link">
+            <a th:href="@{/contracts/list}" class="nav-link">
               <i class="bi bi-file-text"></i>
               <span>Mis Contratos</span>
             </a>
@@ -104,7 +104,7 @@
             class="nav-item"
             th:if="${#authorization.expression('hasRole(''EMPLOYEE'')')}"
           >
-            <a th:href="@{/dashboard/employee-contracts}" class="nav-link">
+            <a th:href="@{/contracts/list}" class="nav-link">
               <i class="bi bi-file-text"></i>
               <span>Mis Contratos</span>
             </a>

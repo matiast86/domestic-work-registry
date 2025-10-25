@@ -42,9 +42,24 @@ public class ContractController {
     }
 
     @GetMapping("/list")
-    public String listContractByEmployer(@AuthenticationPrincipal User employer, Model model) {
-        List<Contract> contracts = this.contractService.findAllByEmployer(employer.getId());
-        model.addAttribute("contracts", contracts);
+    public String listContractByEmployer(@AuthenticationPrincipal User user, Model model) {
+        // Trae TODOS los contratos del usuario (como empleador y como empleado)
+        List<Contract> allContracts = contractService.findAllByEmployer(user.getId());
+
+        // Filtrar contratos donde es EMPLEADOR
+        List<Contract> employerContracts = allContracts.stream()
+                .filter(c -> c.getEmployer().getId().equals(user.getId()))
+                .toList();
+
+        // Filtrar contratos donde es EMPLEADO
+        List<Contract> employeeContracts = allContracts.stream()
+                .filter(c -> c.getEmployee().getId().equals(user.getId()))
+                .toList();
+
+        // Enviar ambas listas al modelo
+        model.addAttribute("employerContracts", employerContracts);
+        model.addAttribute("employeeContracts", employeeContracts);
+
         return "contracts/list-contracts";
     }
 

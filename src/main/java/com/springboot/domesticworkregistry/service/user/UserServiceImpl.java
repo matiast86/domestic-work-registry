@@ -81,6 +81,7 @@ public class UserServiceImpl implements UserService {
         dto.setStreet(address.getStreet());
         dto.setNumber(address.getNumber());
         dto.setApartment(address.getApartment());
+        dto.setState(address.getState());
         dto.setCity(address.getCity());
         dto.setPostalCode(address.getPostalCode());
         dto.setCountry(address.getCountry());
@@ -102,6 +103,7 @@ public class UserServiceImpl implements UserService {
         address.setStreet(form.getStreet());
         address.setNumber(form.getNumber());
         address.setApartment(form.getApartment());
+        address.setState(form.getState());
         address.setCity(form.getCity());
         address.setPostalCode(form.getPostalCode());
         address.setCountry(form.getCountry());
@@ -133,7 +135,8 @@ public class UserServiceImpl implements UserService {
         newUser.setActive(false);
         newUser.setResetToken(token);
         newUser.setResetTokenExpiry(expiration);
-        Address address = new Address(form.getStreet(), form.getNumber(), form.getApartment(), form.getCity(),
+        Address address = new Address(form.getStreet(), form.getNumber(), form.getApartment(), form.getState(),
+                form.getCity(),
                 form.getPostalCode(),
                 form.getCountry());
         newUser.setAddress(address);
@@ -174,7 +177,8 @@ public class UserServiceImpl implements UserService {
         newUser.setActive(false);
         newUser.setResetToken(token);
         newUser.setResetTokenExpiry(expiration);
-        Address address = new Address(form.getStreet(), form.getNumber(), form.getApartment(), form.getCity(),
+        Address address = new Address(form.getStreet(), form.getNumber(), form.getApartment(), form.getState(),
+                form.getCity(),
                 form.getPostalCode(),
                 form.getCountry());
         newUser.setAddress(address);

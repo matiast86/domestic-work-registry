@@ -3,7 +3,7 @@
 /**
  * Build calendar grid with proper alignment
  */
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
   const calendarGrid = document.getElementById("calendarGrid");
   if (!calendarGrid) return;
 

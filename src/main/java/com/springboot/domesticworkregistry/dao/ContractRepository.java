@@ -12,7 +12,7 @@ import com.springboot.domesticworkregistry.entities.Contract;
 
 public interface ContractRepository extends JpaRepository<Contract, Integer> {
 
-        @EntityGraph(attributePaths = { "employee", "employee.address" })
+        @EntityGraph(attributePaths = { "employee", "employee.address", "employer" })
         List<Contract> findSummaryByEmployerId(String employerId);
 
         @EntityGraph(attributePaths = {
