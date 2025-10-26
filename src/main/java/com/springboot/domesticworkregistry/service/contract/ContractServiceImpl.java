@@ -106,6 +106,7 @@ public class ContractServiceImpl implements ContractService {
 
         ContractDetailsWithemployeeDto details = contractDetailsMapper.toDto(contract);
         User employee = contract.getEmployee();
+        details.setContractId(id);
         details.setFirstName(employee.getFirstName());
         details.setLastName(employee.getLastName());
         details.setEmail(employee.getEmail());
