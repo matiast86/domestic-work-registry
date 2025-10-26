@@ -226,6 +226,7 @@ public class JobServiceImpl implements JobService {
 
         for (Job job : jobs) {
             JobsMonthlyTableDto tableDto = tableMapper.toDo(job);
+            tableDto.setJobId(job.getId());
             tables.add(tableDto);
 
         }

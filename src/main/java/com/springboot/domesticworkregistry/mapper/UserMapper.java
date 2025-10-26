@@ -12,6 +12,7 @@ public interface UserMapper {
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "email", ignore = true)
     User toEmployer(RegisterUserDto form);
+
     User toEmployee(RegisterUserEmployeeDto form);
 
 }
