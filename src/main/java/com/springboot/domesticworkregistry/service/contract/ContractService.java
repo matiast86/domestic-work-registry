@@ -19,4 +19,8 @@ public interface ContractService {
 
     public Contract update(int id, ContractDetailsWithemployeeDto form);
 
+    public Contract findByIdWithSchedule(int id);
+
+    public Contract findByIdWithPayslips(int id);
+
 }

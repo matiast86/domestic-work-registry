@@ -18,6 +18,7 @@ import com.springboot.domesticworkregistry.enums.Role;
 import com.springboot.domesticworkregistry.exceptions.EntityNotFoundException;
 import com.springboot.domesticworkregistry.mapper.ContractDetailsMapper;
 import com.springboot.domesticworkregistry.mapper.RegisterEmployeeDtoMapper;
+import com.springboot.domesticworkregistry.service.dataCollection.DataCollectionService;
 import com.springboot.domesticworkregistry.service.user.UserService;
 
 @Service
@@ -28,15 +29,17 @@ public class ContractServiceImpl implements ContractService {
     private final UserService userService;
     private final ContractDetailsMapper contractDetailsMapper;
     private final RegisterEmployeeDtoMapper employeeDtoMapper;
+    private final DataCollectionService dataCollectionService;
 
     public ContractServiceImpl(ContractRepository contractRepository, ContractMapper contractMapper,
             UserService userService, ContractDetailsMapper contractDetailsMapper,
-            RegisterEmployeeDtoMapper employeeDtoMapper) {
+            RegisterEmployeeDtoMapper employeeDtoMapper, DataCollectionService dataCollectionService) {
         this.contractRepository = contractRepository;
         this.contractMapper = contractMapper;
         this.userService = userService;
         this.contractDetailsMapper = contractDetailsMapper;
         this.employeeDtoMapper = employeeDtoMapper;
+        this.dataCollectionService = dataCollectionService;
 
     }
 
@@ -77,6 +80,8 @@ public class ContractServiceImpl implements ContractService {
         }
 
         Contract newContract = contractMapper.fromForm(form, employer, employee);
+        newContract.setWorkAddress(employer.getAddress());
+        newContract.setExpectedMonthlyHours(dataCollectionService.getTotalMonthlyHours(newContract));
 
         return contractRepository.save(newContract);
     }
@@ -141,6 +146,18 @@ public class ContractServiceImpl implements ContractService {
         contract.setName(employer.getLastName().toUpperCase() + "-" + employee.getLastName().toUpperCase());
 
         return contractRepository.save(contract);
+    }
+
+    @Override
+    public Contract findByIdWithSchedule(int id) {
+        return contractRepository.findByIdWithSchedule(id)
+                .orElseThrow(() -> new EntityNotFoundException("Contract with id " + id + " not found"));
+    }
+
+    @Override
+    public Contract findByIdWithPayslips(int id) {
+        return contractRepository.findByIdWithPayslips(id)
+                .orElseThrow(() -> new EntityNotFoundException("Contract with id " + id + " not found"));
     }
 
 }

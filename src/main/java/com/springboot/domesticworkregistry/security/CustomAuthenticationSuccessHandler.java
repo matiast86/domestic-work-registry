@@ -24,11 +24,6 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         User user = (User) authentication.getPrincipal();
 
-        // 🔹 First login → force password change
-        if (user.isFirstLogin()) {
-            getRedirectStrategy().sendRedirect(request, response, "/users/changePassword");
-            return;
-        }
 
         // 🔹 Multi-role handling (EMPLOYER + EMPLOYEE)
         if (user.getRoles().contains(Role.EMPLOYER) && user.getRoles().contains(Role.EMPLOYEE)) {

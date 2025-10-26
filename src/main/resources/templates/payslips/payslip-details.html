@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html
+  lang="es"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{fragments/layout}"
+>
+  <head>
+    <title>Detalle de Recibo | DomesticWork</title>
+    <th:block layout:fragment="styles">
+      <link rel="stylesheet" th:href="@{/css/payslips.css}" />
+    </th:block>
+  </head>
+
+  <body>
+    <div layout:fragment="content">
+      <div class="payslip-form-container">
+        <!-- Header -->
+        <div class="payslip-detail-header fade-in">
+          <h1 class="payslip-detail-title">
+            <i class="bi bi-file-earmark-text-fill me-2"></i>
+            Recibo de Sueldo
+          </h1>
+          <div class="payslip-detail-meta">
+            Período:
+            <strong th:text="${payslip.MonthName} + ' ' + ${payslip.year}">
+              Mes Año
+            </strong>
+          </div>
+        </div>
+
+        <!-- Employee Info Card -->
+        <div class="detail-info-card slide-in" style="margin-bottom: 2rem;">
+          <div class="detail-info-header">
+            <i class="bi bi-person-fill me-2"></i>
+            Datos del Empleado
+          </div>
+          <div class="detail-info-item">
+            <span class="detail-info-label">Nombre Completo</span>
+            <span class="detail-info-value" th:text="${payslip.employeeName}">
+              Nombre Apellido
+            </span>
+          </div>
+          <div class="detail-info-item">
+            <span class="detail-info-label">CUIL</span>
+            <span
+              class="detail-info-value"
+              th:text="${payslip.employeeIdentificationNumber}"
+            >
+              00-00000000-0
+            </span>
+          </div>
+          <div class="detail-info-item">
+            <span class="detail-info-label">Fecha de Inicio</span>
+            <span class="detail-info-value" th:text="${payslip.since}">
+              01/01/2020
+            </span>
+          </div>
+          <div class="detail-info-item">
+            <span class="detail-info-label">Antigüedad</span>
+            <span class="detail-info-value">
+              <span th:text="${payslip.service}">0</span> años
+            </span>
+          </div>
+        </div>
+
+        <!-- Salary Breakdown Card -->
+        <div class="payslip-form-card">
+          <div class="payslip-section-header">
+            <div class="payslip-section-icon">
+              <i class="bi bi-calculator-fill"></i>
+            </div>
+            <h3 class="payslip-section-title">Resumen Salarial</h3>
+          </div>
+
+          <div class="summary-table">
+            <table>
+              <tbody>
+                <!-- Remuneraciones -->
+                <tr>
+                  <td class="summary-label">
+                    <i class="bi bi-cash-stack me-2"></i>
+                    Salario Bruto
+                  </td>
+                  <td class="summary-value summary-positive">
+                    $<span
+                      th:text="${#numbers.formatDecimal(payslip.grossSalary, 1, 'COMMA', 2, 'POINT')}"
+                    >
+                      0.00
+                    </span>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class="summary-label">
+                    <i class="bi bi-clock-history me-2"></i>
+                    Horas Extras
+                  </td>
+                  <td class="summary-value summary-positive">
+                    $<span
+                      th:text="${#numbers.formatDecimal(payslip.extraHours, 1, 'COMMA', 2, 'POINT')}"
+                    >
+                      0.00
+                    </span>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class="summary-label">
+                    <i class="bi bi-award me-2"></i>
+                    Adicional por Antigüedad
+                  </td>
+                  <td class="summary-value summary-positive">
+                    $<span
+                      th:text="${#numbers.formatDecimal(payslip.servicePlus, 1, 'COMMA', 2, 'POINT')}"
+                    >
+                      0.00
+                    </span>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class="summary-label">
+                    <i class="bi bi-bus-front me-2"></i>
+                    Transporte
+                  </td>
+                  <td class="summary-value summary-positive">
+                    $<span
+                      th:text="${#numbers.formatDecimal(payslip.transportation, 1, 'COMMA', 2, 'POINT')}"
+                    >
+                      0.00
+                    </span>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class="summary-label">
+                    <i class="bi bi-gift me-2"></i>
+                    Gratificaciones
+                  </td>
+                  <td class="summary-value summary-positive">
+                    $<span
+                      th:text="${#numbers.formatDecimal(payslip.gratuities, 1, 'COMMA', 2, 'POINT')}"
+                    >
+                      0.00
+                    </span>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class="summary-label">
+                    <i class="bi bi-plus-circle me-2"></i>
+                    Otros Conceptos
+                  </td>
+                  <td class="summary-value summary-positive">
+                    $<span
+                      th:text="${#numbers.formatDecimal(payslip.other, 1, 'COMMA', 2, 'POINT')}"
+                    >
+                      0.00
+                    </span>
+                  </td>
+                </tr>
+
+                <!-- Deducciones -->
+                <tr>
+                  <td class="summary-label">
+                    <i class="bi bi-dash-circle me-2"></i>
+                    Aportes y Contribuciones
+                  </td>
+                  <td class="summary-value summary-negative">
+                    -$<span
+                      th:text="${#numbers.formatDecimal(payslip.payrollDeduction, 1, 'COMMA', 2, 'POINT')}"
+                    >
+                      0.00
+                    </span>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class="summary-label">
+                    <i class="bi bi-dash-circle me-2"></i>
+                    Otros Descuentos
+                  </td>
+                  <td class="summary-value summary-negative">
+                    -$<span
+                      th:text="${#numbers.formatDecimal(payslip.otherDeductions, 1, 'COMMA', 2, 'POINT')}"
+                    >
+                      0.00
+                    </span>
+                  </td>
+                </tr>
+
+                <!-- Total -->
+                <tr class="summary-total">
+                  <td>
+                    <i class="bi bi-cash-coin me-2"></i>
+                    <strong>SALARIO NETO A PAGAR</strong>
+                  </td>
+                  <td class="summary-value">
+                    $<span
+                      th:text="${#numbers.formatDecimal(payslip.netSalary, 1, 'COMMA', 2, 'POINT')}"
+                    >
+                      0.00
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Comments -->
+          <div
+            th:if="${payslip.comments != null && !#strings.isEmpty(payslip.comments)}"
+            style="margin-top: 1.5rem; padding: 1rem; background: var(--color-gray-50); border-radius: var(--radius-lg);"
+          >
+            <div style="font-weight: 700; color: var(--color-text-secondary); margin-bottom: 0.5rem;">
+              <i class="bi bi-chat-left-text me-2"></i>
+              Comentarios
+            </div>
+            <p style="margin: 0; color: var(--color-text-primary);" th:text="${payslip.comments}">
+              Comentarios del recibo
+            </p>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="d-flex gap-2 justify-content-end mt-4">
+          <a
+            th:href="@{/payslips/list/{contractId}(contractId=${payslip.contractId})}"
+            class="btn btn-outline-secondary btn-lg"
+          >
+            <i class="bi bi-arrow-left me-2"></i>
+            Volver a la Lista
+          </a>
+          <a
+            th:href="@{/payslips/pdf/{id}(id=${payslip.payslipId})}"
+            class="btn btn-success btn-lg"
+          >
+            <i class="bi bi-file-earmark-pdf-fill me-2"></i>
+            Descargar PDF
+          </a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

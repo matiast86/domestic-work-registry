@@ -30,17 +30,17 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Reusable loader
-function showLoader(containerId) {
+const showLoader = (containerId) => {
   document.getElementById(containerId).innerHTML = `
     <div class="d-flex justify-content-center align-items-center py-5">
       <div class="spinner-border text-primary" role="status">
         <span class="visually-hidden">Cargando...</span>
       </div>
     </div>`;
-}
+};
 
 // Reusable fetcher
-function loadContent(url, containerId) {
+const loadContent = (url, containerId) => {
   showLoader(containerId);
   fetch(url)
     .then((res) => {
@@ -54,4 +54,4 @@ function loadContent(url, containerId) {
           ${err.message}
         </div>`;
     });
-}
+};

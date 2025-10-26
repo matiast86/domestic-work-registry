@@ -2,6 +2,7 @@ package com.springboot.domesticworkregistry.dto.user;
 
 import com.springboot.domesticworkregistry.validation.PasswordMatches;
 
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -23,5 +24,10 @@ public class ChangePasswordDto {
 
     @NotNull(message = "Please confirm the new password")
     private String repeatNewPassword;
+
+    @AssertTrue(message = "Passwords do not match")
+    public boolean isPasswordsMatching() {
+        return newPassword != null && newPassword.equals(repeatNewPassword);
+    }
 
 }

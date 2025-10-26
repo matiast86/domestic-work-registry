@@ -6,15 +6,21 @@
   layout:decorate="~{fragments/layout}"
 >
   <head>
-    <title>Tareas del mes</title>
+    <title>Tareas del Mes</title>
+    <th:block layout:fragment="styles">
+      <link rel="stylesheet" th:href="@{/css/jobs.css}" />
+    </th:block>
   </head>
+
   <body>
-    <div layout:fragment="content" class="container mt-5">
+    <div layout:fragment="content">
+      <!-- Success Message -->
       <div
         th:if="${successMessage}"
-        class="alert alert-success alert-dismissible fade show mt-3"
+        class="alert alert-success alert-dismissible fade show"
         role="alert"
       >
+        <i class="bi bi-check-circle-fill me-2"></i>
         <span th:text="${successMessage}"></span>
         <button
           type="button"
@@ -23,18 +29,100 @@
           aria-label="Close"
         ></button>
       </div>
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3 class="mb-0">Tareas</h3>
+
+      <!-- Month Header -->
+      <div class="month-header fade-in">
+        <div class="month-header-content">
+          <h1 class="month-title">
+            <i class="bi bi-calendar-week me-2"></i>
+            Tareas del Mes
+          </h1>
+          <p class="month-subtitle">
+            Detalle día por día de todas las tareas realizadas
+          </p>
+          <div class="month-actions">
+            <a th:href="@{/jobs/add/{id}(id=${contractId})}" class="btn">
+              <i class="bi bi-plus-circle-fill me-2"></i>
+              Agregar Tarea
+            </a>
+            <a th:href="@{/jobs/jobList/{id}(id=${contractId})}" class="btn">
+              <i class="bi bi-arrow-left-circle me-2"></i>
+              Volver al Resumen
+            </a>
+          </div>
+        </div>
       </div>
-      <div class="table-responsive shadow-sm rounded">
-        <table
-          class="table table-hover table-striped table-bordered align-middle mb-0"
+
+      <!-- Month Navigation -->
+      <div class="month-navigation slide-in">
+        <a
+          th:href="@{/jobs/monthlyDetails/{id}(id=${contractId}, year=${jobs.month == 1 ? jobs.year - 1 : jobs.year}, month=${jobs.month == 1 ? 12 : jobs.month - 1})}"
+          class="btn btn-outline-secondary"
         >
-          <thead class="table-dark text-center">
+          <i class="bi bi-chevron-left me-2"></i>
+          Mes Anterior
+        </a>
+
+        <div class="current-month">
+          <i class="bi bi-calendar3 me-2"></i>
+          <span th:text="${jobs.monthName} + ' ' + ${jobs.year}">
+            Mes Año
+          </span>
+        </div>
+
+        <a
+          th:href="@{/jobs/monthlyDetails/{id}(id=${contractId}, year=${jobs.month == 12 ? jobs.year + 1 : jobs.year}, month=${jobs.month == 12 ? 1 : jobs.month + 1})}"
+          class="btn btn-outline-secondary"
+        >
+          Mes Siguiente
+          <i class="bi bi-chevron-right ms-2"></i>
+        </a>
+      </div>
+
+      <!-- Summary Cards -->
+      <div class="summary-grid">
+        <div class="summary-card">
+          <div class="summary-label">Días Trabajados</div>
+          <div class="summary-value" th:text="${#lists.size(jobs.rows)}">0</div>
+        </div>
+        <div class="summary-card success">
+          <div class="summary-label">Total Horas</div>
+          <div class="summary-value" th:text="${jobs.totals.workedHoursTotal}">
+            0
+          </div>
+        </div>
+        <div class="summary-card warning">
+          <div class="summary-label">Promedio $/Hora</div>
+          <div class="summary-value">
+            $<span
+              th:text="${#numbers.formatDecimal(jobs.totals.hourlyFeeTotal, 1, 'COMMA', 2, 'POINT')}"
+            >
+              0.00
+            </span>
+          </div>
+        </div>
+        <div class="summary-card info">
+          <div class="summary-label">Total a Pagar</div>
+          <div class="summary-value">
+            $<span
+              th:text="${#numbers.formatDecimal(jobs.totals.totalTotal, 1, 'COMMA', 2, 'POINT')}"
+            >
+              0.00
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tasks Detail Table -->
+      <div
+        th:if="${!#lists.isEmpty(jobs.rows)}"
+        class="tasks-detail-table-wrapper"
+      >
+        <table class="tasks-detail-table">
+          <thead>
             <tr>
-              <th>Período</th>
               <th>Fecha</th>
-              <th>Hs Trabajadas</th>
+              <th>Horas Trabajadas</th>
               <th>$/Hora</th>
               <th>Subtotal</th>
               <th>Transporte</th>
@@ -43,66 +131,203 @@
             </tr>
           </thead>
           <tbody>
-            <!-- Monthly rows -->
-            <tr th:each="row : ${jobs.rows}" class="text-center">
-              <td th:text="|${row.month} ${row.year}|"></td>
-              <td th:text="${#temporals.format(row.date, 'dd-MM-yyyy')}"></td>
-              <td th:text="${row.workedHours}" class="text-end"></td>
-              <td
-                th:text="|$${#numbers.formatDecimal(row.hourlyRate, 1, 'COMMA', 2, 'POINT')}|"
-                class="text-end"
-              ></td>
-              <td
-                th:text="|$${#numbers.formatDecimal(row.partialFee, 1, 'COMMA', 2, 'POINT')}|"
-                class="text-end"
-              ></td>
-              <td
-                th:text="|$${#numbers.formatDecimal(row.transportationFee, 1, 'COMMA', 2, 'POINT')}|"
-                class="text-end"
-              ></td>
-              <td
-                th:text="|$${#numbers.formatDecimal(row.totalFee, 1, 'COMMA', 2, 'POINT')}|"
-                class="text-end"
-              ></td>
+            <tr th:each="row : ${jobs.rows}">
               <td>
-                <a
-                  th:href="@{/jobs/updateForm/{id}(id=${row.jobId})}"
-                  class="btn btn-outline-info btn-sm"
+                <div class="date-badge">
+                  <div
+                    class="date-weekday"
+                    th:text="${#temporals.dayOfWeekName(row.date)}"
+                  >
+                    Lunes
+                  </div>
+                  <div
+                    class="date-day"
+                    th:text="${#temporals.format(row.date, 'dd')}"
+                  >
+                    01
+                  </div>
+                  <div
+                    class="date-month"
+                    th:text="${#temporals.format(row.date, 'MMM')}"
+                  >
+                    Ene
+                  </div>
+                </div>
+              </td>
+              <td>
+                <span class="hours-badge">
+                  <i class="bi bi-clock-fill"></i>
+                  <span th:text="${row.workedHours}">0</span> hs
+                </span>
+              </td>
+              <td>
+                <span
+                  class="amount"
+                  th:text="'$' + ${#numbers.formatDecimal(row.hourlyRate, 1, 'COMMA', 2, 'POINT')}"
                 >
-                  <i class="bi bi-pencil-square"></i> Actualizar
-                </a>
+                  $0.00
+                </span>
+              </td>
+              <td>
+                <span
+                  class="amount amount-large"
+                  th:text="'$' + ${#numbers.formatDecimal(row.partialFee, 1, 'COMMA', 2, 'POINT')}"
+                >
+                  $0.00
+                </span>
+              </td>
+              <td>
+                <span
+                  class="amount"
+                  th:text="'$' + ${#numbers.formatDecimal(row.transportationFee, 1, 'COMMA', 2, 'POINT')}"
+                >
+                  $0.00
+                </span>
+              </td>
+              <td>
+                <span
+                  class="amount amount-large"
+                  th:text="'$' + ${#numbers.formatDecimal(row.totalFee, 1, 'COMMA', 2, 'POINT')}"
+                >
+                  $0.00
+                </span>
+              </td>
+              <td>
+                <div class="action-menu">
+                  <a
+                    th:href="@{/jobs/updateForm/{id}(id=${row.jobId})}"
+                    class="btn btn-sm btn-outline-primary"
+                    title="Editar"
+                  >
+                    <i class="bi bi-pencil-square"></i>
+                  </a>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-danger"
+                    onclick="confirmDelete(this)"
+                    th:data-job-id="${row.jobId}"
+                    title="Eliminar"
+                  >
+                    <i class="bi bi-trash-fill"></i>
+                  </button>
+                </div>
               </td>
             </tr>
           </tbody>
+
+          <!-- Totals Footer -->
           <tfoot>
-            <tr class="table-secondary fw-bold text-center">
-              <td>Total</td>
-              <td></td>
-              <td
-                th:text="${jobs.totals.workedHoursTotal}"
-                class="text-end"
-              ></td>
-              <td
-                th:text="|$${#numbers.formatDecimal(jobs.totals.hourlyFeeTotal, 1, 'COMMA', 2, 'POINT')}|"
-                class="text-end"
-              ></td>
-              <td
-                th:text="|$${#numbers.formatDecimal(jobs.totals.subtotalTotal, 1, 'COMMA', 2, 'POINT')}|"
-                class="text-end"
-              ></td>
-              <td
-                th:text="|$${#numbers.formatDecimal(jobs.totals.transportationFeeTotal, 1, 'COMMA', 2, 'POINT')}|"
-                class="text-end"
-              ></td>
-              <td
-                th:text="|$${#numbers.formatDecimal(jobs.totals.totalTotal, 1, 'COMMA', 2, 'POINT')}|"
-                class="text-end"
-              ></td>
+            <tr>
+              <td>
+                <strong>TOTAL DEL MES</strong>
+              </td>
+              <td>
+                <strong>
+                  <span th:text="${jobs.totals.workedHoursTotal}">0</span> hs
+                </strong>
+              </td>
+              <td>
+                <strong
+                  th:text="'$' + ${#numbers.formatDecimal(jobs.totals.hourlyFeeTotal, 1, 'COMMA', 2, 'POINT')}"
+                >
+                  $0.00
+                </strong>
+              </td>
+              <td>
+                <strong
+                  th:text="'$' + ${#numbers.formatDecimal(jobs.totals.subtotalTotal, 1, 'COMMA', 2, 'POINT')}"
+                >
+                  $0.00
+                </strong>
+              </td>
+              <td>
+                <strong
+                  th:text="'$' + ${#numbers.formatDecimal(jobs.totals.transportationFeeTotal, 1, 'COMMA', 2, 'POINT')}"
+                >
+                  $0.00
+                </strong>
+              </td>
+              <td>
+                <strong
+                  th:text="'$' + ${#numbers.formatDecimal(jobs.totals.totalTotal, 1, 'COMMA', 2, 'POINT')}"
+                >
+                  $0.00
+                </strong>
+              </td>
               <td></td>
             </tr>
           </tfoot>
         </table>
       </div>
+
+      <!-- Empty State -->
+      <div th:if="${#lists.isEmpty(jobs.rows)}" class="empty-month">
+        <div class="empty-month-icon">
+          <i class="bi bi-calendar-x"></i>
+        </div>
+        <h3>No hay tareas registradas este mes</h3>
+        <p>
+          Comenzá a registrar las tareas realizadas durante este mes para llevar
+          un control detallado.
+        </p>
+        <a
+          th:href="@{/jobs/add/{id}(id=${contractId})}"
+          class="btn btn-primary btn-lg"
+        >
+          <i class="bi bi-plus-circle-fill me-2"></i>
+          Registrar Tarea
+        </a>
+      </div>
+
+      <!-- Delete Confirmation Modal -->
+      <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">
+                <i
+                  class="bi bi-exclamation-triangle-fill text-warning me-2"
+                ></i>
+                Confirmar Eliminación
+              </h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <p class="mb-0">
+                ¿Estás seguro que querés eliminar esta tarea? Esta acción no se
+                puede deshacer.
+              </p>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Cancelar
+              </button>
+              <form id="deleteForm" method="post" style="display: inline">
+                <input
+                  type="hidden"
+                  name="contractId"
+                  th:value="${contractId}"
+                />
+                <button type="submit" class="btn btn-danger">
+                  <i class="bi bi-trash-fill me-2"></i>
+                  Eliminar
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <script th:src="@{/js/jobs.js}" layout:fragment="scripts"></script>
   </body>
 </html>

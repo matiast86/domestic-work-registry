@@ -12,9 +12,12 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.springboot.domesticworkregistry.dto.user.RegisterUserDto;
+import com.springboot.domesticworkregistry.dto.user.ResetPasswordDto;
+import com.springboot.domesticworkregistry.dto.user.ResetPasswordEmailDto;
 import com.springboot.domesticworkregistry.exceptions.EmailAlreadyExistsException;
 import com.springboot.domesticworkregistry.service.user.UserService;
 
@@ -88,6 +91,65 @@ public class RegistrationController {
         }
 
         return "auth/registration-form";
+    }
+
+    @GetMapping("reset-password-request")
+    public String resetPasswordRequest(Model model,
+            RedirectAttributes redirectAttributes) {
+
+        model.addAttribute("email", new ResetPasswordEmailDto());
+        return "auth/reset-password-request";
+
+    }
+
+    @PostMapping("send-request-email")
+    public String sendRequestEmail(@Valid @ModelAttribute("email") ResetPasswordEmailDto email,
+            BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("email", email);
+            return "auth/reset-password-request";
+        }
+        model.addAttribute("email", email);
+        userService.resetPasswordConfirmation(email.getEmail());
+        redirectAttributes.addFlashAttribute("successMessage", "Solicitud creada con éxito. Revise su email");
+
+        return "redirect:/loginPage";
+
+    }
+
+    @GetMapping("/reset-password")
+    public String passwordForm(@RequestParam("token") String token, Model model) {
+        model.addAttribute("passwordForm", new ResetPasswordDto());
+        model.addAttribute("token", token);
+        return "auth/reset-password"; // ✅ make sure your template is in `templates/auth/change-password.html`
+    }
+
+    @PostMapping("/reset-password-confirmation")
+    public String resetPasswordConfirmation(@RequestParam("token") String token,
+            @Valid @ModelAttribute("form") ResetPasswordDto form,
+            Model model, RedirectAttributes redirectAttributes) {
+
+        model.addAttribute("token", token);
+        model.addAttribute("form", form);
+        userService.resetPassword(token, form);
+        redirectAttributes.addFlashAttribute("successMessage", "Contraseña guardada con éxito");
+        return "redirect:/loginPage";
+
+    }
+
+    @GetMapping("/activate-account")
+    public String activateEmployerAccount(@RequestParam("token") String token, RedirectAttributes redirectAttributes) {
+        userService.activateEmployerAccount(token);
+        redirectAttributes.addFlashAttribute("successMesssage", "Su cuenta ha sido activada con éxito");
+        return "redirect:/loginPage";
+    }
+
+    @GetMapping("/set-employee-password")
+    public String setEmployeePassword(@RequestParam("token") String token, Model model) {
+        model.addAttribute("passwordForm", new ResetPasswordDto());
+        model.addAttribute("token", token);
+        return "auth/reset-password";
     }
 
 }

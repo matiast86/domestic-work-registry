@@ -1,0 +1,978 @@
+/* ===== JOBS.CSS - Consolidated styles for job-list, monthly-details, job-form ===== */
+
+/* ============================================ */
+/* SHARED STYLES */
+/* ============================================ */
+
+/* Page Headers */
+.tasks-header,
+.month-header,
+.form-header {
+  color: white;
+  padding: 2rem;
+  border-radius: var(--radius-xl);
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+.tasks-header {
+  background: linear-gradient(
+    135deg,
+    var(--color-secondary),
+    var(--color-secondary-light)
+  );
+}
+
+.month-header {
+  background: linear-gradient(
+    135deg,
+    var(--color-info),
+    var(--color-info-light)
+  );
+}
+
+.form-header {
+  background: linear-gradient(
+    135deg,
+    var(--color-success),
+    var(--color-success-light)
+  );
+  text-align: center;
+}
+
+.tasks-header::before,
+.month-header::before {
+  content: "";
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.1) 0%,
+    transparent 70%
+  );
+  border-radius: 50%;
+}
+
+.tasks-header::before {
+  top: -50px;
+  right: -50px;
+}
+
+.month-header::before {
+  top: -50px;
+  right: -50px;
+}
+
+.tasks-header h1,
+.month-header .month-title,
+.form-header h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.tasks-header p,
+.month-header .month-subtitle,
+.form-header p {
+  opacity: 0.95;
+  margin-bottom: 1rem;
+}
+
+/* Stats & Summary Cards */
+.stats-summary,
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-box,
+.summary-card {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-sm);
+  border-left: 4px solid var(--color-primary);
+  transition: all var(--transition-base);
+}
+
+.stat-box:hover,
+.summary-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.stat-box.success,
+.summary-card.success {
+  border-left-color: var(--color-success);
+}
+
+.stat-box.warning,
+.summary-card.warning {
+  border-left-color: var(--color-warning);
+}
+
+.stat-box.info,
+.summary-card.info {
+  border-left-color: var(--color-info);
+}
+
+.stat-label,
+.summary-label {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.stat-value,
+.summary-value {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  line-height: 1;
+}
+
+/* Amount Display */
+.amount {
+  font-weight: 700;
+  font-family: "Courier New", monospace;
+}
+
+.amount-positive {
+  color: var(--color-success);
+}
+
+.amount-large {
+  font-weight: 800;
+  font-family: "Courier New", monospace;
+  font-size: 1.125rem;
+  color: var(--color-success);
+}
+
+/* Empty States */
+.empty-tasks,
+.empty-month {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: white;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+}
+
+.empty-tasks-icon,
+.empty-month-icon {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 1.5rem;
+  background: var(--color-gray-100);
+  border-radius: var(--radius-xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  color: var(--color-gray-400);
+}
+
+.empty-tasks h3,
+.empty-month h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 0.75rem;
+}
+
+.empty-tasks p,
+.empty-month p {
+  color: var(--color-text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+/* ============================================ */
+/* JOB LIST SPECIFIC */
+/* ============================================ */
+
+/* Filters Section */
+.filters-section {
+  background: white;
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 2rem;
+  border: 2px solid var(--color-border);
+}
+
+.filters-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.filters-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+/* Table Improvements */
+.tasks-table-wrapper,
+.tasks-detail-table-wrapper {
+  background: white;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  border: 2px solid var(--color-border);
+}
+
+.tasks-table,
+.tasks-detail-table {
+  width: 100%;
+  margin: 0;
+}
+
+.tasks-table thead,
+.tasks-detail-table thead {
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-50),
+    var(--color-primary-100)
+  );
+}
+
+.tasks-detail-table thead {
+  background: linear-gradient(
+    135deg,
+    var(--color-info-light),
+    var(--color-info)
+  );
+  color: white;
+}
+
+.tasks-table thead th,
+.tasks-detail-table thead th {
+  padding: 1.25rem 1rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  text-align: center;
+  border: none;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tasks-detail-table thead th {
+  color: white;
+}
+
+.tasks-table tbody tr,
+.tasks-detail-table tbody tr {
+  transition: all var(--transition-fast);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.tasks-table tbody tr:last-child,
+.tasks-detail-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.tasks-table tbody tr:hover {
+  background: var(--color-primary-50);
+}
+
+.tasks-detail-table tbody tr:hover {
+  background: var(--color-info-light);
+}
+
+.tasks-table tbody td,
+.tasks-detail-table tbody td {
+  padding: 1.25rem 1rem;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.tasks-table tfoot,
+.tasks-detail-table tfoot {
+  background: linear-gradient(
+    135deg,
+    var(--color-success-light),
+    var(--color-success)
+  );
+  color: white;
+}
+
+.tasks-table tfoot td,
+.tasks-detail-table tfoot td {
+  padding: 1.25rem 1rem;
+  font-weight: 700;
+  text-align: center;
+  border: none;
+}
+
+.tasks-detail-table tfoot td {
+  padding: 1.5rem 1rem;
+  font-weight: 800;
+  font-size: 1.125rem;
+}
+
+/* Month Badge */
+.month-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--color-primary-50);
+  color: var(--color-primary);
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  font-size: 0.875rem;
+}
+
+/* Action Buttons */
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: all var(--transition-fast);
+  text-decoration: none;
+}
+
+.action-btn-primary {
+  background: linear-gradient(
+    135deg,
+    var(--color-primary),
+    var(--color-primary-light)
+  );
+  color: white;
+  border: none;
+}
+
+.action-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  color: white;
+}
+
+/* ============================================ */
+/* MONTHLY DETAILS SPECIFIC */
+/* ============================================ */
+
+/* Month Navigation */
+.month-navigation {
+  background: white;
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border: 2px solid var(--color-border);
+}
+
+.nav-month {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.nav-month .btn {
+  padding: 0.75rem 1.25rem;
+}
+
+.current-month {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  text-align: center;
+}
+
+.month-header-content,
+.month-actions {
+  position: relative;
+  z-index: 1;
+}
+
+.month-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.month-actions .btn {
+  background: white;
+  color: var(--color-info);
+  font-weight: 600;
+}
+
+.month-actions .btn:hover {
+  background: var(--color-gray-100);
+}
+
+/* Date Badge */
+.date-badge {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.75rem;
+  background: var(--color-primary-50);
+  border-radius: var(--radius-lg);
+  min-width: 80px;
+}
+
+.date-day {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+.date-month {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  margin-top: 0.25rem;
+}
+
+.date-weekday {
+  font-size: 0.625rem;
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* Hours Badge */
+.hours-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--color-warning-light);
+  color: var(--color-gray-900);
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+/* Action Menu */
+.action-menu {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+/* ============================================ */
+/* JOB FORM SPECIFIC */
+/* ============================================ */
+
+/* Form Container */
+.job-form-container {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* Form Card */
+.form-card {
+  background: white;
+  border-radius: var(--radius-xl);
+  padding: 2.5rem;
+  box-shadow: var(--shadow-lg);
+  border: 2px solid var(--color-border);
+}
+
+/* Form Section */
+.form-section {
+  margin-bottom: 2rem;
+}
+
+.form-section:last-of-type {
+  margin-bottom: 0;
+}
+
+.form-section-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--color-primary-100);
+}
+
+.form-section-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-50),
+    var(--color-primary-100)
+  );
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+  font-size: 1.25rem;
+}
+
+.form-section-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+/* Form Group Enhanced */
+.form-group-enhanced {
+  margin-bottom: 1.5rem;
+}
+
+.form-label-enhanced {
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.form-label-enhanced .required {
+  color: var(--color-danger);
+}
+
+.form-label-enhanced .helper-icon {
+  color: var(--color-gray-400);
+  font-size: 1rem;
+  cursor: help;
+}
+
+/* Input with Icon */
+.input-with-icon {
+  position: relative;
+}
+
+.input-with-icon i {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-gray-400);
+  font-size: 1.125rem;
+}
+
+.input-with-icon .form-control {
+  padding-left: 3rem;
+}
+
+/* Calculation Preview */
+.calculation-preview {
+  background: var(--color-primary-50);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  margin-top: 2rem;
+  border: 2px dashed var(--color-primary);
+}
+
+.calculation-title {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+}
+
+.calculation-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.calculation-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: white;
+  border-radius: var(--radius-md);
+}
+
+.calculation-label {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  font-weight: 600;
+}
+
+.calculation-value {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  font-family: "Courier New", monospace;
+}
+
+.calculation-total {
+  grid-column: 1 / -1;
+  background: linear-gradient(
+    135deg,
+    var(--color-success),
+    var(--color-success-light)
+  );
+  color: white;
+  padding: 1rem;
+  border-radius: var(--radius-lg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.calculation-total .calculation-label {
+  color: white;
+  font-size: 1rem;
+}
+
+.calculation-total .calculation-value {
+  color: white;
+  font-size: 1.5rem;
+}
+
+/* Form Actions */
+.form-actions {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 2px solid var(--color-border);
+  display: flex;
+  gap: 1rem;
+}
+
+.form-actions .btn {
+  flex: 1;
+  padding: 1rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+/* ============================================ */
+/* RESPONSIVE */
+/* ============================================ */
+
+@media (max-width: 768px) {
+  .tasks-header h1,
+  .month-title,
+  .form-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .month-navigation {
+    flex-direction: column;
+  }
+
+  .nav-month {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .nav-month .btn {
+    width: 100%;
+  }
+
+  .summary-grid,
+  .stats-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .filter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tasks-table-wrapper,
+  .tasks-detail-table-wrapper {
+    overflow-x: auto;
+  }
+
+  .tasks-table {
+    min-width: 800px;
+  }
+
+  .tasks-detail-table {
+    min-width: 900px;
+  }
+
+  .month-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .month-actions .btn {
+    width: 100%;
+  }
+
+  .form-card {
+    padding: 1.5rem;
+  }
+
+  .calculation-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+}
+
+/* ============================================ */
+/* JOB FORM SPECIFIC */
+/* ============================================ */
+
+/* Form Container */
+.job-form-container {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* Form Header */
+.form-header {
+  background: linear-gradient(
+    135deg,
+    var(--color-success),
+    var(--color-success-light)
+  );
+  color: white;
+  padding: 2rem;
+  border-radius: var(--radius-xl);
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+}
+
+.form-header h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.form-header p {
+  opacity: 0.95;
+  margin: 0;
+}
+
+/* Form Card */
+.form-card {
+  background: white;
+  border-radius: var(--radius-xl);
+  padding: 2.5rem;
+  box-shadow: var(--shadow-lg);
+  border: 2px solid var(--color-border);
+}
+
+/* Form Section */
+.form-section {
+  margin-bottom: 2rem;
+}
+
+.form-section:last-of-type {
+  margin-bottom: 0;
+}
+
+.form-section-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--color-primary-100);
+}
+
+.form-section-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-50),
+    var(--color-primary-100)
+  );
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+  font-size: 1.25rem;
+}
+
+.form-section-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+/* Form Group Enhanced */
+.form-group-enhanced {
+  margin-bottom: 1.5rem;
+}
+
+.form-label-enhanced {
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.form-label-enhanced .required {
+  color: var(--color-danger);
+}
+
+.form-label-enhanced .helper-icon {
+  color: var(--color-gray-400);
+  font-size: 1rem;
+  cursor: help;
+}
+
+/* Input with Icon */
+.input-with-icon {
+  position: relative;
+}
+
+.input-with-icon i {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-gray-400);
+  font-size: 1.125rem;
+}
+
+.input-with-icon .form-control {
+  padding-left: 3rem;
+}
+
+/* Calculation Preview */
+.calculation-preview {
+  background: var(--color-primary-50);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  margin-top: 2rem;
+  border: 2px dashed var(--color-primary);
+}
+
+.calculation-title {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+}
+
+.calculation-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.calculation-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: white;
+  border-radius: var(--radius-md);
+}
+
+.calculation-label {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  font-weight: 600;
+}
+
+.calculation-value {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  font-family: "Courier New", monospace;
+}
+
+.calculation-total {
+  grid-column: 1 / -1;
+  background: linear-gradient(
+    135deg,
+    var(--color-success),
+    var(--color-success-light)
+  );
+  color: white;
+  padding: 1rem;
+  border-radius: var(--radius-lg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.calculation-total .calculation-label {
+  color: white;
+  font-size: 1rem;
+}
+
+.calculation-total .calculation-value {
+  color: white;
+  font-size: 1.5rem;
+}
+
+/* Form Actions */
+.form-actions {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 2px solid var(--color-border);
+  display: flex;
+  gap: 1rem;
+}
+
+.form-actions .btn {
+  flex: 1;
+  padding: 1rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .form-card {
+    padding: 1.5rem;
+  }
+
+  .form-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .calculation-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+}

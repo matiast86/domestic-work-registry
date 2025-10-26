@@ -4,6 +4,7 @@ import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -17,6 +18,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.springboot.domesticworkregistry.dto.job.CreateJobDto;
 import com.springboot.domesticworkregistry.dto.job.JobsMonthlyReportDto;
 import com.springboot.domesticworkregistry.dto.job.JobsReportDto;
+import com.springboot.domesticworkregistry.dto.job.groups.ExtraJobValidation;
+import com.springboot.domesticworkregistry.dto.job.groups.RegularJobValidation;
 import com.springboot.domesticworkregistry.entities.Job;
 import com.springboot.domesticworkregistry.service.job.JobService;
 
@@ -49,7 +52,7 @@ public class JobController {
     @PostMapping("/create/{id}")
     public String createJob(
             @PathVariable("id") int contractId,
-            @Valid @ModelAttribute("jobForm") CreateJobDto form,
+            @Validated(RegularJobValidation.class) @ModelAttribute("jobForm") CreateJobDto form,
             BindingResult bindingResult,
             Model model) {
 
@@ -61,6 +64,30 @@ public class JobController {
         jobService.save(form, contractId);
 
         // Redirect to avoid resubmission
+        return "redirect:/jobs/jobList/" + contractId;
+    }
+
+    @GetMapping("/add-extra-hours/{id}")
+    public String extraHoursForm(@PathVariable("id") int contractId, Model model) {
+        CreateJobDto jobForm = new CreateJobDto();
+        model.addAttribute("jobForm", jobForm);
+        model.addAttribute("contractId", contractId);
+
+        return "jobs/extra-hours-form";
+    }
+
+    @PostMapping("/extra-hours/{id}")
+    public String createExtraHours(@PathVariable("id") int contractId,
+            @Validated(ExtraJobValidation.class) @ModelAttribute("jobForm") CreateJobDto form,
+            BindingResult bindingResult,
+            Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("contractId", contractId);
+            return "jobs/extra-hours-form";
+        }
+        form.setExtraHours(true);
+        jobService.save(form, contractId);
+
         return "redirect:/jobs/jobList/" + contractId;
     }
 
@@ -76,6 +103,7 @@ public class JobController {
             @RequestParam("month") int month, Model model) {
         JobsMonthlyReportDto jobs = this.jobService.getMonthlyJobsByContract(contractId, year, month);
         model.addAttribute("jobs", jobs);
+        model.addAttribute("contractId", contractId);
 
         return "jobs/monthly-table";
     }
@@ -86,7 +114,7 @@ public class JobController {
         model.addAttribute("jobForm", dto);
         model.addAttribute("jobId", jobId);
 
-        return "jobs/job-update-form";
+        return "jobs/job-form";
     }
 
     @PostMapping("/update")
@@ -95,7 +123,7 @@ public class JobController {
             Model model, RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("jobForm", form);
-            return "jobs/job-update-form";
+            return "jobs/job-form";
         }
 
         model.addAttribute("jobForm", form);

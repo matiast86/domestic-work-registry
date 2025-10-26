@@ -6,46 +6,108 @@
   layout:decorate="~{fragments/layout}"
 >
   <head>
-    <title>Iniciar Sesión</title>
-    <th:block layout:fragment="auth">
+    <title>Iniciar Sesión | DomesticWork</title>
     <link rel="stylesheet" th:href="@{/css/auth.css}" />
-  </th:block>
   </head>
+
   <body>
     <div layout:fragment="content">
-      <section class="py-5">
-        <div class="container" style="max-width: 400px">
-          <h2 class="text-center mb-4">Iniciar Sesión</h2>
-          <form th:action="@{/authenticateTheUser}" method="post">
-            <!-- Email -->
-            <div class="mb-3">
-              <label for="username" class="form-label"
-                >Correo Electrónico</label
-              >
-              <input
-                type="email"
-                name="username"
-                class="form-control"
-                required
-              />
+      <section class="auth-container">
+        <div class="container">
+          <div class="auth-card fade-in">
+            <!-- Header -->
+            <div class="auth-header">
+              <div class="auth-logo">
+                <i class="bi bi-house-heart-fill"></i>
+              </div>
+              <h1 class="auth-title">Bienvenido de Vuelta</h1>
+              <p class="auth-subtitle">Iniciá sesión para continuar</p>
             </div>
 
-            <!-- Password -->
-            <div class="mb-3">
-              <label for="password" class="form-label">Contraseña</label>
-              <input
-                type="password"
-                name="password"
-                class="form-control"
-                required
-              />
+            <!-- Error Message (if any) -->
+            <div th:if="${param.error}" class="auth-error">
+              <i class="bi bi-exclamation-triangle-fill"></i>
+              <p class="auth-error-text">
+                Usuario o contraseña incorrectos. Por favor, intentá nuevamente.
+              </p>
             </div>
 
-            <!-- Submit -->
-            <div class="d-grid">
-              <button type="submit" class="btn btn-primary">Ingresar</button>
+            <!-- Logout Success Message -->
+            <div th:if="${param.logout}" class="alert alert-success">
+              <i class="bi bi-check-circle-fill me-2"></i>
+              Has cerrado sesión exitosamente.
             </div>
-          </form>
+
+            <!-- Login Form -->
+            <form th:action="@{/authenticateTheUser}" method="post">
+              <!-- Email -->
+              <div class="form-group">
+                <label for="username" class="form-label"
+                  >Correo Electrónico</label
+                >
+                <div class="form-control-icon">
+                  <i class="bi bi-envelope-fill"></i>
+                  <input
+                    type="email"
+                    id="username"
+                    name="username"
+                    class="form-control"
+                    placeholder="tucorreo@ejemplo.com"
+                    required
+                    autofocus
+                  />
+                </div>
+              </div>
+
+              <!-- Password -->
+              <div class="form-group">
+                <label for="password" class="form-label">Contraseña</label>
+                <div class="form-control-icon">
+                  <i class="bi bi-lock-fill"></i>
+                  <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    class="form-control"
+                    placeholder="••••••••"
+                    required
+                  />
+                </div>
+              </div>
+
+              <!-- Remember & Forgot -->
+              <div class="auth-actions">
+                <label class="auth-remember">
+                  <input
+                    type="checkbox"
+                    class="form-check-input"
+                    name="remember-me"
+                  />
+                  <span>Recordarme</span>
+                </label>
+                <a href="#" class="auth-forgot">¿Olvidaste tu contraseña?</a>
+              </div>
+
+              <!-- Submit Button -->
+              <button type="submit" class="btn btn-primary btn-auth">
+                <i class="bi bi-box-arrow-in-right me-2"></i>
+                Iniciar Sesión
+              </button>
+            </form>
+
+            <!-- Divider -->
+            <div class="auth-divider">
+              <span>¿No tenés cuenta?</span>
+            </div>
+
+            <!-- Register Link -->
+            <div class="auth-register">
+              <p class="mb-0">
+                Creá una cuenta gratuita en minutos.
+                <a th:href="@{/register/registrationForm}">Registrate aquí</a>
+              </p>
+            </div>
+          </div>
         </div>
       </section>
     </div>

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html
+  lang="es"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{fragments/layout}"
+>
+  <head>
+    <title>Registro de Asistencia</title>
+    <th:block layout:fragment="styles">
+      <link rel="stylesheet" th:href="@{/css/attendance.css}" />
+    </th:block>
+  </head>
+
+  <body>
+    <div layout:fragment="content">
+      <!-- Success Message -->
+      <div
+        th:if="${successMessage}"
+        class="alert alert-success alert-dismissible fade show"
+        role="alert"
+      >
+        <i class="bi bi-check-circle-fill me-2"></i>
+        <span th:text="${successMessage}"></span>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <!-- Attendance Header -->
+      <div class="attendance-header fade-in">
+        <div class="attendance-header-content">
+          <h1 class="attendance-title">
+            <i class="bi bi-calendar-check me-2"></i>
+            Registro de Asistencia
+          </h1>
+          <p class="attendance-subtitle">
+            Control mensual de asistencias y ausencias
+          </p>
+          <div class="attendance-actions">
+            <form
+              id="generateForm"
+              th:action="@{/attendance/create/{scheduleId}(scheduleId=${scheduleId})}"
+              method="post"
+              style="display: inline"
+            >
+              <input type="hidden" name="year" th:value="${year}" />
+              <input type="hidden" name="month" th:value="${month}" />
+              <input type="hidden" name="scheduleId" th:value="${scheduleId}" />
+              <button type="submit" class="btn">
+                <i class="bi bi-plus-circle-fill me-2"></i>
+                Generar Asistencia
+              </button>
+            </form>
+            <a
+              th:href="@{/payslips/select/{contractId}(contractId=${contractId})}"
+              class="btn"
+            >
+              <i class="bi bi-file-earmark-text me-2"></i>
+              Generar Recibo
+            </a>
+            <a
+              th:href="@{/payslips/list/{contractId}(contractId=${contractId})}"
+              class="btn"
+            >
+              <i class="bi bi-list-ul me-2"></i>
+              Ver Recibos
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Month Navigation -->
+      <div class="calendar-navigation slide-in">
+        <a
+          th:href="@{/attendance/view/{scheduleId}(scheduleId=${scheduleId}, year=${month == 1 ? year - 1 : year}, month=${month == 1 ? 12 : month - 1})}"
+          class="btn btn-outline-secondary"
+        >
+          <i class="bi bi-chevron-left me-2"></i>
+          Mes Anterior
+        </a>
+
+        <div class="current-month-header">
+          <i class="bi bi-calendar-event me-2"></i>
+          <strong th:text="${monthName} + ' ' + ${year}">Mes Año</strong>
+        </div>
+
+        <a
+          th:href="@{/attendance/view/{scheduleId}(scheduleId=${scheduleId}, year=${month == 12 ? year + 1 : year}, month=${month == 12 ? 1 : month + 1})}"
+          class="btn btn-outline-secondary"
+        >
+          Mes Siguiente
+          <i class="bi bi-chevron-right ms-2"></i>
+        </a>
+      </div>
+
+      <!-- Stats Summary -->
+      <div
+        class="attendance-stats"
+        th:if="${!#lists.isEmpty(attendanceRecords)}"
+      >
+        <div class="stat-card present">
+          <div class="stat-icon">
+            <i class="bi bi-check-circle-fill"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-label">Presentes</div>
+            <div
+              class="stat-value"
+              th:text="${#lists.size(attendanceRecords.?[attendanceStatus.name() == 'PRESENT'])}"
+            >
+              0
+            </div>
+          </div>
+        </div>
+
+        <div class="stat-card absent">
+          <div class="stat-icon">
+            <i class="bi bi-x-circle-fill"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-label">Ausencias</div>
+            <div
+              class="stat-value"
+              th:text="${#lists.size(attendanceRecords.?[attendanceStatus.name() == 'UNJUSTIFIED_ABSCENCE' or attendanceStatus.name() == 'JUSTIFIED_ABSCENCE'])}"
+            >
+              0
+            </div>
+          </div>
+        </div>
+
+        <div class="stat-card holiday">
+          <div class="stat-icon">
+            <i class="bi bi-calendar-event-fill"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-label">Feriados</div>
+            <div
+              class="stat-value"
+              th:text="${#lists.size(attendanceRecords.?[attendanceStatus.name() == 'NATIONAL_HOLIDAY'])}"
+            >
+              0
+            </div>
+          </div>
+        </div>
+
+        <div class="stat-card total">
+          <div class="stat-icon">
+            <i class="bi bi-calendar3"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-label">Total Días</div>
+            <div class="stat-value" th:text="${#lists.size(attendanceRecords)}">
+              0
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Calendar View -->
+      <div
+        th:if="${!#lists.isEmpty(attendanceRecords)}"
+        class="calendar-container"
+      >
+        <div class="calendar-wrapper">
+          <!-- Calendar Header (Days of Week) -->
+          <div class="calendar-header">
+            <div class="calendar-day-name">LUN</div>
+            <div class="calendar-day-name">MAR</div>
+            <div class="calendar-day-name">MIÉ</div>
+            <div class="calendar-day-name">JUE</div>
+            <div class="calendar-day-name">VIE</div>
+            <div class="calendar-day-name">SÁB</div>
+            <div class="calendar-day-name">DOM</div>
+          </div>
+
+          <!-- Calendar Grid -->
+          <div class="calendar-grid" id="calendarGrid">
+            <!-- Los días se insertarán con JavaScript para mantener la alineación correcta -->
+            <th:block th:each="record : ${attendanceRecords}">
+              <div
+                class="calendar-day"
+                th:classappend="${record.attendanceStatus.name()}"
+                th:data-record-id="${record.attendanceId}"
+                th:data-status="${record.attendanceStatus.name()}"
+                th:data-day-of-month="${#temporals.format(record.date, 'd')}"
+                th:data-day-of-week="${#temporals.format(record.date, 'e')}"
+                th:data-date="${#temporals.format(record.date, 'yyyy-MM-dd')}"
+                onclick="toggleDropdown(this)"
+                style="display: none;"
+              >
+                <div class="calendar-day-number">
+                  <span th:text="${#temporals.format(record.date, 'd')}">1</span>
+                </div>
+                <div class="calendar-day-status">
+                  <i
+                    class="bi"
+                    th:classappend="${record.attendanceStatus.name() == 'PRESENT' ? 'bi-check-circle-fill' : 
+                                     record.attendanceStatus.name() == 'JUSTIFIED_ABSCENCE' ? 'bi-exclamation-circle-fill' :
+                                     record.attendanceStatus.name() == 'UNJUSTIFIED_ABSCENCE' ? 'bi-x-circle-fill' :
+                                     record.attendanceStatus.name() == 'NATIONAL_HOLIDAY' ? 'bi-calendar-event-fill' :
+                                     record.attendanceStatus.name() == 'LATE' ? 'bi-clock-fill' : 'bi-circle-fill'}"
+                  ></i>
+                </div>
+                <div class="calendar-day-label" th:text="${record.attendanceStatus.label}">
+                  Estado
+                </div>
+
+                <!-- Dropdown para cambiar estado -->
+                <div class="status-dropdown">
+                  <form
+                    th:action="@{/attendance/updateStatus}"
+                    method="post"
+                    onclick="event.stopPropagation()"
+                  >
+                    <input
+                      type="hidden"
+                      name="recordId"
+                      th:value="${record.attendanceId}"
+                    />
+                    <input
+                      type="hidden"
+                      name="scheduleId"
+                      th:value="${scheduleId}"
+                    />
+                    
+                    <div class="dropdown-header">
+                      <strong th:text="${#temporals.dayOfWeekName(record.date)}">Día</strong>
+                      <span th:text="${#temporals.format(record.date, 'dd/MM')}">01/01</span>
+                    </div>
+
+                    <select name="attendanceStatus" class="form-select">
+                      <option
+                        th:each="s : ${T(com.springboot.domesticworkregistry.enums.AttendanceStatus).values()}"
+                        th:value="${s}"
+                        th:text="${s.label}"
+                        th:selected="${s == record.attendanceStatus}"
+                      ></option>
+                    </select>
+                    
+                    <button type="submit" class="btn btn-primary btn-sm w-100">
+                      <i class="bi bi-check-lg me-1"></i>
+                      Actualizar
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </th:block>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div
+        th:if="${#lists.isEmpty(attendanceRecords)}"
+        class="empty-attendance"
+      >
+        <div class="empty-attendance-icon">
+          <i class="bi bi-calendar-x"></i>
+        </div>
+        <h3>No hay registros de asistencia</h3>
+        <p>
+          Generá los registros de asistencia para este mes para comenzar a
+          llevar el control.
+        </p>
+        <form
+          th:action="@{/attendance/create/{scheduleId}(scheduleId=${scheduleId})}"
+          method="post"
+          style="display: inline"
+        >
+          <input type="hidden" name="year" th:value="${year}" />
+          <input type="hidden" name="month" th:value="${month}" />
+          <input type="hidden" name="scheduleId" th:value="${scheduleId}" />
+          <button type="submit" class="btn btn-primary btn-lg">
+            <i class="bi bi-plus-circle-fill me-2"></i>
+            Generar Asistencia del Mes
+          </button>
+        </form>
+      </div>
+
+      <!-- Legend -->
+      <div
+        class="attendance-legend"
+        th:if="${!#lists.isEmpty(attendanceRecords)}"
+      >
+        <h4 class="legend-title">
+          <i class="bi bi-info-circle me-2"></i>
+          Referencias
+        </h4>
+        <div class="legend-items">
+          <div class="legend-item">
+            <div class="legend-color present"></div>
+            <span class="legend-text">Presente</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color JUSTIFIED_ABSCENCE"></div>
+            <span class="legend-text">Ausencia Justificada</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color UNJUSTIFIED_ABSCENCE"></div>
+            <span class="legend-text">Ausencia Injustificada</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color NATIONAL_HOLIDAY"></div>
+            <span class="legend-text">Feriado Nacional</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color LATE"></div>
+            <span class="legend-text">Llegada Tarde</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script th:src="@{/js/attendance.js}" layout:fragment="scripts"></script>
+  </body>
+</html>
