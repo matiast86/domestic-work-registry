@@ -113,4 +113,12 @@ public class Contract {
                 payslip.setContract(this);
         }
 
+        public void setEmployer(User employer) {
+                this.employer = employer;
+        }
+
+        public void setEmployee(User employee) {
+                this.employee = employee;
+        }
+
 }

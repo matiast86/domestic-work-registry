@@ -87,4 +87,8 @@ public class Payslip {
     @JoinColumn(name = "contract_id")
     private Contract contract;
 
+    public void setContract(Contract contract) {
+        this.contract = contract;
+    }
+
 }

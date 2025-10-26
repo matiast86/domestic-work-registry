@@ -50,4 +50,8 @@ public class ScheduleEntry {
     @OneToMany(mappedBy = "scheduleEntry", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AttendanceRecord> attendanceRecords = new ArrayList<>();
 
+    public void setSchedule(Schedule schedule) {
+        this.schedule = schedule;
+    }
+
 }

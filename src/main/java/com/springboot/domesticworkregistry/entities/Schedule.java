@@ -43,5 +43,9 @@ public class Schedule {
         entries.remove(entry);
         entry.setSchedule(null);
     }
+    
+    public void setContract(Contract contract) {
+    this.contract = contract;
+}
 
 }
