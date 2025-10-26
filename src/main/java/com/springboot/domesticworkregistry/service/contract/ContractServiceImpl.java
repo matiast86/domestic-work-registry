@@ -105,6 +105,22 @@ public class ContractServiceImpl implements ContractService {
         }
 
         ContractDetailsWithemployeeDto details = contractDetailsMapper.toDto(contract);
+        User employee = contract.getEmployee();
+        details.setFirstName(employee.getFirstName());
+        details.setLastName(employee.getLastName());
+        details.setEmail(employee.getEmail());
+        details.setBirthdate(employee.getBirthDate());
+        details.setIdentificationNumber(employee.getIdentificationNumber());
+        details.setPhone(employee.getPhone());
+        Address employeeAddress = employee.getAddress();
+        details.setStreet(employeeAddress.getStreet());
+        details.setNumber(employeeAddress.getNumber());
+        details.setApartment(employeeAddress.getApartment());
+        details.setCity(employeeAddress.getCity());
+        details.setState(employeeAddress.getState());
+        details.setPostalCode(employeeAddress.getPostalCode());
+        details.setCountry(employeeAddress.getCountry());
+        details.setScheduleId(contract.getSchedule().getId());
         List<ScheduleEntryDto> entries = contract.getSchedule().getEntries().stream()
                 .map(entry -> new ScheduleEntryDto(entry.getDayOfWeek(), entry.getStartTime(), entry.getEndTime()))
                 .toList();
