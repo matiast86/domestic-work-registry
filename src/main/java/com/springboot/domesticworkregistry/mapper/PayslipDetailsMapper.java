@@ -10,7 +10,6 @@ import com.springboot.domesticworkregistry.entities.Payslip;
 public interface PayslipDetailsMapper {
 
     @Mapping(source = "id", target = "payslipId")
-    @Mapping(source = "contract.id", target = "contractId")
-    @Mapping(source = "contract.employee.identificationNumber", target = "employeeIdentificationNumber")
+
     PayslipDetailsDto toDto(Payslip payslip);
 }
