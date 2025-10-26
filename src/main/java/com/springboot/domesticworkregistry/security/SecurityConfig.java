@@ -22,6 +22,7 @@ public class SecurityConfig {
                         CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler) {
                 this.customUserDetailsService = customUserDetailsService;
                 this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;
+
         }
 
         @Bean
@@ -40,19 +41,22 @@ public class SecurityConfig {
         @Bean
         public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
                 http
+
                                 .authorizeHttpRequests(config -> config
                                                 // public
-                                                .requestMatchers("/css/**", "/js/**", "/images/**", "/", "/register/**")
+                                                .requestMatchers("/css/**", "/js/**", "/images/**", "/", "/register/**",
+                                                                "/email/**", "/data/**", "/help/**")
                                                 .permitAll()
 
                                                 // employer-only
                                                 .requestMatchers("/employers/**", "/contract/**").hasRole("EMPLOYER")
 
                                                 // employee-only
-                                                .requestMatchers("/employees/**", "/attendance/**").hasRole("EMPLOYEE")
+                                                .requestMatchers("/employees/**").hasRole("EMPLOYEE")
 
                                                 // shared
-                                                .requestMatchers("/dashboard/**").hasAnyRole("EMPLOYER", "EMPLOYEE")
+                                                .requestMatchers("/dashboard/**", "/attendance/**")
+                                                .hasAnyRole("EMPLOYER", "EMPLOYEE")
 
                                                 .anyRequest().authenticated())
                                 .formLogin(form -> form

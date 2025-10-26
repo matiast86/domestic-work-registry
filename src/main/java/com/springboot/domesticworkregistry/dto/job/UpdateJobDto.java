@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UpdateJobDto {
 
-    private int id;
+    private int jobId;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @NotNull(message = "is required")

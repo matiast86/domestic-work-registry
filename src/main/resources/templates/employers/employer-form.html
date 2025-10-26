@@ -1,191 +1,397 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{fragments/layout}">
-<head>
-  <title>Actualización de datos Empleador</title>
-  <link rel="stylesheet" th:href="@{/css/auth.css}" layout:fragment="styles"/>
-</head>
-<body>
-  <div layout:fragment="content">
-    <!-- Navbar -->
-   
+<html
+  lang="es"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{fragments/layout}"
+>
+  <head>
+    <title>Actualizar Datos | DomesticWork</title>
+    <th:block layout:fragment="styles">
+      <link rel="stylesheet" th:href="@{/css/forms.css}" />
+    </th:block>
+  </head>
 
-    <!-- Registro Empleador -->
-    <section class="py-5">
-      <div class="container">
-        <h2 class="text-center mb-4">Registrarse como Empleador</h2>
-        <form
-          th:action="@{/users/update}"
-          method="post"
-          class="mx-auto"
-          style="max-width: 600px"
-          th:object="${employer}"
-        >
-          <input type="hidden" th:field="*{userId}" />
-          <!-- Nombre -->
-          <div class="mb-3">
-            <label for="firstName" class="form-label">Nombre</label>
-            <input
-              type="text"
-              th:field="*{firstName}"
-              class="form-control"
-              required
-            />
-            <div
-              class="invalid-feedback"
-              th:if="${#fields.hasErrors('firstName')}"
-            >
-              <span th:errors="*{firstName}"></span>
+  <body>
+    <div layout:fragment="content">
+      <div class="form-container">
+        <!-- Form Header -->
+        <div class="form-header-info fade-in">
+          <h1>
+            <i class="bi bi-person-gear me-2"></i>
+            Actualizar Mis Datos
+          </h1>
+          <p>Modificá tu información personal y dirección</p>
+        </div>
+
+        <!-- Form Card -->
+        <div class="form-card slide-in">
+          <form
+            th:action="@{/users/update}"
+            method="post"
+            th:object="${employer}"
+          >
+            <input type="hidden" th:field="*{userId}" />
+
+            <!-- Personal Information Section -->
+            <div class="form-section">
+              <div class="form-section-header">
+                <div class="form-section-icon">
+                  <i class="bi bi-person-fill"></i>
+                </div>
+                <h3 class="form-section-title">Datos Personales</h3>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group-enhanced">
+                    <label for="firstName" class="form-label-enhanced">
+                      <i class="bi bi-person"></i>
+                      Nombre <span class="required">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      th:field="*{firstName}"
+                      class="form-control"
+                      th:classappend="${#fields.hasErrors('firstName')} ? 'is-invalid'"
+                      placeholder="Tu nombre"
+                      required
+                    />
+                    <div
+                      th:if="${#fields.hasErrors('firstName')}"
+                      class="invalid-feedback d-flex align-items-center gap-2"
+                    >
+                      <i class="bi bi-exclamation-circle-fill"></i>
+                      <span th:errors="*{firstName}"></span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group-enhanced">
+                    <label for="lastName" class="form-label-enhanced">
+                      <i class="bi bi-person"></i>
+                      Apellido <span class="required">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      th:field="*{lastName}"
+                      class="form-control"
+                      th:classappend="${#fields.hasErrors('lastName')} ? 'is-invalid'"
+                      placeholder="Tu apellido"
+                      required
+                    />
+                    <div
+                      th:if="${#fields.hasErrors('lastName')}"
+                      class="invalid-feedback d-flex align-items-center gap-2"
+                    >
+                      <i class="bi bi-exclamation-circle-fill"></i>
+                      <span th:errors="*{lastName}"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group-enhanced">
+                    <label for="email" class="form-label-enhanced">
+                      <i class="bi bi-envelope"></i>
+                      Correo Electrónico <span class="required">*</span>
+                    </label>
+                    <input
+                      type="email"
+                      th:field="*{email}"
+                      class="form-control"
+                      th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'"
+                      placeholder="correo@ejemplo.com"
+                      required
+                    />
+                    <div
+                      th:if="${#fields.hasErrors('email')}"
+                      class="invalid-feedback d-flex align-items-center gap-2"
+                    >
+                      <i class="bi bi-exclamation-circle-fill"></i>
+                      <span th:errors="*{email}"></span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group-enhanced">
+                    <label for="phone" class="form-label-enhanced">
+                      <i class="bi bi-telephone"></i>
+                      Teléfono
+                    </label>
+                    <input
+                      type="text"
+                      th:field="*{phone}"
+                      class="form-control"
+                      th:classappend="${#fields.hasErrors('phone')} ? 'is-invalid'"
+                      placeholder="+54 9 11 1234-5678"
+                    />
+                    <div
+                      th:if="${#fields.hasErrors('phone')}"
+                      class="invalid-feedback d-flex align-items-center gap-2"
+                    >
+                      <i class="bi bi-exclamation-circle-fill"></i>
+                      <span th:errors="*{phone}"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group-enhanced">
+                    <label for="identificationNumber" class="form-label-enhanced">
+                      <i class="bi bi-card-text"></i>
+                      CUIL <span class="required">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      th:field="*{identificationNumber}"
+                      class="form-control"
+                      th:classappend="${#fields.hasErrors('identificationNumber')} ? 'is-invalid'"
+                      placeholder="20-12345678-9"
+                      required
+                    />
+                    <div
+                      th:if="${#fields.hasErrors('identificationNumber')}"
+                      class="invalid-feedback d-flex align-items-center gap-2"
+                    >
+                      <i class="bi bi-exclamation-circle-fill"></i>
+                      <span th:errors="*{identificationNumber}"></span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group-enhanced">
+                    <label for="birthDate" class="form-label-enhanced">
+                      <i class="bi bi-calendar-event"></i>
+                      Fecha de Nacimiento <span class="required">*</span>
+                    </label>
+                    <input
+                      type="date"
+                      th:field="*{birthDate}"
+                      class="form-control"
+                      th:classappend="${#fields.hasErrors('birthDate')} ? 'is-invalid'"
+                      required
+                    />
+                    <div
+                      th:if="${#fields.hasErrors('birthDate')}"
+                      class="invalid-feedback d-flex align-items-center gap-2"
+                    >
+                      <i class="bi bi-exclamation-circle-fill"></i>
+                      <span th:errors="*{birthDate}"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
 
-          <!-- Apellido -->
-          <div class="mb-3">
-            <label for="lastName" class="form-label">Apellido</label>
-            <input
-              type="text"
-              th:field="*{lastName}"
-              class="form-control"
-              required
-            />
-            <div
-              class="invalid-feedback"
-              th:if="${#fields.hasErrors('lastName')}"
-            >
-              <span th:errors="*{lastName}"></span>
+            <!-- Address Section -->
+            <div class="form-section">
+              <div class="form-section-header">
+                <div class="form-section-icon">
+                  <i class="bi bi-geo-alt-fill"></i>
+                </div>
+                <h3 class="form-section-title">Dirección</h3>
+              </div>
+
+              <div class="row">
+                <div class="col-md-8">
+                  <div class="form-group-enhanced">
+                    <label for="street" class="form-label-enhanced">
+                      <i class="bi bi-signpost"></i>
+                      Calle <span class="required">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      th:field="*{street}"
+                      class="form-control"
+                      th:classappend="${#fields.hasErrors('street')} ? 'is-invalid'"
+                      placeholder="Nombre de la calle"
+                      required
+                    />
+                    <div
+                      th:if="${#fields.hasErrors('street')}"
+                      class="invalid-feedback d-flex align-items-center gap-2"
+                    >
+                      <i class="bi bi-exclamation-circle-fill"></i>
+                      <span th:errors="*{street}"></span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group-enhanced">
+                    <label for="number" class="form-label-enhanced">
+                      <i class="bi bi-123"></i>
+                      Número <span class="required">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      th:field="*{number}"
+                      class="form-control"
+                      th:classappend="${#fields.hasErrors('number')} ? 'is-invalid'"
+                      placeholder="1234"
+                      required
+                    />
+                    <div
+                      th:if="${#fields.hasErrors('number')}"
+                      class="invalid-feedback d-flex align-items-center gap-2"
+                    >
+                      <i class="bi bi-exclamation-circle-fill"></i>
+                      <span th:errors="*{number}"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group-enhanced">
+                    <label for="apartment" class="form-label-enhanced">
+                      <i class="bi bi-door-closed"></i>
+                      Departamento
+                    </label>
+                    <input
+                      type="text"
+                      th:field="*{apartment}"
+                      class="form-control"
+                      th:classappend="${#fields.hasErrors('apartment')} ? 'is-invalid'"
+                      placeholder="5A (opcional)"
+                    />
+                    <div
+                      th:if="${#fields.hasErrors('apartment')}"
+                      class="invalid-feedback d-flex align-items-center gap-2"
+                    >
+                      <i class="bi bi-exclamation-circle-fill"></i>
+                      <span th:errors="*{apartment}"></span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group-enhanced">
+                    <label for="country" class="form-label-enhanced">
+                      <i class="bi bi-globe"></i>
+                      País <span class="required">*</span>
+                    </label>
+                    <select
+                      th:field="*{country}"
+                      class="form-select"
+                      th:classappend="${#fields.hasErrors('country')} ? 'is-invalid'"
+                      id="country"
+                      required
+                    >
+                      <option value="">-- Seleccione un país --</option>
+                    </select>
+                    <div
+                      th:if="${#fields.hasErrors('country')}"
+                      class="invalid-feedback d-flex align-items-center gap-2"
+                    >
+                      <i class="bi bi-exclamation-circle-fill"></i>
+                      <span th:errors="*{country}"></span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group-enhanced">
+                    <label for="state" class="form-label-enhanced">
+                      <i class="bi bi-map"></i>
+                      Provincia <span class="required">*</span>
+                    </label>
+                    <select
+                      th:field="*{state}"
+                      class="form-select"
+                      th:classappend="${#fields.hasErrors('state')} ? 'is-invalid'"
+                      id="state"
+                      required
+                    >
+                      <option value="">-- Seleccione una provincia --</option>
+                    </select>
+                    <div
+                      th:if="${#fields.hasErrors('state')}"
+                      class="invalid-feedback d-flex align-items-center gap-2"
+                    >
+                      <i class="bi bi-exclamation-circle-fill"></i>
+                      <span th:errors="*{state}"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group-enhanced">
+                    <label for="city" class="form-label-enhanced">
+                      <i class="bi bi-building"></i>
+                      Localidad <span class="required">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      th:field="*{city}"
+                      class="form-control"
+                      th:classappend="${#fields.hasErrors('city')} ? 'is-invalid'"
+                      placeholder="Ciudad o localidad"
+                      required
+                    />
+                    <div
+                      th:if="${#fields.hasErrors('city')}"
+                      class="invalid-feedback d-flex align-items-center gap-2"
+                    >
+                      <i class="bi bi-exclamation-circle-fill"></i>
+                      <span th:errors="*{city}"></span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group-enhanced">
+                    <label for="postalCode" class="form-label-enhanced">
+                      <i class="bi bi-mailbox"></i>
+                      Código Postal <span class="required">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      th:field="*{postalCode}"
+                      class="form-control"
+                      th:classappend="${#fields.hasErrors('postalCode')} ? 'is-invalid'"
+                      placeholder="1234"
+                      required
+                    />
+                    <div
+                      th:if="${#fields.hasErrors('postalCode')}"
+                      class="invalid-feedback d-flex align-items-center gap-2"
+                    >
+                      <i class="bi bi-exclamation-circle-fill"></i>
+                      <span th:errors="*{postalCode}"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
 
-          <!-- Email -->
-          <div class="mb-3">
-            <label for="email" class="form-label">Correo Electrónico</label>
-            <input
-              type="email"
-              th:field="*{email}"
-              class="form-control"
-              required
-            />
-            <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}">
-              <span th:errors="*{email}"></span>
+            <!-- Form Actions -->
+            <div class="form-actions">
+              <a th:href="@{/dashboard}" class="btn btn-outline-secondary">
+                <i class="bi bi-x-circle me-2"></i>
+                Cancelar
+              </a>
+              <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                Guardar Cambios
+              </button>
             </div>
-          </div>
-
-          <!-- Teléfono -->
-          <div class="mb-3">
-            <label for="phone" class="form-label">Teléfono</label>
-            <input type="text" th:field="*{phone}" class="form-control" />
-            <div class="invalid-feedback" th:if="${#fields.hasErrors('phone')}">
-              <span th:errors="*{phone}"></span>
-            </div>
-          </div>
-
-          <!-- Número de Identificación -->
-          <div class="mb-3">
-            <label for="identificationNumber" class="form-label"
-              >Número de Identificación</label
-            >
-            <input
-              type="text"
-              th:field="*{identificationNumber}"
-              class="form-control"
-              required
-            />
-            <div
-              class="invalid-feedback"
-              th:if="${#fields.hasErrors('identificationNumber')}"
-            >
-              <span th:errors="*{identificationNumber}"></span>
-            </div>
-          </div>
-
-          <!-- Fecha Nacimiento -->
-          <div class="mb-3">
-            <label for="birthDate" class="form-label">Fecha Nacimiento</label>
-            <input
-              type="date"
-              th:field="*{birthDate}"
-              class="form-control"
-              required
-            />
-            <div
-              class="invalid-feedback"
-              th:if="${#fields.hasErrors('birthDate')}"
-              th:errors="*{birthDate}"
-            ></div>
-          </div>
-
-          <!-- ADDRESS DATA -->
-          <h4>Address</h4>
-          <div class="mb-3">
-            <label for="street" class="form-label">Street</label>
-            <input type="text" th:field="*{street}" class="form-control" />
-            <div
-              class="text-danger"
-              th:if="${#fields.hasErrors('street')}"
-              th:errors="*{street}"
-            ></div>
-          </div>
-
-          <div class="mb-3">
-            <label for="number" class="form-label">Number</label>
-            <input type="text" th:field="*{number}" class="form-control" />
-            <div
-              class="text-danger"
-              th:if="${#fields.hasErrors('number')}"
-              th:errors="*{number}"
-            ></div>
-          </div>
-
-          <div class="mb-3">
-            <label for="apartment" class="form-label">Departmento</label>
-            <input type="text" th:field="*{apartment}" class="form-control" />
-            <div
-              class="text-danger"
-              th:if="${#fields.hasErrors('apartment')}"
-              th:errors="*{apartment}"
-            ></div>
-          </div>
-
-          <div class="mb-3">
-            <label for="city" class="form-label">City</label>
-            <input type="text" th:field="*{city}" class="form-control" />
-            <div
-              class="text-danger"
-              th:if="${#fields.hasErrors('city')}"
-              th:errors="*{city}"
-            ></div>
-          </div>
-
-          <div class="mb-3">
-            <label for="postalCode" class="form-label">Postal Code</label>
-            <input type="text" th:field="*{postalCode}" class="form-control" />
-            <div
-              class="text-danger"
-              th:if="${#fields.hasErrors('postalCode')}"
-              th:errors="*{postalCode}"
-            ></div>
-          </div>
-
-          <div class="mb-3">
-            <label for="country" class="form-label">Country</label>
-            <input type="text" th:field="*{country}" class="form-control" />
-            <div
-              class="text-danger"
-              th:if="${#fields.hasErrors('country')}"
-              th:errors="*{country}"
-            ></div>
-          </div>
-
-          <!-- Botón -->
-          <div class="d-grid">
-            <button type="submit" class="btn btn-primary">Guardar</button>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
-    </section>
+    </div>
 
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/forms.js}" layout:fragment="scripts"></script>
   </body>
 </html>

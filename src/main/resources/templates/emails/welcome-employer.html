@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <th:block th:replace="~{emails/email-base :: body(content=~{::content})}">
+        <th:block th:fragment="content">
+            <h2 style="color: #111827; font-size: 28px; font-weight: 800; margin: 0 0 20px 0;">
+                ¡Bienvenido/a, <span th:text="${name}">Usuario</span>! 👋
+            </h2>
+            
+            <p style="margin: 0 0 20px 0;">
+                Gracias por registrarte en <strong>DomesticWork</strong>. Estás a un paso de comenzar a gestionar tu trabajo doméstico de forma simple y legal.
+            </p>
+            
+            <div style="background: linear-gradient(135deg, rgba(14, 165, 233, 0.1), rgba(56, 189, 248, 0.05)); border-left: 4px solid #0ea5e9; padding: 20px; border-radius: 12px; margin: 30px 0;">
+                <p style="margin: 0; font-size: 15px; color: #0284c7;">
+                    <strong style="color: #0369a1;">🔐 Activá tu cuenta</strong><br>
+                    Para comenzar a usar todas las funcionalidades, necesitás activar tu cuenta haciendo click en el botón de abajo.
+                </p>
+            </div>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <a th:href="${activationUrl}" href="#" class="email-button" style="display: inline-block; background: linear-gradient(135deg, #0ea5e9, #38bdf8); color: #ffffff !important; text-decoration: none; padding: 16px 32px; border-radius: 50px; font-weight: 700; font-size: 16px;">
+                    ✓ Activar Mi Cuenta
+                </a>
+            </div>
+            
+            <p style="margin: 20px 0; font-size: 14px; color: #6b7280;">
+                O copiá y pegá este enlace en tu navegador:<br>
+                <a th:href="${activationUrl}" href="#" style="color: #0ea5e9; word-break: break-all;">
+                    <span th:text="${activationUrl}">https://domesticwork.com/activate/...</span>
+                </a>
+            </p>
+            
+            <div class="divider" style="height: 1px; background: #e5e7eb; margin: 30px 0;"></div>
+            
+            <h3 style="color: #111827; font-size: 20px; font-weight: 700; margin: 0 0 15px 0;">
+                ¿Qué podés hacer con DomesticWork?
+            </h3>
+            
+            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                <tr>
+                    <td style="padding: 10px 0;">
+                        <strong style="color: #0ea5e9;">✓</strong> Crear y gestionar contratos de trabajo
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px 0;">
+                        <strong style="color: #0ea5e9;">✓</strong> Registrar asistencias y ausencias
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px 0;">
+                        <strong style="color: #0ea5e9;">✓</strong> Llevar control de tareas y pagos
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px 0;">
+                        <strong style="color: #0ea5e9;">✓</strong> Generar recibos de sueldo
+                    </td>
+                </tr>
+            </table>
+            
+            <div class="divider" style="height: 1px; background: #e5e7eb; margin: 30px 0;"></div>
+            
+            <p style="margin: 0; font-size: 14px; color: #6b7280;">
+                Si tenés alguna pregunta o necesitás ayuda, no dudes en contactarnos.
+            </p>
+            
+            <p style="margin: 20px 0 0 0; font-weight: 600; color: #374151;">
+                ¡Bienvenido/a a bordo! 🚀
+            </p>
+        </th:block>
+    </th:block>
+</body>
+</html>

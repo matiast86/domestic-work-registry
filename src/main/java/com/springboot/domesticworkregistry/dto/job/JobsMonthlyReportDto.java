@@ -10,6 +10,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class JobsMonthlyReportDto {
+    private int year;
+    private int month;
+    private String monthName;
     List<JobsMonthlyTableDto> rows;
     JobsTotalsDto totals;
 }

@@ -31,7 +31,10 @@ public class Address {
     @Column(name = "apartment", nullable = true)
     private String apartment;
 
-    @Column(name = "city")
+    @Column(name = "state")
+    private String state;
+
+    @Column(name = "city", nullable = true)
     private String city;
 
     @Column(name = "postal_code")
@@ -40,10 +43,12 @@ public class Address {
     @Column(name = "country")
     private String country;
 
-    public Address(String street, String number, String apartment, String city, String postalCode, String country) {
+    public Address(String street, String number, String apartment, String state, String city, String postalCode,
+            String country) {
         this.street = street;
         this.number = number;
         this.apartment = apartment;
+        this.state = state;
         this.city = city;
         this.postalCode = postalCode;
         this.country = country;

@@ -52,12 +52,16 @@ public class Job {
         @Column(name = "total_fee")
         private BigDecimal totalFee;
 
+        @Column(name = "extra_hours")
+        private boolean extraHours = false;
+
         @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
                         CascadeType.REFRESH })
         @JoinColumn(name = "contract_id")
         private Contract contract;
 
-        public Job(LocalDate date, LocalTime startTime, LocalTime endTime, BigDecimal workedHours, BigDecimal hourlyRate,
+        public Job(LocalDate date, LocalTime startTime, LocalTime endTime, BigDecimal workedHours,
+                        BigDecimal hourlyRate,
                         BigDecimal partialFee, BigDecimal transportationFee, BigDecimal totalFee) {
                 this.date = date;
                 this.startTime = startTime;

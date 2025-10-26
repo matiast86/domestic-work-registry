@@ -1,78 +1,160 @@
 <!DOCTYPE html>
-<html lang="es"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{fragments/layout}">
+<html
+  lang="es"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{fragments/layout}"
+>
   <head>
     <title>Dashboard</title>
-    <th:block layout:fragment="dashboard">
     <link rel="stylesheet" th:href="@{/css/dashboard.css}" />
-  </th:block>
   </head>
 
   <body>
-    <div layout:fragment="content" class="container mt-4">
-      <!-- Profile Header -->
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Bienvenido, <span th:text="${user.firstName}">Nombre</span>!</h2>
-        <a th:href="@{/users/updateEmployer(employerId=${user.id})}" 
-           class="btn btn-info">
-          Actualizar Datos
-        </a>
+    <div layout:fragment="content">
+      <!-- Welcome Section -->
+      <div class="welcome-section fade-in">
+        <div class="welcome-content">
+          <h1 class="welcome-title">
+            ¡Hola, <span th:text="${user.firstName}">Usuario</span>! 👋
+          </h1>
+          <p class="welcome-subtitle">
+            Aquí tenés un resumen de tu actividad reciente y accesos rápidos
+          </p>
+          <div class="welcome-actions">
+            <a th:href="@{/contracts/contractForm}" class="btn">
+              <i class="bi bi-plus-circle-fill me-2"></i>
+              Nuevo Contrato
+            </a>
+            <a
+              th:href="@{/users/updateEmployer(employerId=${user.id})}"
+              class="btn"
+            >
+              <i class="bi bi-person-fill me-2"></i>
+              Actualizar Datos
+            </a>
+          </div>
+        </div>
       </div>
 
-      <div class="card mb-4">
-        <div class="card-body">
-          <h5 class="card-title" th:text="${user.firstName + ' ' + user.lastName}">
-            Full Name
-          </h5>
-          <p class="card-text mb-1">
-            <strong>Email:</strong>
-            <span th:text="${user.email}">email@example.com</span>
-          </p>
-          <p class="card-text mb-1">
-            <strong>CUIL:</strong>
-            <span th:text="${user.identificationNumber}">00-00000000-0</span>
-          </p>
-          <p class="card-text">
-            <strong>Teléfono:</strong>
-            <span th:text="${user.phone}">+54...</span>
-          </p>
+      <!-- User Info Card -->
+      <div class="user-info-card slide-in">
+        <div class="user-info-header">
+          <div
+            class="user-avatar-large"
+            th:text="${user.firstName.substring(0,1) + user.lastName.substring(0,1)}"
+          >
+            JD
+          </div>
+          <div class="user-details">
+            <h3 th:text="${user.firstName + ' ' + user.lastName}">
+              Nombre Completo
+            </h3>
+            <span class="user-badge">
+              <i class="bi bi-briefcase-fill"></i>
+              Empleador
+            </span>
+          </div>
+        </div>
+
+        <div class="user-info-grid">
+          <div class="user-info-item">
+            <div class="user-info-icon">
+              <i class="bi bi-envelope-fill"></i>
+            </div>
+            <div class="user-info-content">
+              <div class="user-info-label">Email</div>
+              <div class="user-info-value" th:text="${user.email}">
+                email@ejemplo.com
+              </div>
+            </div>
+          </div>
+
+          <div class="user-info-item">
+            <div class="user-info-icon">
+              <i class="bi bi-card-text"></i>
+            </div>
+            <div class="user-info-content">
+              <div class="user-info-label">CUIL</div>
+              <div
+                class="user-info-value"
+                th:text="${user.identificationNumber}"
+              >
+                00-00000000-0
+              </div>
+            </div>
+          </div>
+
+          <div class="user-info-item">
+            <div class="user-info-icon">
+              <i class="bi bi-telephone-fill"></i>
+            </div>
+            <div class="user-info-content">
+              <div class="user-info-label">Teléfono</div>
+              <div class="user-info-value" th:text="${user.phone}">
+                +54 9 11 1234-5678
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- Tabs for Employer vs Employee -->
-      <ul class="nav nav-tabs" id="dashboardTabs" role="tablist">
-  <li class="nav-item" role="presentation"
-      th:if="${#authorization.expression('hasRole(''EMPLOYER'')')}">
-    <button class="nav-link active" id="employer-tab"
-            data-bs-toggle="tab" data-bs-target="#employer" type="button">
-      Como Empleador
-    </button>
-  </li>
-  <li class="nav-item" role="presentation"
-      th:if="${#authorization.expression('hasRole(''EMPLOYEE'')')}">
-    <button class="nav-link" id="employee-tab"
-            data-bs-toggle="tab" data-bs-target="#employee" type="button">
-      Como Empleado
-    </button>
-  </li>
-</ul>
+      <div class="dashboard-tabs" id="dashboardTabs">
+        <button
+          class="dashboard-tab"
+          th:classappend="${preloadedTab == 'employer'} ? 'active'"
+          id="employer-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#employer"
+          th:if="${#authorization.expression('hasRole(''EMPLOYER'')')}"
+        >
+          <i class="bi bi-briefcase-fill"></i>
+          Como Empleador
+        </button>
+        <button
+          class="dashboard-tab"
+          th:classappend="${preloadedTab == 'employee'} ? 'active'"
+          id="employee-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#employee"
+          th:if="${#authorization.expression('hasRole(''EMPLOYEE'')')}"
+        >
+          <i class="bi bi-person-badge-fill"></i>
+          Como Empleado
+        </button>
+      </div>
 
+      <!-- Tab Content -->
+      <div class="tab-content">
+        <!-- Employer Content -->
+        <div
+          class="tab-pane fade"
+          th:classappend="${preloadedTab == 'employer'} ? 'show active'"
+          id="employer"
+        >
+          <th:block
+            th:if="${preloadedTab == 'employer'}"
+            th:replace="~{dashboard/fragment :: employerContracts}"
+          >
+          </th:block>
+        </div>
 
-<div class="tab-pane fade show active" id="employer" role="tabpanel">
-  <th:block th:if="${preloadedTab == 'employer'}"
-            th:replace="~{dashboard/fragment :: employerContracts}"></th:block>
-</div>
-
-<div class="tab-pane fade" id="employee" role="tabpanel">
-  <th:block th:if="${preloadedTab == 'employee'}"
-            th:replace="~{dashboard/fragment :: employeeContracts}"></th:block>
-</div>
-
-
+        <!-- Employee Content -->
+        <div
+          class="tab-pane fade"
+          th:classappend="${preloadedTab == 'employee'} ? 'show active'"
+          id="employee"
+        >
+          <th:block
+            th:if="${preloadedTab == 'employee'}"
+            th:replace="~{dashboard/fragment :: employeeContracts}"
+          >
+          </th:block>
+        </div>
+      </div>
+    </div>
 
     <script th:src="@{/js/dashboard.js}" layout:fragment="scripts"></script>
   </body>
 </html>
-

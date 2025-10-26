@@ -31,15 +31,9 @@ public class DashboardController {
     public String dashboard(@AuthenticationPrincipal User user, Model model) {
         model.addAttribute("user", user);
 
-        // Preload employer contracts if user is an EMPLOYER
         if (user.getRoles().contains(Role.EMPLOYER)) {
-            model.addAttribute("contracts", contractService.findAllByEmployer(user.getId()));
             model.addAttribute("preloadedTab", "employer");
-        }
-
-        // Preload employee contracts if user is an EMPLOYEE
-        if (user.getRoles().contains(Role.EMPLOYEE)) {
-            model.addAttribute("employeeContracts", userService.findContractsByEmployee(user.getId()));
+        } else {
             model.addAttribute("preloadedTab", "employee");
         }
 

@@ -2,6 +2,7 @@ package com.springboot.domesticworkregistry.service.dataCollection;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -11,12 +12,20 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.springboot.domesticworkregistry.entities.Contract;
 import com.springboot.domesticworkregistry.entities.Job;
+import com.springboot.domesticworkregistry.entities.ScheduleEntry;
 import com.springboot.domesticworkregistry.exceptions.NoJobsFoundException;
 
 @Service
 @Transactional(readOnly = true)
 public class DataCollectionService {
+
+    private static final int SCALE = 2;
+
+    private static final RoundingMode ROUNDING = RoundingMode.HALF_UP;
+
+    private static final BigDecimal AVERAGE_WEEKS_PER_MONTH = BigDecimal.valueOf(4.345);
 
     private List<Job> filterJobs(List<Job> jobs, Predicate<Job> predicate) {
         return jobs.stream()
@@ -41,7 +50,7 @@ public class DataCollectionService {
         if (jobs.isEmpty())
             return BigDecimal.ZERO;
         BigDecimal total = sumJobs(jobs, mapper);
-        return total.divide(BigDecimal.valueOf(jobs.size()), 2, RoundingMode.HALF_UP);
+        return total.divide(BigDecimal.valueOf(jobs.size()), SCALE, ROUNDING);
     }
 
     // --- Generic Filters ---
@@ -98,6 +107,25 @@ public class DataCollectionService {
         if (filteredJobs.isEmpty())
             throw new NoJobsFoundException("No jobs found in the specified year.");
         return averageJobs(filteredJobs, mapper);
+    }
+
+    public BigDecimal getTotalMonthlyHours(Contract contract) {
+        List<ScheduleEntry> entries = contract.getSchedule().getEntries();
+        BigDecimal weeklyHours = BigDecimal.ZERO;
+        for (ScheduleEntry entry : entries) {
+            long minutes = ChronoUnit.MINUTES.between(entry.getStartTime(), entry.getEndTime());
+            BigDecimal fractionalHours = BigDecimal.valueOf(minutes)
+                    .divide(BigDecimal.valueOf(60), SCALE, ROUNDING);
+            BigDecimal multiplier = BigDecimal.valueOf(2);
+            BigDecimal rounded = fractionalHours.multiply(multiplier)
+                    .setScale(0, RoundingMode.HALF_UP)
+                    .divide(multiplier, 1, ROUNDING);
+            weeklyHours = weeklyHours.add(rounded);
+        }
+
+        // Convert weekly hours to monthly (≈4.345 weeks per month)
+        // Round up to nearest full hour for payroll simplicity
+        return weeklyHours.multiply(AVERAGE_WEEKS_PER_MONTH).setScale(0, RoundingMode.CEILING);
     }
 
 }

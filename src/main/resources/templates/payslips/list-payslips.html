@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html
+  lang="es"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{fragments/layout}"
+>
+  <head>
+    <title>Lista de Recibos | DomesticWork</title>
+    <th:block layout:fragment="styles">
+      <link rel="stylesheet" th:href="@{/css/payslips.css}" />
+    </th:block>
+  </head>
+
+  <body>
+    <div layout:fragment="content">
+      <!-- Success Message -->
+      <div
+        th:if="${successMessage}"
+        class="alert alert-success alert-dismissible fade show"
+        role="alert"
+      >
+        <i class="bi bi-check-circle-fill me-2"></i>
+        <span th:text="${successMessage}"></span>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <!-- Page Header -->
+      <div class="payslip-header fade-in">
+        <div class="payslip-icon">
+          <i class="bi bi-file-earmark-text-fill"></i>
+        </div>
+        <h1>Recibos de Sueldo</h1>
+        <p>Histórico completo de recibos generados</p>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="quick-actions-card slide-in" style="margin-bottom: 2rem;">
+        <div class="quick-actions-grid">
+          <a
+            th:href="@{/payslips/select/{contractId}(contractId=${contractId})}"
+            class="quick-action-item"
+          >
+            <div class="quick-action-icon">
+              <i class="bi bi-plus-circle-fill"></i>
+            </div>
+            <div class="quick-action-content">
+              <div class="quick-action-label">Nuevo Recibo</div>
+              <div class="quick-action-desc">Generar nuevo recibo</div>
+            </div>
+          </a>
+
+          <a
+            th:href="@{/contracts/details/{id}(id=${contractId})}"
+            class="quick-action-item"
+          >
+            <div class="quick-action-icon">
+              <i class="bi bi-arrow-left-circle"></i>
+            </div>
+            <div class="quick-action-content">
+              <div class="quick-action-label">Volver</div>
+              <div class="quick-action-desc">Al detalle del contrato</div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div th:if="${#lists.isEmpty(payslips)}" class="empty-payslips">
+        <div class="empty-payslips-icon">
+          <i class="bi bi-file-earmark-x"></i>
+        </div>
+        <h3>No hay recibos generados</h3>
+        <p>
+          Aún no se han generado recibos de sueldo para este contrato. Creá el
+          primer recibo para comenzar a llevar el control salarial.
+        </p>
+        <a
+          th:href="@{/payslips/select/{contractId}(contractId=${contractId})}"
+          class="btn btn-primary btn-lg"
+        >
+          <i class="bi bi-plus-circle-fill me-2"></i>
+          Crear Primer Recibo
+        </a>
+      </div>
+
+      <!-- Payslips Grid -->
+      <div th:if="${!#lists.isEmpty(payslips)}" class="payslips-grid">
+        <div th:each="payslip : ${payslips}" class="payslip-card">
+          <!-- Card Header -->
+          <div class="payslip-card-header">
+            <div
+              class="payslip-period"
+              th:text="${payslip.monthName} + ' ' + ${payslip.year}"
+            >
+              Enero 2024
+            </div>
+            <span
+              class="payslip-status-badge"
+              th:classappend="${payslip.status.name()}"
+              th:text="${payslip.status.label}"
+            >
+              Estado
+            </span>
+          </div>
+
+          <!-- Amounts -->
+          <div class="payslip-amounts">
+            <div class="amount-item">
+              <span class="amount-label">Salario Bruto</span>
+              <span class="amount-value amount-gross">
+                $<span
+                  th:text="${#numbers.formatDecimal(payslip.grossSalary, 1, 'COMMA', 2, 'POINT')}"
+                >
+                  0.00
+                </span>
+              </span>
+            </div>
+            <div class="amount-item">
+              <span class="amount-label">Salario Neto</span>
+              <span class="amount-value amount-net">
+                $<span
+                  th:text="${#numbers.formatDecimal(payslip.netSalary, 1, 'COMMA', 2, 'POINT')}"
+                >
+                  0.00
+                </span>
+              </span>
+            </div>
+          </div>
+
+          <!-- Meta -->
+          <div class="payslip-meta">
+            <i class="bi bi-calendar3 me-1"></i>
+            Generado:
+            <span
+              th:text="${#temporals.format(payslip.generatedAt, 'dd/MM/yyyy')}"
+            >
+              01/01/2024
+            </span>
+          </div>
+
+          <!-- Actions -->
+          <div class="payslip-actions">
+            <a
+              th:href="@{/payslips/details/{id}(id=${payslip.payslipId})}"
+              class="btn btn-primary"
+            >
+              <i class="bi bi-eye-fill me-1"></i>
+              Ver Detalle
+            </a>
+            <a
+              th:href="@{/payslips/pdf/{id}(id=${payslip.payslipId})}"
+              class="btn btn-success"
+            >
+              <i class="bi bi-file-earmark-pdf-fill me-1"></i>
+              PDF
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script th:src="@{/js/payslip.js}" layout:fragment="scripts"></script>
+  </body>
+</html>

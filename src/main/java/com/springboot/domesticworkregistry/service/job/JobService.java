@@ -23,7 +23,7 @@ public interface JobService {
 
     CreateJobDto getJobDto(int jobId);
 
-    Job update(CreateJobDto form, int jobId);
+    Job update(CreateJobDto form);
 
     void delete(int id);
 
