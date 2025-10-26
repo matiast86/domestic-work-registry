@@ -242,7 +242,7 @@ public class PayslipServiceImpl implements PayslipService {
         String lastName = contract.getEmployee().getLastName();
 
         PayslipDetailsDto details = detailsMapper.toDto(payslip);
-
+        details.setPayslipId(id);
         details.setContractId(contract.getId());
         details.setEmployeeIdentificationNumber(contract.getEmployee().getIdentificationNumber());
         details.setEmployeeName(firstName + " " + lastName);
