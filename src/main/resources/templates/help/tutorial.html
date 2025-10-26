@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html
+  lang="es"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{fragments/layout}"
+>
+  <head>
+    <title>Tutorial de Usuario</title>
+  </head>
+  <body>
+    <main layout:fragment="content">
+      <div class="container py-5">
+        <div class="card shadow-lg border-0 rounded-4">
+          <div class="card-body p-5">
+            <h1 class="fw-bold mb-4 text-primary text-center">
+              🧭 Guía de Usuario
+            </h1>
+            <p class="lead text-center mb-5">
+              Bienvenido/a a <strong>Domestic Work Registry</strong>, la
+              aplicación que simplifica la gestión del trabajo doméstico
+              registrado. <br />
+              Aquí encontrarás una guía paso a paso para empleadores y
+              empleados.
+            </p>
+
+            <hr class="my-4" />
+
+            <!-- SECCIÓN: ROLES -->
+            <h2 class="mt-5 mb-3 text-primary">
+              <i class="bi bi-people-fill me-2"></i>Roles en la Plataforma
+            </h2>
+            <p>Existen dos tipos de usuarios principales:</p>
+            <ul>
+              <li>
+                <strong>Empleador:</strong> registra empleados, gestiona
+                contratos, tareas, asistencias y genera recibos.
+              </li>
+              <li>
+                <strong>Empleado:</strong> accede a sus contratos, visualiza
+                tareas y descarga recibos de sueldo.
+              </li>
+            </ul>
+
+            <hr class="my-4" />
+
+            <!-- SECCIÓN: REGISTRO -->
+            <h2 class="mt-5 mb-3 text-success">
+              <i class="bi bi-person-plus-fill me-2"></i>Registro y Acceso
+            </h2>
+            <ol>
+              <li>
+                Ingresá a la página principal y seleccioná
+                <strong>“Registrarse”</strong>.
+              </li>
+              <li>
+                Completá tus datos personales y confirmá el correo recibido.
+              </li>
+              <li>Podrás luego iniciar sesión desde <code>/login</code>.</li>
+            </ol>
+            <p>
+              Si olvidás tu contraseña, seleccioná
+              <em>“¿Olvidaste tu contraseña?”</em> y seguí las instrucciones del
+              correo.
+            </p>
+
+            <hr class="my-4" />
+
+            <!-- SECCIÓN: EMPLEADORES -->
+            <h2 class="mt-5 mb-3 text-warning">
+              <i class="bi bi-briefcase-fill me-2"></i>Guía para Empleadores
+            </h2>
+
+            <h5 class="fw-bold mt-4">1️⃣ Crear un nuevo contrato</h5>
+            <p>
+              Desde <strong>Contratos → Nuevo Contrato</strong>, completá los
+              datos del empleado, tipo de trabajo, horario y salario.
+            </p>
+
+            <h5 class="fw-bold mt-4">2️⃣ Registrar tareas</h5>
+            <p>
+              Accedé al contrato y usá <strong>“Ver Tareas”</strong> para
+              registrar cada jornada. El sistema calcula automáticamente horas
+              trabajadas y montos.
+            </p>
+
+            <h5 class="fw-bold mt-4">3️⃣ Controlar asistencia</h5>
+            <p>
+              En la vista de <strong>Asistencia</strong> verás un calendario
+              mensual donde podés cambiar estados: ✅ Presente | ⚠️ Justificada
+              | ❌ Injustificada | 🏖️ Feriado | 🕓 Tarde
+            </p>
+
+            <h5 class="fw-bold mt-4">4️⃣ Generar recibos</h5>
+            <p>
+              Desde <strong>Recibos → Generar</strong>, seleccioná el contrato y
+              período. Revisá los datos y confirmá. El recibo se guardará como
+              <em>Borrador</em> hasta ser finalizado.
+            </p>
+
+            <hr class="my-4" />
+
+            <!-- SECCIÓN: EMPLEADOS -->
+            <h2 class="mt-5 mb-3 text-info">
+              <i class="bi bi-person-badge-fill me-2"></i>Guía para Empleados
+            </h2>
+
+            <h5 class="fw-bold mt-4">1️⃣ Activar tu cuenta</h5>
+            <p>
+              Recibirás un correo con un enlace de activación enviado por tu
+              empleador.
+            </p>
+
+            <h5 class="fw-bold mt-4">2️⃣ Ver tus contratos</h5>
+            <p>
+              Desde el <strong>Dashboard → “Como Empleado”</strong> podés
+              revisar tus contratos activos con toda la información laboral.
+            </p>
+
+            <h5 class="fw-bold mt-4">3️⃣ Consultar tareas</h5>
+            <p>
+              En <strong>Mis Tareas</strong> podés buscar o filtrar por mes para
+              revisar tus horas y montos.
+            </p>
+
+            <h5 class="fw-bold mt-4">4️⃣ Descargar recibos</h5>
+            <p>
+              Accedé a <strong>Recibos</strong> para ver, descargar o imprimir
+              los recibos generados.
+            </p>
+
+            <hr class="my-4" />
+
+            <!-- SECCIÓN: DASHBOARD -->
+            <h2 class="mt-5 mb-3 text-secondary">
+              <i class="bi bi-speedometer2 me-2"></i>Panel Principal
+            </h2>
+            <p>
+              El Dashboard centraliza tus contratos, tareas y recibos. Se divide
+              en dos pestañas: <strong>Como Empleador</strong> y
+              <strong>Como Empleado</strong>. Todo el contenido se carga
+              dinámicamente para mejorar la experiencia.
+            </p>
+
+            <hr class="my-4" />
+
+            <!-- SECCIÓN: AYUDA -->
+            <h2 class="mt-5 mb-3 text-danger">
+              <i class="bi bi-question-circle-fill me-2"></i>Soporte y Contacto
+            </h2>
+            <p>Si necesitás ayuda o encontrás un error, podés:</p>
+            <ul>
+              <li>Ir al menú <strong>Ayuda → Contactar Soporte</strong></li>
+              <li>
+                O escribir al correo del administrador indicado en el pie de
+                página.
+              </li>
+            </ul>
+
+            <hr class="my-4" />
+
+            <p class="text-center text-muted mt-5 mb-0">
+              <small
+                >Versión 1.0 · Actualizado Octubre 2025 · © Domestic Work
+                Registry</small
+              >
+            </p>
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>
