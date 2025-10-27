@@ -62,9 +62,11 @@ public class User implements UserDetails {
     @Column(name = "password", nullable = false, length = 100)
     private String password;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @ElementCollection
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id") // Foreign key to the 'user' table
+    )
     @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
     private Set<Role> roles = new HashSet<>();
 
     @Column(name = "phone")
