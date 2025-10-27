@@ -2,7 +2,6 @@ package com.springboot.domesticworkregistry.service.user;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -131,7 +130,7 @@ public class UserServiceImpl implements UserService {
         User newUser = mapper.toEmployer(form);
         newUser.setPassword(passwordEncoder.encode(form.getPassword()));
         newUser.setEmail(form.getEmail().toLowerCase());
-        newUser.setRoles(Set.of(Role.EMPLOYER));
+        newUser.addRole(Role.EMPLOYER);
         newUser.setActive(false);
         newUser.setResetToken(token);
         newUser.setResetTokenExpiry(expiration);
@@ -171,7 +170,7 @@ public class UserServiceImpl implements UserService {
         String token = UUID.randomUUID().toString();
         LocalDateTime expiration = LocalDateTime.now().plusHours(24);
         User newUser = mapper.toEmployee(form);
-        newUser.setRoles(Set.of(Role.EMPLOYEE));
+        newUser.addRole(Role.EMPLOYEE);
         newUser.setPassword(passwordEncoder.encode(UUID.randomUUID().toString().substring(0, 15)));
         newUser.setEmail(form.getEmail().toLowerCase());
         newUser.setActive(false);
