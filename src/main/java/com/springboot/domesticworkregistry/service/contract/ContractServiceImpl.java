@@ -10,13 +10,13 @@ import com.springboot.domesticworkregistry.dto.contract.ContractDetailsWithemplo
 import com.springboot.domesticworkregistry.dto.contract.ContractMapper;
 import com.springboot.domesticworkregistry.dto.contract.CreateEmployeeFormDto;
 import com.springboot.domesticworkregistry.dto.schedule_entry.ScheduleEntryDto;
+import com.springboot.domesticworkregistry.dto.user.RegisterEmployeeDtoMapper;
 import com.springboot.domesticworkregistry.dto.user.RegisterUserEmployeeDto;
 import com.springboot.domesticworkregistry.entities.Address;
 import com.springboot.domesticworkregistry.entities.Contract;
 import com.springboot.domesticworkregistry.entities.User;
 import com.springboot.domesticworkregistry.enums.Role;
 import com.springboot.domesticworkregistry.exceptions.EntityNotFoundException;
-import com.springboot.domesticworkregistry.mapper.RegisterEmployeeDtoMapper;
 import com.springboot.domesticworkregistry.service.dataCollection.DataCollectionService;
 import com.springboot.domesticworkregistry.service.user.UserService;
 

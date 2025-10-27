@@ -17,13 +17,13 @@ import com.springboot.domesticworkregistry.dto.user.RegisterUserDto;
 import com.springboot.domesticworkregistry.dto.user.RegisterUserEmployeeDto;
 import com.springboot.domesticworkregistry.dto.user.ResetPasswordDto;
 import com.springboot.domesticworkregistry.dto.user.UpdateUserDto;
+import com.springboot.domesticworkregistry.dto.user.UserMapper;
 import com.springboot.domesticworkregistry.entities.Address;
 import com.springboot.domesticworkregistry.entities.Contract;
 import com.springboot.domesticworkregistry.entities.User;
 import com.springboot.domesticworkregistry.enums.Role;
 import com.springboot.domesticworkregistry.exceptions.EmailAlreadyExistsException;
 import com.springboot.domesticworkregistry.exceptions.EntityNotFoundException;
-import com.springboot.domesticworkregistry.mapper.UserMapper;
 import com.springboot.domesticworkregistry.service.email.EmailService;
 
 @Service
@@ -134,11 +134,6 @@ public class UserServiceImpl implements UserService {
         newUser.setActive(false);
         newUser.setResetToken(token);
         newUser.setResetTokenExpiry(expiration);
-        Address address = new Address(form.getStreet(), form.getNumber(), form.getApartment(), form.getState(),
-                form.getCity(),
-                form.getPostalCode(),
-                form.getCountry());
-        newUser.setAddress(address);
 
         String activationUrl = baseUrl + "/register/activate-account?token=" + token;
 
@@ -176,11 +171,6 @@ public class UserServiceImpl implements UserService {
         newUser.setActive(false);
         newUser.setResetToken(token);
         newUser.setResetTokenExpiry(expiration);
-        Address address = new Address(form.getStreet(), form.getNumber(), form.getApartment(), form.getState(),
-                form.getCity(),
-                form.getPostalCode(),
-                form.getCountry());
-        newUser.setAddress(address);
 
         String activationUrl = baseUrl + "/register/set-employee-password?token=" + token;
 
