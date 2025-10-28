@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
 </head>
 <body>
-    <th:block th:replace="~{emails/email-base :: body(content=~{::content})}">
+    <th:block th:replace="~{emails/fragments/email-layout :: body(content=~{::content})}">
         <th:block th:fragment="content">
             <h2 style="color: #111827; font-size: 28px; font-weight: 800; margin: 0 0 20px 0;">
                 ¡Bienvenido/a, <span th:text="${name}">Usuario</span>! 👋
