@@ -162,15 +162,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User registerEmployee(RegisterUserEmployeeDto form) {
-        String token = UUID.randomUUID().toString();
-        LocalDateTime expiration = LocalDateTime.now().plusHours(24);
+        // String token = UUID.randomUUID().toString();
+        // LocalDateTime expiration = LocalDateTime.now().plusHours(24);
         User newUser = mapper.toEmployee(form);
         newUser.addRole(Role.EMPLOYEE);
         newUser.setPassword(passwordEncoder.encode(UUID.randomUUID().toString().substring(0, 15)));
         newUser.setEmail(form.getEmail().toLowerCase());
         newUser.setActive(false);
-        newUser.setResetToken(token);
-        newUser.setResetTokenExpiry(expiration);
+        // newUser.setResetToken(token);
+        // newUser.setResetTokenExpiry(expiration);
 
         return userRepository.save(newUser);
     }

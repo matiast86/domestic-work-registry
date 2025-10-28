@@ -89,14 +89,14 @@ public class ContractServiceImpl implements ContractService {
         Contract newContract = contractMapper.fromForm(form, employer, employee);
         newContract.setWorkAddress(employer.getAddress());
         newContract.setExpectedMonthlyHours(dataCollectionService.getTotalMonthlyHours(newContract));
-        String activationUrl = baseUrl + "/register/set-employee-password?token=" + employee.getResetToken();
+        // String activationUrl = baseUrl + "/register/set-employee-password?token=" + employee.getResetToken();
 
-        EmailDto emailDto = new EmailDto();
-        emailDto.setTo(List.of(form.getEmail().toLowerCase()));
-        emailDto.setSubject("Alta de contrato");
+        // EmailDto emailDto = new EmailDto();
+        // emailDto.setTo(List.of(form.getEmail().toLowerCase()));
+        // emailDto.setSubject("Alta de contrato");
 
-        emailService.sendContractCreatedEmail(emailDto, employee.getFirstName(), employer.getFirstName(),
-                form.getJobType().toString(), newContract.getStartDate().toString(), activationUrl);
+        // emailService.sendContractCreatedEmail(emailDto, employee.getFirstName(), employer.getFirstName(),
+        //         form.getJobType().toString(), newContract.getStartDate().toString(), activationUrl);
 
         return contractRepository.save(newContract);
     }
