@@ -141,7 +141,7 @@ public class UserServiceImpl implements UserService {
         emailDto.setTo(List.of(form.getEmail().toLowerCase()));
         emailDto.setSubject("...");
 
-        System.out.println("Activation link: " + activationUrl);
+        emailService.sendWelcomeEmployerEmail(emailDto, newUser.getFirstName(), activationUrl);
 
         return userRepository.save(newUser);
     }
@@ -171,14 +171,6 @@ public class UserServiceImpl implements UserService {
         newUser.setActive(false);
         newUser.setResetToken(token);
         newUser.setResetTokenExpiry(expiration);
-
-        String activationUrl = baseUrl + "/register/set-employee-password?token=" + token;
-
-        EmailDto emailDto = new EmailDto();
-        emailDto.setTo(List.of(form.getEmail().toLowerCase()));
-        emailDto.setSubject("...");
-
-        System.out.println("Activation link: " + activationUrl);
 
         return userRepository.save(newUser);
     }
@@ -212,10 +204,8 @@ public class UserServiceImpl implements UserService {
         emailDto.setTo(List.of(email.toLowerCase()));
         emailDto.setSubject("Solicitud de cambio de contraseña");
 
-        System.out.println("Reset Password link: " + changePasswordUrl);
-
-        // emailService.changePasswordRequest(emailDto, user.getFirstName(),
-        // changePasswordUrl);
+        emailService.changePasswordRequest(emailDto, user.getFirstName(),
+                changePasswordUrl);
     }
 
     @Override

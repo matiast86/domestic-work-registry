@@ -88,18 +88,6 @@ public class EmailServiceImpl implements EmailService {
                         "year", String.valueOf(LocalDate.now().getYear())));
     }
 
-    @Override
-    public void sendWelcomeEmployeeEmail(EmailDto emailDto, String employeeName, String employerName,
-            String setupPasswordUrl) {
-        sendTemplatedEmail(
-                emailDto,
-                "emails/welcome-employee",
-                Map.of(
-                        "employeeName", employeeName,
-                        "employerName", employerName,
-                        "setupPasswordUrl", setupPasswordUrl,
-                        "year", String.valueOf(LocalDate.now().getYear())));
-    }
 
     @Override
     public void sendPasswordResetEmail(EmailDto emailDto, String name, String resetPasswordUrl) {
@@ -124,18 +112,18 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void sendContractCreatedEmail(EmailDto emailDto, String employeeName, String employerName, String jobType,
-            String startDate) {
+            String startDate, String setupPasswordUrl) {
         sendTemplatedEmail(
-        emailDto, 
-        "emails/contract-created", 
-        Map.of(
-            "employeeName", employeeName,
-            "employerName", employerName,
-            "jobType", jobType,
-            "startDate", startDate,
-            "year", String.valueOf(LocalDate.now().getYear())
-        )
-    );
+                emailDto,
+                "emails/contract-created",
+                Map.of(
+                        "employeeName", employeeName,
+                        "employerName", employerName,
+                        "jobType", jobType,
+                        "startDate", startDate,
+                        "setupPasswordUrl", setupPasswordUrl,
+                        "year", String.valueOf(LocalDate.now().getYear())));
+
     }
 
 }
