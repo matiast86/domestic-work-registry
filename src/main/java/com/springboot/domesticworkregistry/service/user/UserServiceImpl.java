@@ -124,24 +124,24 @@ public class UserServiceImpl implements UserService {
         if (userRepository.findByEmail(form.getEmail()).isPresent()) {
             throw new EmailAlreadyExistsException("Email already registered.");
         }
-        String token = UUID.randomUUID().toString();
-        LocalDateTime expiration = LocalDateTime.now().plusHours(24);
+        // String token = UUID.randomUUID().toString();
+        // LocalDateTime expiration = LocalDateTime.now().plusHours(24);
 
         User newUser = mapper.toEmployer(form);
         newUser.setPassword(passwordEncoder.encode(form.getPassword()));
         newUser.setEmail(form.getEmail().toLowerCase());
         newUser.addRole(Role.EMPLOYER);
-        newUser.setActive(false);
-        newUser.setResetToken(token);
-        newUser.setResetTokenExpiry(expiration);
+        newUser.setActive(true);
+        // newUser.setResetToken(token);
+        // newUser.setResetTokenExpiry(expiration);
 
-        String activationUrl = baseUrl + "/register/activate-account?token=" + token;
+        // String activationUrl = baseUrl + "/register/activate-account?token=" + token;
 
-        EmailDto emailDto = new EmailDto();
-        emailDto.setTo(List.of(form.getEmail().toLowerCase()));
-        emailDto.setSubject("...");
+        // EmailDto emailDto = new EmailDto();
+        // emailDto.setTo(List.of(form.getEmail().toLowerCase()));
+        // emailDto.setSubject("...");
 
-        emailService.sendWelcomeEmployerEmail(emailDto, newUser.getFirstName(), activationUrl);
+        // emailService.sendWelcomeEmployerEmail(emailDto, newUser.getFirstName(), activationUrl);
 
         return userRepository.save(newUser);
     }
