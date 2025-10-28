@@ -2,6 +2,7 @@ package com.springboot.domesticworkregistry.service.contract;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
@@ -9,6 +10,7 @@ import com.springboot.domesticworkregistry.dao.ContractRepository;
 import com.springboot.domesticworkregistry.dto.contract.ContractDetailsWithemployeeDto;
 import com.springboot.domesticworkregistry.dto.contract.ContractMapper;
 import com.springboot.domesticworkregistry.dto.contract.CreateEmployeeFormDto;
+import com.springboot.domesticworkregistry.dto.email.EmailDto;
 import com.springboot.domesticworkregistry.dto.schedule_entry.ScheduleEntryDto;
 import com.springboot.domesticworkregistry.dto.user.RegisterEmployeeDtoMapper;
 import com.springboot.domesticworkregistry.dto.user.RegisterUserEmployeeDto;
@@ -18,6 +20,7 @@ import com.springboot.domesticworkregistry.entities.User;
 import com.springboot.domesticworkregistry.enums.Role;
 import com.springboot.domesticworkregistry.exceptions.EntityNotFoundException;
 import com.springboot.domesticworkregistry.service.dataCollection.DataCollectionService;
+import com.springboot.domesticworkregistry.service.email.EmailService;
 import com.springboot.domesticworkregistry.service.user.UserService;
 
 @Service
@@ -28,16 +31,21 @@ public class ContractServiceImpl implements ContractService {
     private final UserService userService;
     private final RegisterEmployeeDtoMapper employeeDtoMapper;
     private final DataCollectionService dataCollectionService;
+    private final EmailService emailService;
+
+    @Value("${APP_BASE_URL}")
+    private String baseUrl;
 
     public ContractServiceImpl(ContractRepository contractRepository, ContractMapper contractMapper,
             UserService userService,
-            RegisterEmployeeDtoMapper employeeDtoMapper, DataCollectionService dataCollectionService) {
+            RegisterEmployeeDtoMapper employeeDtoMapper, DataCollectionService dataCollectionService,
+            EmailService emailService) {
         this.contractRepository = contractRepository;
         this.contractMapper = contractMapper;
         this.userService = userService;
-
         this.employeeDtoMapper = employeeDtoMapper;
         this.dataCollectionService = dataCollectionService;
+        this.emailService = emailService;
 
     }
 
@@ -81,6 +89,14 @@ public class ContractServiceImpl implements ContractService {
         Contract newContract = contractMapper.fromForm(form, employer, employee);
         newContract.setWorkAddress(employer.getAddress());
         newContract.setExpectedMonthlyHours(dataCollectionService.getTotalMonthlyHours(newContract));
+        String activationUrl = baseUrl + "/register/set-employee-password?token=" + employee.getResetToken();
+
+        EmailDto emailDto = new EmailDto();
+        emailDto.setTo(List.of(form.getEmail().toLowerCase()));
+        emailDto.setSubject("...");
+
+        emailService.sendContractCreatedEmail(emailDto, employee.getFirstName(), employer.getFirstName(),
+                form.getJobType().toString(), newContract.getStartDate().toString(), activationUrl);
 
         return contractRepository.save(newContract);
     }
