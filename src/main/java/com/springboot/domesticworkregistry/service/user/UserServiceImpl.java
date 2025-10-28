@@ -2,7 +2,6 @@ package com.springboot.domesticworkregistry.service.user;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +17,13 @@ import com.springboot.domesticworkregistry.dto.user.RegisterUserDto;
 import com.springboot.domesticworkregistry.dto.user.RegisterUserEmployeeDto;
 import com.springboot.domesticworkregistry.dto.user.ResetPasswordDto;
 import com.springboot.domesticworkregistry.dto.user.UpdateUserDto;
+import com.springboot.domesticworkregistry.dto.user.UserMapper;
 import com.springboot.domesticworkregistry.entities.Address;
 import com.springboot.domesticworkregistry.entities.Contract;
 import com.springboot.domesticworkregistry.entities.User;
 import com.springboot.domesticworkregistry.enums.Role;
 import com.springboot.domesticworkregistry.exceptions.EmailAlreadyExistsException;
 import com.springboot.domesticworkregistry.exceptions.EntityNotFoundException;
-import com.springboot.domesticworkregistry.mapper.UserMapper;
 import com.springboot.domesticworkregistry.service.email.EmailService;
 
 @Service
@@ -131,15 +130,10 @@ public class UserServiceImpl implements UserService {
         User newUser = mapper.toEmployer(form);
         newUser.setPassword(passwordEncoder.encode(form.getPassword()));
         newUser.setEmail(form.getEmail().toLowerCase());
-        newUser.setRoles(Set.of(Role.EMPLOYER));
+        newUser.addRole(Role.EMPLOYER);
         newUser.setActive(false);
         newUser.setResetToken(token);
         newUser.setResetTokenExpiry(expiration);
-        Address address = new Address(form.getStreet(), form.getNumber(), form.getApartment(), form.getState(),
-                form.getCity(),
-                form.getPostalCode(),
-                form.getCountry());
-        newUser.setAddress(address);
 
         String activationUrl = baseUrl + "/register/activate-account?token=" + token;
 
@@ -171,17 +165,12 @@ public class UserServiceImpl implements UserService {
         String token = UUID.randomUUID().toString();
         LocalDateTime expiration = LocalDateTime.now().plusHours(24);
         User newUser = mapper.toEmployee(form);
-        newUser.setRoles(Set.of(Role.EMPLOYEE));
+        newUser.addRole(Role.EMPLOYEE);
         newUser.setPassword(passwordEncoder.encode(UUID.randomUUID().toString().substring(0, 15)));
         newUser.setEmail(form.getEmail().toLowerCase());
         newUser.setActive(false);
         newUser.setResetToken(token);
         newUser.setResetTokenExpiry(expiration);
-        Address address = new Address(form.getStreet(), form.getNumber(), form.getApartment(), form.getState(),
-                form.getCity(),
-                form.getPostalCode(),
-                form.getCountry());
-        newUser.setAddress(address);
 
         String activationUrl = baseUrl + "/register/set-employee-password?token=" + token;
 

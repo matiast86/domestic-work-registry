@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -16,12 +15,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.springboot.domesticworkregistry.enums.Role;
 
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -32,17 +27,25 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "users")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(exclude = { "roles", "employerContracts", "employeeContracts", "address" })
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @EqualsAndHashCode.Include
     private String id;
 
     @Column(name = "first_name")
@@ -63,10 +66,8 @@ public class User implements UserDetails {
     @Column(name = "password", nullable = false, length = 100)
     private String password;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
-    @Enumerated(EnumType.STRING)
-    private Set<Role> roles = new HashSet<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private Set<UserRole> roles = new HashSet<>();
 
     @Column(name = "phone")
     private String phone;
@@ -85,7 +86,7 @@ public class User implements UserDetails {
     private boolean isActive = true;
 
     @Column(name = "created_at")
-    private Date createdAt;
+    private LocalDate createdAt;
 
     @Column(name = "reset_token")
     private String resetToken;
@@ -104,15 +105,32 @@ public class User implements UserDetails {
         this.phone = phone;
     }
 
+    // === Utility Methods ===
+
+    public boolean hasRole(Role role) {
+        return roles.stream().anyMatch(userRole -> userRole.getRole() == role);
+    }
+
+    public void addRole(Role role) {
+        if (!hasRole(role)) {
+            UserRole userRole = new UserRole();
+            userRole.setRole(role);
+            userRole.setUser(this);
+            roles.add(userRole);
+        }
+    }
+
     @PrePersist
     protected void onCreate() {
-        this.createdAt = new Date();
+        this.createdAt = LocalDate.now();
     }
+
+    // === Spring Security ===
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream()
-                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))
+                .map(userRole -> new SimpleGrantedAuthority("ROLE_" + userRole.getRole().name()))
                 .toList();
     }
 
@@ -141,6 +159,7 @@ public class User implements UserDetails {
         return isActive();
     }
 
+    // === Contract helpers ===
     public void addEmployerContract(Contract contract) {
         employerContracts.add(contract);
         contract.setEmployer(this);
@@ -154,5 +173,4 @@ public class User implements UserDetails {
     public boolean isResetTokenValid() {
         return resetToken != null && resetTokenExpiry != null && resetTokenExpiry.isAfter(LocalDateTime.now());
     }
-
 }

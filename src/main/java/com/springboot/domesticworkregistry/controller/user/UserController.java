@@ -62,6 +62,12 @@ public class UserController {
         return "employers/employer-form";
     }
 
+    @GetMapping("/changePassword")
+    public String changePasswordRequest(Model model) {
+        model.addAttribute("passwordForm", new ChangePasswordDto());
+        return "auth/change-password";
+    }
+
     @PostMapping("/change-password")
     public String changePassword(
             @AuthenticationPrincipal User user,

@@ -31,7 +31,7 @@ public class DashboardController {
     public String dashboard(@AuthenticationPrincipal User user, Model model) {
         model.addAttribute("user", user);
 
-        if (user.getRoles().contains(Role.EMPLOYER)) {
+        if (user.hasRole(Role.EMPLOYER)) {
             model.addAttribute("preloadedTab", "employer");
         } else {
             model.addAttribute("preloadedTab", "employee");

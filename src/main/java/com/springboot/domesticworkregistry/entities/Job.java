@@ -72,4 +72,8 @@ public class Job {
                 this.transportationFee = transportationFee;
                 this.totalFee = totalFee;
         }
+
+        public void setContract(Contract contract) {
+                this.contract = contract;
+        }
 }

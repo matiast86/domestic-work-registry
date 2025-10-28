@@ -44,11 +44,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  function closeMobileSidebar() {
+  const closeMobileSidebar = () => {
     sidebar.classList.remove("show");
     mobileOverlay.classList.remove("show");
     document.body.style.overflow = ""; // Restore body scroll
-  }
+  };
 
   // ===== Restore Sidebar State from LocalStorage =====
   const savedState = localStorage.getItem("sidebarCollapsed");

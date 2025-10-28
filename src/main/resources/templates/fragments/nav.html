@@ -88,7 +88,6 @@
             <a
               th:href="@{/dashboard}"
               class="nav-link"
-              th:classappend="${#request.requestURI == '/dashboard'} ? 'active'"
             >
               <i class="bi bi-speedometer2"></i>
               <span>Dashboard</span>
@@ -100,7 +99,7 @@
             class="nav-item"
             th:if="${#authorization.expression('hasRole(''EMPLOYER'')')}"
           >
-            <a th:href="@{/contracts/list}" class="nav-link">
+            <a th:href="@{/dashboard/employer-contracts(standalone=true)}" class="nav-link">
               <i class="bi bi-file-text"></i>
               <span>Mis Contratos</span>
             </a>
@@ -111,7 +110,7 @@
             class="nav-item"
             th:if="${#authorization.expression('hasRole(''EMPLOYEE'')')}"
           >
-            <a th:href="@{/contracts/list}" class="nav-link">
+            <a th:href="@{/dashboard/employee-contracts(standalone=true)}" class="nav-link">
               <i class="bi bi-file-text"></i>
               <span>Mis Contratos</span>
             </a>
@@ -214,10 +213,11 @@
                 </a>
               </li>
               <li>
-                <a class="nav-link" th:href="@{/help/tutorial}">
-                  <i class="bi bi-question-circle"></i> Tutorial
-                </a>
-              </li>
+  <a class="dropdown-item" th:href="@{/help/tutorial}">
+    <i class="bi bi-question-circle me-2"></i> Tutorial
+  </a>
+</li>
+
               <li><hr class="dropdown-divider" /></li>
               <li>
                 <a

@@ -28,8 +28,6 @@ import com.springboot.domesticworkregistry.entities.Contract;
 import com.springboot.domesticworkregistry.entities.Job;
 import com.springboot.domesticworkregistry.enums.EmploymentType;
 import com.springboot.domesticworkregistry.exceptions.EntityNotFoundException;
-import com.springboot.domesticworkregistry.mapper.JobMapper;
-import com.springboot.domesticworkregistry.mapper.JobsMonthlyTableMapper;
 import com.springboot.domesticworkregistry.service.contract.ContractService;
 import com.springboot.domesticworkregistry.service.dataCollection.DataCollectionService;
 
@@ -38,8 +36,6 @@ public class JobServiceImpl implements JobService {
 
     private final JobRepository jobRepository;
     private final ContractService contractService;
-    private final JobMapper jobMapper;
-    private final JobsMonthlyTableMapper tableMapper;
     private final DataCollectionService dataCollectionService;
 
     private BigDecimal calculateHoursWorked(LocalTime startTime, LocalTime endTime) {
@@ -88,12 +84,10 @@ public class JobServiceImpl implements JobService {
 
     @Autowired
     public JobServiceImpl(JobRepository jobRepository,
-            ContractService contractService, JobMapper jobMapper, JobsMonthlyTableMapper tableMapper,
+            ContractService contractService,
             DataCollectionService dataCollectionService) {
         this.jobRepository = jobRepository;
         this.contractService = contractService;
-        this.jobMapper = jobMapper;
-        this.tableMapper = tableMapper;
         this.dataCollectionService = dataCollectionService;
     }
 
@@ -116,7 +110,14 @@ public class JobServiceImpl implements JobService {
     @Override
     public Job save(CreateJobDto form, int contractId) {
         Contract contract = contractService.findById(contractId);
-        Job job = jobMapper.toJob(form);
+
+        Job job = new Job();
+        job.setDate(form.getDate());
+        job.setStartTime(form.getStartTime());
+        job.setEndTime(form.getEndTime());
+        job.setHourlyRate(form.getHourlyRate());
+        job.setTransportationFee(form.getTransportationFee());
+        job.setExtraHours(form.isExtraHours());
 
         job.setContract(contract);
         LocalTime startTime = job.getStartTime();
@@ -225,7 +226,16 @@ public class JobServiceImpl implements JobService {
         String jobMonth = StringUtils.capitalize(getMonthNameInSpanish(LocalDate.of(year, month, 1)));
 
         for (Job job : jobs) {
-            JobsMonthlyTableDto tableDto = tableMapper.toDo(job);
+
+            JobsMonthlyTableDto tableDto = new JobsMonthlyTableDto();
+            tableDto.setDate(job.getDate());
+            tableDto.setYear(year);
+            tableDto.setWorkedHours(job.getWorkedHours());
+            tableDto.setHourlyRate(job.getHourlyRate());
+            tableDto.setPartialFee(job.getPartialFee());
+            tableDto.setTransportationFee(job.getTransportationFee());
+            tableDto.setTotalFee(job.getTotalFee());
+            tableDto.setJobId(job.getId());
             tables.add(tableDto);
 
         }
