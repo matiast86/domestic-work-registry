@@ -93,7 +93,7 @@ public class ContractServiceImpl implements ContractService {
 
         EmailDto emailDto = new EmailDto();
         emailDto.setTo(List.of(form.getEmail().toLowerCase()));
-        emailDto.setSubject("...");
+        emailDto.setSubject("Alta de contrato");
 
         emailService.sendContractCreatedEmail(emailDto, employee.getFirstName(), employer.getFirstName(),
                 form.getJobType().toString(), newContract.getStartDate().toString(), activationUrl);
