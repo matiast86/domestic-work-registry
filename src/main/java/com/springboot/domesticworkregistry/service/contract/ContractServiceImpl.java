@@ -10,14 +10,13 @@ import com.springboot.domesticworkregistry.dto.contract.ContractDetailsWithemplo
 import com.springboot.domesticworkregistry.dto.contract.ContractMapper;
 import com.springboot.domesticworkregistry.dto.contract.CreateEmployeeFormDto;
 import com.springboot.domesticworkregistry.dto.schedule_entry.ScheduleEntryDto;
+import com.springboot.domesticworkregistry.dto.user.RegisterEmployeeDtoMapper;
 import com.springboot.domesticworkregistry.dto.user.RegisterUserEmployeeDto;
 import com.springboot.domesticworkregistry.entities.Address;
 import com.springboot.domesticworkregistry.entities.Contract;
 import com.springboot.domesticworkregistry.entities.User;
 import com.springboot.domesticworkregistry.enums.Role;
 import com.springboot.domesticworkregistry.exceptions.EntityNotFoundException;
-import com.springboot.domesticworkregistry.mapper.ContractDetailsMapper;
-import com.springboot.domesticworkregistry.mapper.RegisterEmployeeDtoMapper;
 import com.springboot.domesticworkregistry.service.dataCollection.DataCollectionService;
 import com.springboot.domesticworkregistry.service.user.UserService;
 
@@ -27,17 +26,16 @@ public class ContractServiceImpl implements ContractService {
     private final ContractRepository contractRepository;
     private final ContractMapper contractMapper;
     private final UserService userService;
-    private final ContractDetailsMapper contractDetailsMapper;
     private final RegisterEmployeeDtoMapper employeeDtoMapper;
     private final DataCollectionService dataCollectionService;
 
     public ContractServiceImpl(ContractRepository contractRepository, ContractMapper contractMapper,
-            UserService userService, ContractDetailsMapper contractDetailsMapper,
+            UserService userService,
             RegisterEmployeeDtoMapper employeeDtoMapper, DataCollectionService dataCollectionService) {
         this.contractRepository = contractRepository;
         this.contractMapper = contractMapper;
         this.userService = userService;
-        this.contractDetailsMapper = contractDetailsMapper;
+
         this.employeeDtoMapper = employeeDtoMapper;
         this.dataCollectionService = dataCollectionService;
 
@@ -71,8 +69,9 @@ public class ContractServiceImpl implements ContractService {
         User employee;
         try {
             employee = userService.findByEmail(form.getEmail());
-            if (!employee.getRoles().contains(Role.EMPLOYEE)) {
-                employee.getRoles().add(Role.EMPLOYEE);
+
+            if (!employee.hasRole(Role.EMPLOYEE)) {
+                employee.addRole(Role.EMPLOYEE);
             }
         } catch (EntityNotFoundException e) {
             RegisterUserEmployeeDto employeeDto = employeeDtoMapper.toDto(form);
@@ -104,15 +103,19 @@ public class ContractServiceImpl implements ContractService {
             throw new AccessDeniedException("You are not allowed to view this contract");
         }
 
-        ContractDetailsWithemployeeDto details = contractDetailsMapper.toDto(contract);
+        ContractDetailsWithemployeeDto details = new ContractDetailsWithemployeeDto();
         User employee = contract.getEmployee();
         details.setContractId(id);
+        details.setJobType(contract.getJobType());
+        details.setEmploymentType(contract.getEmploymentType());
         details.setFirstName(employee.getFirstName());
         details.setLastName(employee.getLastName());
         details.setEmail(employee.getEmail());
         details.setBirthdate(employee.getBirthDate());
         details.setIdentificationNumber(employee.getIdentificationNumber());
         details.setPhone(employee.getPhone());
+        details.setSalary(contract.getSalary());
+        details.setSince(contract.getSince());
         Address employeeAddress = employee.getAddress();
         details.setStreet(employeeAddress.getStreet());
         details.setNumber(employeeAddress.getNumber());
@@ -139,7 +142,11 @@ public class ContractServiceImpl implements ContractService {
         User employer = contract.getEmployer();
 
         // Let MapStruct handle contract fields
-        contractDetailsMapper.updateContractFromDto(form, contract);
+
+        contract.setSince(form.getSince());
+        contract.setJobType(form.getJobType());
+        contract.setSalary(form.getSalary());
+        contract.setEmploymentType(form.getEmploymentType());
 
         // Update employee fields
         employee.setFirstName(form.getFirstName());

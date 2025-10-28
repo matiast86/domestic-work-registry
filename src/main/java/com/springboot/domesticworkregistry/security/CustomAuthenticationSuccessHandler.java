@@ -24,9 +24,8 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         User user = (User) authentication.getPrincipal();
 
-
         // 🔹 Multi-role handling (EMPLOYER + EMPLOYEE)
-        if (user.getRoles().contains(Role.EMPLOYER) && user.getRoles().contains(Role.EMPLOYEE)) {
+        if (user.hasRole(Role.EMPLOYER) && user.hasRole(Role.EMPLOYEE)) {
             // Either redirect to unified dashboard (tabs show both roles)…
             getRedirectStrategy().sendRedirect(request, response, "/dashboard");
             return;
@@ -35,11 +34,11 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         }
 
         // 🔹 Single role handling
-        if (user.getRoles().contains(Role.EMPLOYER) ||
-                user.getRoles().contains(Role.EMPLOYEE)) {
+        if (user.hasRole(Role.EMPLOYER) ||
+                user.hasRole(Role.EMPLOYEE)) {
             // Both roles now share the same dashboard with tabs
             getRedirectStrategy().sendRedirect(request, response, "/dashboard");
-        } else if (user.getRoles().contains(Role.ADMIN)) {
+        } else if (user.hasRole(Role.ADMIN)) {
             getRedirectStrategy().sendRedirect(request, response, "/admin/dashboard");
         } else {
             // Fallback → landing page

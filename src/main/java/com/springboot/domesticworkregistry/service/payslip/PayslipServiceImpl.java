@@ -14,12 +14,13 @@ import org.springframework.stereotype.Service;
 import com.springboot.domesticworkregistry.dao.PayslipRepository;
 import com.springboot.domesticworkregistry.dto.payslip.CreatePayslipDto;
 import com.springboot.domesticworkregistry.dto.payslip.PayslipDetailsDto;
+import com.springboot.domesticworkregistry.dto.payslip.PayslipDetailsMapper;
 import com.springboot.domesticworkregistry.entities.Contract;
 import com.springboot.domesticworkregistry.entities.Job;
 import com.springboot.domesticworkregistry.entities.Payslip;
 import com.springboot.domesticworkregistry.entities.ScheduleEntry;
+import com.springboot.domesticworkregistry.entities.User;
 import com.springboot.domesticworkregistry.enums.EmploymentType;
-import com.springboot.domesticworkregistry.mapper.PayslipDetailsMapper;
 import com.springboot.domesticworkregistry.service.contract.ContractService;
 import com.springboot.domesticworkregistry.service.dataCollection.DataCollectionService;
 
@@ -161,9 +162,14 @@ public class PayslipServiceImpl implements PayslipService {
             int sinceYear = contract.getSince().getYear();
             String sinceMonth = getMonthNameInSpanish(contract.getSince());
             String since = sinceMonth + " " + String.valueOf(sinceYear);
-            String firstName = contract.getEmployee().getFirstName();
-            String lastName = contract.getEmployee().getLastName();
+            User employee = contract.getEmployee();
+            String firstName = employee.getFirstName();
+            String lastName = employee.getLastName();
+
             PayslipDetailsDto dto = detailsMapper.toDto(payslip);
+            dto.setContractId(contractId);
+            dto.setEmployeeIdentificationNumber(employee.getIdentificationNumber());
+            dto.setService(contract.getService());
             dto.setEmployeeName(firstName + " " + lastName);
             dto.setSince(since);
             details.add(dto);
@@ -242,7 +248,6 @@ public class PayslipServiceImpl implements PayslipService {
         String lastName = contract.getEmployee().getLastName();
 
         PayslipDetailsDto details = detailsMapper.toDto(payslip);
-        details.setPayslipId(id);
         details.setContractId(contract.getId());
         details.setEmployeeIdentificationNumber(contract.getEmployee().getIdentificationNumber());
         details.setEmployeeName(firstName + " " + lastName);
