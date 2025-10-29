@@ -12,7 +12,8 @@ public class DomesticworkregistryApplication {
 
 	@PostConstruct
 	public void init() {
-		TimeZone.setDefault(TimeZone.getTimeZone("America/Argentina/Buenos_Aires"));
+		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+		System.out.println("✅ Default timezone set to UTC");
 	}
 
 	public static void main(String[] args) {
