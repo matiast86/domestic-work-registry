@@ -226,7 +226,7 @@
               <tbody>
                 <tr th:each="entry : ${contract.entries}">
                   <td>
-                    <span class="day-badge" th:text="${entry.dayOfWeek}">
+                    <span class="day-badge" th:text="${entry.getDayOfWeekLabel}">
                       Lunes
                     </span>
                   </td>

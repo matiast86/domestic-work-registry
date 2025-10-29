@@ -69,7 +69,7 @@ public class PayslipServiceImpl implements PayslipService {
 
     private BigDecimal getPartial(List<Job> jobs, int year, int month) {
 
-        return dataCollectionService.calculateSumByMonth(jobs, year, month, Job::getTotalFee);
+        return dataCollectionService.calculateSumByMonth(jobs, year, month, Job::getPartialFee);
     }
 
     private BigDecimal getTransportation(Contract contract, int year, int month) {

@@ -329,7 +329,7 @@
                           <option
                             th:each="day : ${T(java.time.DayOfWeek).values()}"
                             th:value="${day}"
-                            th:text="${day}"
+                            th:text="${day.getDisplayName(T(java.time.format.TextStyle).FULL, T(java.util.Locale).forLanguageTag('es-AR')).toUpperCase()}"
                           ></option>
                         </select>
                       </td>

@@ -2,6 +2,8 @@ package com.springboot.domesticworkregistry.dto.schedule_entry;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
+import java.time.format.TextStyle;
+import java.util.Locale;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -25,5 +27,9 @@ public class ScheduleEntryDto {
     @DateTimeFormat(pattern = "HH:mm")
     @NotNull(message = "is required")
     private LocalTime endTime;
+
+    public String getDayOfWeekLabel() {
+        return dayOfWeek != null ? dayOfWeek.getDisplayName(TextStyle.FULL, Locale.of("es", "AR")).toUpperCase() : null;
+    }
 
 }
